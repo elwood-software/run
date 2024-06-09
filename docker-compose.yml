@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: runner
+    container_name: runner
+    volumes:
+      - ./src:/elwood/runner/runtime
+      - ./deno.json:/elwood/runtime/deno.json
+      - ./actions:/elwood/runner/actions
+      - ./tmp:/tmp
+      - ./tmp-workspace/:/elwood/runner/workspace
+    working_dir: /elwood/runner/workspace
+    command:
+      [
+        '/elwood/runner/bin/deno',
+        'run',
+        '--config',
+        '/elwood/runtime/deno.json',
+        '-A',
+        '--unstable-worker-options',
+        '/elwood/runner/runtime/launch.ts',
+      ]

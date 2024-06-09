@@ -1,0 +1,7 @@
+tmp*/
+.DS_Store
+node_modules
+*.log
+*.local
+.env
+.cache

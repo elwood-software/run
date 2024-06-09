@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "test": "deno test -A ./**/*.test.ts"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
