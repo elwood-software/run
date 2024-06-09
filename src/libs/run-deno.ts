@@ -31,6 +31,8 @@ export async function executeDenoCommand(
     ...opts
   } = options;
 
+  console.log(opts);
+
   const cmd = new Deno.Command(Deno.execPath(), {
     stdout: stdoutStream ? "piped" : stdout,
     stderr: stderrStream ? "piped" : stderr,
@@ -46,7 +48,9 @@ export async function executeDenoCommand(
     child.stderr.pipeTo(stderrStream);
   }
 
-  child.stdin.close();
+  if (opts.stdin === "piped") {
+    await child.stdin.close();
+  }
 
   return await child.output();
 }

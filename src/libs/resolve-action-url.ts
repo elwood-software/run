@@ -1,13 +1,28 @@
 import { basename, dirname, fromFileUrl, join } from "../deps.ts";
 
-import type { RunnerDefinition } from "../types.ts";
+import { stepHasRun } from "./config-helpers.ts";
+import type { Workflow } from "../types.ts";
 
 export type ResolveActionUrlOptions = {
   stdPrefix: string;
 };
 
+export async function resolveActionUrlFromDefinition(
+  def: Workflow.Step,
+  options: ResolveActionUrlOptions,
+): Promise<URL> {
+  if (stepHasRun(def)) {
+    return await resolveActionUrl("run", options);
+  }
+
+  return await resolveActionUrl(
+    (def as Workflow.StepSchemaWithAction).action,
+    options,
+  );
+}
+
 export async function resolveActionUrl(
-  action: RunnerDefinition.Step["action"],
+  action: string,
   options: ResolveActionUrlOptions,
 ): Promise<URL> {
   if (action.includes("://")) {

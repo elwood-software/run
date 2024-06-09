@@ -1,70 +1,23 @@
 import { assert, join } from "./deps.ts";
 
 import { Manager } from "./runtime/manager.ts";
-import type { RunnerDefinition } from "./types.ts";
 
-const instructions: RunnerDefinition.Normalized = {
-  name: "default",
-  jobs: [
-    {
-      id: "job-1",
-      name: "default",
-      steps: [
-        {
-          id: "xx",
-          name: "xx",
-          action: "run",
-          if: "true",
-          with: {
-            script: "echo 'hello=world' > $ELWOOD_OUTPUT",
-          },
-          permissions: {
-            env: [],
-            read: [],
-            write: [],
-            run: ["bash"],
-            net: false,
-          },
-        },
-        // {
-        //   id: "x",
-        //   name: "install-ffmpeg",
-        //   action: "install/ffmpeg",
-        //   with: {},
-        //   permissions: {
-        //     env: [],
-        //     read: [],
-        //     write: [],
-        //     run: ["tar"],
-        //     net: true,
-        //   },
-        // },
-
-        // {
-        //   id: "step-1",
-        //   name: "copy",
-        //   action: "bin://ffmpeg",
-        //   with: {
-        //     args: ["-version"],
-        //   },
-        //   permissions: {
-        //     env: [],
-        //     read: ["/tmp"],
-        //     write: [],
-        //     run: [],
-        //     net: false,
-        //   },
-        // },
-      ],
-    },
-  ],
-};
+import { loadAndVerifyWorkflow } from "./libs/load-workflow.ts";
+import { Workflow } from "./types.ts";
 
 if (import.meta.main) {
-  main();
+  const [workflowFile = "/elwood/runner/examples/hello-world.yml"] = Deno.args;
+
+  console.log("hi", workflowFile);
+
+  await launch(
+    await loadAndVerifyWorkflow(workflowFile),
+  );
 }
 
-async function main() {
+export async function launch(
+  workflowConfiguration: Workflow.Configuration,
+) {
   const workspaceDir = Deno.env.get("ELWOOD_RUNNER_WORKSPACE_DIR");
   const executionUid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_UID");
   const executionGid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_GID");
@@ -92,7 +45,7 @@ async function main() {
   }
 
   await manager.prepare();
-  const execution = await manager.executeDefinition(instructions);
+  const execution = await manager.executeDefinition(workflowConfiguration);
 
   console.log(JSON.stringify(execution.getCombinedState(), null, 2));
 }

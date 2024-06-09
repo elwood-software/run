@@ -1,7 +1,7 @@
 import { assert } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
-import type { RunnerDefinition } from "../types.ts";
+import type { Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/run-deno.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
@@ -27,7 +27,7 @@ export class Execution extends State {
 
   constructor(
     public readonly manager: Manager,
-    public readonly def: RunnerDefinition.Normalized,
+    public readonly def: Workflow.Configuration,
     public readonly options: ExecutionOptions,
   ) {
     super();
@@ -77,8 +77,8 @@ export class Execution extends State {
 
     const actionUrls: URL[] = [];
 
-    for (const def of this.def.jobs) {
-      const job = new Job(this, def);
+    for (const [name, def] of Object.entries(this.def.jobs)) {
+      const job = new Job(this, name, def);
       this.#jobs.set(job.id, job);
       await job.prepare();
 
