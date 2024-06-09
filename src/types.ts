@@ -1,5 +1,4 @@
 // deno-lint-ignore-file no-namespace
-
 // deno-lint-ignore no-explicit-any
 export type Json = any;
 export type JsonObject = Record<string, Json>;

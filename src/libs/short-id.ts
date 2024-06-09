@@ -1,8 +1,8 @@
-// borrowed from https://deno.land/x/short_uuid@v3.0.0-rc1/mod.ts?source
+// modified from and (c) https://deno.land/x/short_uuid@v3.0.0-rc1/mod.ts?source
 
 class ShortUniqueId {
   counter = 0;
-  dict = ["t", "k"];
+  dict = ["t", "j", "k"];
 
   dictIndex: number = 0;
   dictRange: number[] = [];
@@ -41,6 +41,7 @@ class ShortUniqueId {
   }
 }
 
+// singleton
 const suid = new ShortUniqueId();
 
 export function shortId(prefix = ""): string {

@@ -34,11 +34,18 @@ export async function evaluateExpress(
     },
   });
 
+  const expressionCode = trimmedExpression
+    .replace(ExpressionTokens.Prefix, "")
+    .replace(
+      ExpressionTokens.Postfix,
+      "",
+    );
+
   const code = `
-      __elwood_internal = undefined;
-      Object.assign(self, ${JSON.stringify(state)});
-      ${trimmedExpression.replace("${{", "").replace("}}", "")}
-    `;
+    __elwood_internal = undefined;
+    Object.assign(self, ${JSON.stringify(state)});
+    ${expressionCode}
+  `;
 
   worker.postMessage({
     type: "eval",
@@ -90,8 +97,8 @@ export function isExpressionResultTruthy(value: string): boolean {
 
 export function isEvaluableExpression(value: string): boolean {
   return (
-    value.startsWith(ExpressionTokens.Prefix) &&
-    value.endsWith(ExpressionTokens.Postfix)
+    value.trimStart().startsWith(ExpressionTokens.Prefix) &&
+    value.trimEnd().endsWith(ExpressionTokens.Postfix)
   );
 }
 

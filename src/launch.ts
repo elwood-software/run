@@ -1,6 +1,6 @@
 import { assert, join } from "./deps.ts";
 
-import { Manager } from "./manager.ts";
+import { Manager } from "./runtime/manager.ts";
 import type { RunnerDefinition } from "./types.ts";
 
 const instructions: RunnerDefinition.Normalized = {
@@ -94,5 +94,5 @@ async function main() {
   await manager.prepare();
   const execution = await manager.executeDefinition(instructions);
 
-  console.log(execution.getCombinedState());
+  console.log(JSON.stringify(execution.getCombinedState(), null, 2));
 }

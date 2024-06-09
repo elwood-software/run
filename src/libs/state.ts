@@ -2,6 +2,7 @@
 import { RunnerResult, RunnerStatus } from "../constants.ts";
 import type { RunnerDefinition } from "../types.ts";
 import { shortId } from "./short-id.ts";
+import { Logger } from "../deps.ts";
 
 export abstract class State implements RunnerDefinition.State {
   abstract id: string;

@@ -1,6 +1,6 @@
 import { assert } from "../deps.ts";
 
-import { Manager } from "../manager.ts";
+import { Manager } from "./manager.ts";
 import type { RunnerDefinition } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/run-deno.ts";

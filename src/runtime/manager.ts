@@ -1,6 +1,6 @@
-import { Folder } from "./libs/folder.ts";
-import { Execution } from "./runtime/execution.ts";
-import { RunnerDefinition } from "./types.ts";
+import { Folder } from "../libs/folder.ts";
+import { Execution } from "./execution.ts";
+import { RunnerDefinition } from "../types.ts";
 
 export type ManagerOptions = {
   workspaceDir: string;

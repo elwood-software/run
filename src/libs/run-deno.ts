@@ -15,20 +15,40 @@ export async function executeDenoRun(
   });
 }
 
-export type ExecuteDenoCommand = Deno.CommandOptions;
+export type ExecuteDenoCommand = Deno.CommandOptions & {
+  stdoutStream?: WritableStream<Uint8Array>;
+  stderrStream?: WritableStream<Uint8Array>;
+};
 
 export async function executeDenoCommand(
   options: ExecuteDenoCommand,
 ): Promise<Deno.CommandOutput> {
-  console.log("executeDenoCommand", JSON.stringify(options, null, 2));
+  const {
+    stderrStream,
+    stdoutStream,
+    stdout = "inherit",
+    stderr = "inherit",
+    ...opts
+  } = options;
 
   const cmd = new Deno.Command(Deno.execPath(), {
-    stdout: "inherit",
-    stderr: "inherit",
-    ...options,
+    stdout: stdoutStream ? "piped" : stdout,
+    stderr: stderrStream ? "piped" : stderr,
+    ...opts,
   });
 
-  return await cmd.output();
+  const child = cmd.spawn();
+
+  if (stdoutStream) {
+    child.stdout.pipeTo(stdoutStream);
+  }
+  if (stderrStream) {
+    child.stderr.pipeTo(stderrStream);
+  }
+
+  child.stdin.close();
+
+  return await child.output();
 }
 
 export function permissionObjectToFlags(
@@ -44,8 +64,6 @@ export function permissionObjectToFlags(
     run: false,
     write: false,
   };
-
-  console.log(options);
 
   return Object.entries({ ...defaults, ...options }).reduce(
     (acc, [name, value]) => {

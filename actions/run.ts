@@ -6,29 +6,37 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const cmd = input.getOptional("bin", args.get("bin", false)) ?? "deno";
+  const bin = input.getOptional("bin", args.get("bin", false)) ?? undefined;
   const script = input.get("script", false);
-  const cmdArgs = input.getOptionalJson("args", []);
+  const binArgs = input.getOptionalJson("args", []) as string[] | undefined;
 
   if (script) {
-    const cmd = await command.create("bash", {
+    const cmd = await command.create(bin ?? "bash", {
+      args: binArgs,
+      stdout: "piped",
+      stderr: "piped",
       stdin: "piped",
     });
 
     const child = cmd.spawn();
 
     // write the script to the childprocess as stdin
-    child.stdin.getWriter().write(new TextEncoder().encode(script));
-    child.stdin.close();
+    const writer = child.stdin.getWriter();
+    writer.write(new TextEncoder().encode(script));
+    writer.releaseLock();
 
-    Deno.exit((await child.status).code);
+    await child.stdin.close();
+
+    const { code } = await child.output();
+
+    Deno.exit(code);
   }
 
-  assert(cmd, "bin must be provided");
-  assert(Array.isArray(cmdArgs), "args must be an array");
+  assert(bin, "bin must be provided");
+  assert(Array.isArray(binArgs), "args must be an array");
 
-  const result = await command.execute(cmd, {
-    args: cmdArgs as string[],
+  const result = await command.execute(bin, {
+    args: binArgs as string[],
   });
 
   Deno.exit(result.code);

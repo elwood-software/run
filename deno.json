@@ -1,6 +1,8 @@
 {
   "tasks": {
-    "test": "deno test -A ./**/*.test.ts"
+    "up": "docker compose up",
+    "down": "docker compose down",
+    "test": "deno test -A --unstable-worker-options ./**/*.test.ts"
   },
   "compilerOptions": {
     "strict": true,
