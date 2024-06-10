@@ -3,7 +3,7 @@ import { normalize } from "./path.ts";
 export function get(name: string, strict = true): string {
   const inputEnvName = `INPUT_${name.toUpperCase()}`;
 
-  if (strict && !Deno.env.get(inputEnvName)) {
+  if (strict && !Deno.env.has(inputEnvName)) {
     throw new Error(`Missing required environment variable: ${inputEnvName}`);
   }
 
@@ -16,7 +16,7 @@ export function get(name: string, strict = true): string {
     return "";
   }
 
-  return Deno.env.get(inputEnvName) as string;
+  return Deno.env.get(inputEnvName) as string ?? "";
 }
 
 export function getOptional<T = unknown>(

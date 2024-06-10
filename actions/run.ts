@@ -6,12 +6,12 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const bin = input.getOptional("bin", args.get("bin", false)) ?? undefined;
-  const script = input.get("script", false);
+  const bin = input.getOptional<string>("bin") ?? args.get("bin") ?? "bash";
+  const script = input.getOptional<string>("script");
   const binArgs = input.getOptionalJson("args", []) as string[] | undefined;
 
   if (script) {
-    const cmd = await command.create(bin ?? "bash", {
+    const cmd = await command.create(bin, {
       args: binArgs,
       stdout: "piped",
       stderr: "piped",

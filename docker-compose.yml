@@ -13,6 +13,7 @@ services:
       - ./actions:/elwood/runner/actions
       - ./tmp:/tmp
       - ./tmp-workspace/:/elwood/runner/workspace
+      - ./examples:/elwood/runner/examples
     working_dir: /elwood/runner/workspace
     command:
       [

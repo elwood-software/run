@@ -1,8 +1,8 @@
 import { Job } from "./job.ts";
-import type { RunnerDefinition } from "../types.ts";
+import type { Workflow } from "../types.ts";
 import {
-  resolveActionUrl,
   resolveActionUrlForDenoCommand,
+  resolveActionUrlFromDefinition,
 } from "../libs/resolve-action-url.ts";
 import { State } from "../libs/state.ts";
 import { Folder } from "../libs/folder.ts";
@@ -18,6 +18,7 @@ import {
 
 import { assert } from "../deps.ts";
 import { ExecuteDenoRunOptions } from "../libs/run-deno.ts";
+import { stepHasRun } from "../libs/config-helpers.ts";
 
 export class Step extends State {
   readonly id: string;
@@ -29,7 +30,7 @@ export class Step extends State {
 
   constructor(
     public readonly job: Job,
-    public readonly def: RunnerDefinition.Step,
+    public readonly def: Workflow.Step,
   ) {
     super();
     this.id = this.shortId("step");
@@ -51,7 +52,7 @@ export class Step extends State {
   async prepare(): Promise<void> {
     this.#contextDir = await this.job.contextDir.mkdir(this.id);
 
-    this.actionUrl = await resolveActionUrl(this.def.action, {
+    this.actionUrl = await resolveActionUrlFromDefinition(this.def, {
       stdPrefix: this.job.execution.manager.options.stdActionsPrefix,
     });
   }
@@ -66,7 +67,7 @@ export class Step extends State {
 
       // check to see if this step should be skipped
       const shouldSkip = !isExpressionResultTruthy(
-        await evaluateExpress(makeEvaluableExpression(this.def.if)),
+        await evaluateExpress(makeEvaluableExpression(this.def.when ?? "true")),
       );
 
       if (shouldSkip) {
@@ -126,6 +127,7 @@ export class Step extends State {
   ): Promise<Omit<ExecuteDenoRunOptions, "file" | "cwd">> {
     const commandInputEnv = await this._getCommandInputEnv();
     const argsFromActionUrl: Record<string, string> = {};
+    const defPermissions = this.def.permissions ?? {} as Workflow.Permissions;
 
     // if the action has search params
     // pass them to the action as ARG_ env variables
@@ -135,33 +137,44 @@ export class Step extends State {
       }
     }
 
+    // if the value is an array, merge it with the append array
+    // otherwise return the value.
+    function _arrayOrTrue(
+      value: string[] | boolean | undefined,
+      append: Array<string | undefined>,
+    ): string[] | boolean {
+      if (value === false) {
+        return value;
+      }
+
+      return [
+        ...(Array.isArray(value) ? value : []),
+        ...append.filter(Boolean) as string[],
+      ];
+    }
+
     const env = {
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
     };
 
-    // if the value is an array, merge it with the append array
-    // otherwise return the value.
-    function _arrayOrTrue(
-      value: string[] | boolean,
-      append: Array<string | undefined>,
-    ): string[] | boolean {
-      if (Array.isArray(value)) {
-        return [
-          ...value,
-          ...append.filter(Boolean) as string[],
-        ];
-      }
+    if (stepHasRun(this.def)) {
+      env.INPUT_BIN = this.def.input?.bin ?? "bash";
+      env.INPUT_SCRIPT = this.def.run;
 
-      return value;
+      defPermissions.run = _arrayOrTrue(
+        [env.INPUT_BIN],
+        Array.isArray(defPermissions.run) ? defPermissions.run : [],
+      );
     }
 
     return {
       ...init,
       permissions: {
-        ...this.def.permissions,
-        read: _arrayOrTrue(this.def.permissions.read, [
+        ...defPermissions,
+        run: _arrayOrTrue(defPermissions?.run, []),
+        read: _arrayOrTrue(defPermissions?.read, [
           init.env?.ELWOOD_ENV,
           init.env?.ELWOOD_OUTPUT,
           this.contextDir.path,
@@ -169,7 +182,7 @@ export class Step extends State {
           "<CWD>",
         ]),
         write: _arrayOrTrue(
-          this.def.permissions.write,
+          defPermissions?.write,
           [
             init.env?.ELWOOD_ENV,
             init.env?.ELWOOD_OUTPUT,
@@ -179,8 +192,8 @@ export class Step extends State {
           ],
         ),
         env: _arrayOrTrue(
-          this.def.permissions.env,
-          [...Object.keys(argsFromActionUrl), ...Object.keys(commandInputEnv)],
+          defPermissions?.env,
+          Object.keys(env),
         ),
       },
       env: await replaceVariablePlaceholdersInVariables(env),
@@ -188,7 +201,7 @@ export class Step extends State {
   }
 
   async _getCommandInputEnv(): Promise<Record<string, string>> {
-    const withDefinition = this.def.with ?? {};
+    const withDefinition = this.def.input ?? {};
     const inputEnv: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(withDefinition)) {

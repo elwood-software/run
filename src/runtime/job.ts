@@ -1,13 +1,12 @@
 import { assert } from "../deps.ts";
 import { Execution } from "./execution.ts";
-import type { RunnerDefinition } from "../types.ts";
+import type { Workflow } from "../types.ts";
 import { State } from "../libs/state.ts";
 import { Folder } from "../libs/folder.ts";
 import { Step } from "./step.ts";
 
 export class Job extends State {
   readonly id: string;
-  readonly name: string;
 
   readonly #steps = new Map<string, Step>();
 
@@ -15,11 +14,11 @@ export class Job extends State {
 
   constructor(
     public readonly execution: Execution,
-    public readonly def: RunnerDefinition.Job,
+    public readonly name: string,
+    public readonly def: Workflow.Job,
   ) {
     super();
     this.id = this.shortId("job");
-    this.name = def.name;
   }
 
   get steps(): Step[] {
