@@ -69,9 +69,8 @@ export class Execution extends State {
     this.#cacheDir = await this.workingDir.mkdir("cache");
     this.#binDir = await this.workingDir.mkdir("bin");
 
-    // write our definition to the working directory
-    await Deno.writeTextFile(
-      this.workingDir.join("definition.json"),
+    await this.workingDir.writeText(
+      "definition.json",
       JSON.stringify(this.def, null, 2),
     );
 
