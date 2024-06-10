@@ -3,7 +3,7 @@ import { z } from "../deps.ts";
 import { Environment, Input, Permissions } from "./scalar.ts";
 
 export const StepSchemaBase = z.object({
-  name: z.string().length(2).regex(/^[a-zA-Z]/, {
+  name: z.string().min(2).regex(/^[a-zA-Z]/, {
     message: "Must start with a letter",
   }).optional(),
   label: z.string().optional(),

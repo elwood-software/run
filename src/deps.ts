@@ -23,3 +23,6 @@ export { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 // yaml
 export { parse as parseYaml } from "jsr:@std/yaml/parse";
+
+// fmt
+export { stripAnsiCode } from "jsr:@std/fmt/colors";

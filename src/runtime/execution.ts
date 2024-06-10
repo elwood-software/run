@@ -87,13 +87,17 @@ export class Execution extends State {
       }
     }
 
+    const uniqueActionUrls = [
+      ...new Set(actionUrls.map(resolveActionUrlForDenoCommand)),
+    ];
+
     // cache each action file
     const results = await Promise.all(
-      actionUrls.map(async (url) => {
+      uniqueActionUrls.map(async (url) => {
         console.log(`Preloading action: ${url}`);
 
         return await executeDenoCommand({
-          args: ["cache", resolveActionUrlForDenoCommand(url)],
+          args: ["cache", url],
           env: this.getDenoEnv(),
         });
       }),
@@ -143,6 +147,13 @@ export class Execution extends State {
     return {
       ...super.getCombinedState(),
       jobs: this.jobs.map((job) => job.getCombinedState()),
+    };
+  }
+
+  getContext() {
+    return {
+      status: this.state.status,
+      result: this.state.result,
     };
   }
 

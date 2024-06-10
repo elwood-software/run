@@ -6,6 +6,7 @@
       "jsr:@std/assert": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/bytes@^1.0.0-rc.3": "jsr:@std/bytes@1.0.0",
+      "jsr:@std/fmt": "jsr:@std/fmt@0.225.4",
       "jsr:@std/fmt@^0.225.4": "jsr:@std/fmt@0.225.4",
       "jsr:@std/fs": "jsr:@std/fs@0.229.2",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
@@ -15,6 +16,7 @@
       "jsr:@std/path": "jsr:@std/path@0.225.2",
       "jsr:@std/path@1.0.0-rc.1": "jsr:@std/path@1.0.0-rc.1",
       "jsr:@std/path@^0.225.2": "jsr:@std/path@0.225.2",
+      "jsr:@std/yaml": "jsr:@std/yaml@0.224.1",
       "npm:zod-to-json-schema": "npm:zod-to-json-schema@3.23.0_zod@3.23.8"
     },
     "jsr": {
@@ -71,6 +73,9 @@
       },
       "@std/path@1.0.0-rc.1": {
         "integrity": "b8c00ae2f19106a6bb7cbf1ab9be52aa70de1605daeb2dbdc4f87a7cbaf10ff6"
+      },
+      "@std/yaml@0.224.1": {
+        "integrity": "cbb444acccce7ea34b9ef6678bff84c18eba89b790e52dd098def8dae313f0b2"
       }
     },
     "npm": {

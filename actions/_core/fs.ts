@@ -2,8 +2,8 @@ import { type FilePathOrUrl, normalize } from "./path.ts";
 
 export async function copy(src: FilePathOrUrl, dest: FilePathOrUrl) {
   await Deno.copyFile(
-    await normalize(src),
-    await normalize(dest),
+    await normalize(src, { allowRemote: false }),
+    await normalize(dest, { allowRemote: false }),
   );
 }
 

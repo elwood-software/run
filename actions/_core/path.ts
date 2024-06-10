@@ -2,9 +2,14 @@ import { assert, join } from "../deps.ts";
 
 export type FilePathOrUrl = string | URL;
 
+export type NormalizePathOptions = {
+  allowRemote?: boolean;
+};
+
 // deno-lint-ignore require-await
 export async function normalize(
   pathOrUrl: FilePathOrUrl,
+  options: NormalizePathOptions = {},
 ): Promise<string> {
   // if the path is absolute, relative or doesn't include
   // a protocol, we can assume it's a local path
@@ -15,6 +20,10 @@ export async function normalize(
     )
   ) {
     return pathOrUrl;
+  }
+
+  if (options.allowRemote === false && isRemote(pathOrUrl)) {
+    throw new Error("Remote paths are not allowed");
   }
 
   const url = new URL(pathOrUrl);
@@ -51,4 +60,9 @@ export async function normalize(
       throw new Error(`Unsupported protocol: ${url.protocol}`);
     }
   }
+}
+
+export function isRemote(pathOrUrl: FilePathOrUrl): boolean {
+  const url = typeof pathOrUrl === "string" ? new URL(pathOrUrl) : pathOrUrl;
+  return ["https:", "http"].includes(url.protocol);
 }

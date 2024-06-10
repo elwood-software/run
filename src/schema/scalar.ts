@@ -1,14 +1,14 @@
 import { z } from "../deps.ts";
 
 export const Environment = z.record(
-  z.string().length(2).regex(/^[a-zA-Z]/, {
+  z.string().min(2).regex(/^[a-zA-Z]/, {
     message: "Must start with a letter",
   }),
   z.string(),
 );
 
 export const Input = z.record(
-  z.string().length(2).refine((arg) => !arg.startsWith("input_"), {
+  z.string().min(2).refine((arg) => !arg.startsWith("input_"), {
     message: "Input key cannot start with 'input_'",
   }),
   z.any(),

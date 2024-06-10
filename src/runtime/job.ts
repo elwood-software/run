@@ -76,4 +76,17 @@ export class Job extends State {
       steps: this.steps.map((step) => step.state),
     };
   }
+
+  getContext(): Record<string, unknown> {
+    return {
+      status: this.state.status,
+      result: this.state.result,
+      steps: this.steps.reduce((acc, step) => {
+        return {
+          ...acc,
+          [step.name]: step.getContext(),
+        };
+      }, {}),
+    };
+  }
 }

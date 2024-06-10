@@ -78,7 +78,12 @@ export async function request<T = unknown>(
   };
 }
 
-function _methodProxy(method: RequestInit["method"]): typeof request {
+function _methodProxy(
+  method: RequestInit["method"],
+): (
+  url: string,
+  options: Omit<RequestOptions, "method">,
+) => ReturnType<typeof request> {
   return (url: string, options: Omit<RequestOptions, "method">) =>
     request(url, { ...options, method });
 }

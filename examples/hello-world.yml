@@ -1,7 +1,0 @@
-# yaml-language-server: $schema=/Users/travis/Repos/elwood/runner/schema.json
-
-name: hello-world
-jobs:
-  default:
-    steps:
-      - run: echo "Hello, World!"

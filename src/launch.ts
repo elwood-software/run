@@ -6,9 +6,14 @@ import { loadAndVerifyWorkflow } from "./libs/load-workflow.ts";
 import { Workflow } from "./types.ts";
 
 if (import.meta.main) {
-  const [workflowFile = "/elwood/runner/examples/hello-world.yml"] = Deno.args;
+  // see if there's a workflow file
+  const workflowFile = Deno.env.get("ELWOOD_WORKFLOW") ??
+    "/elwood/runner/workflows/hello-world.yml";
 
-  console.log("hi", workflowFile);
+  assert(
+    Deno.statSync(workflowFile)?.isFile,
+    `Workflow file "${workflowFile}" does not exist`,
+  );
 
   await launch(
     await loadAndVerifyWorkflow(workflowFile),
@@ -46,6 +51,5 @@ export async function launch(
 
   await manager.prepare();
   const execution = await manager.executeDefinition(workflowConfiguration);
-
   console.log(JSON.stringify(execution.getCombinedState(), null, 2));
 }

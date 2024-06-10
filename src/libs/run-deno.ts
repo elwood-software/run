@@ -6,7 +6,7 @@ export type ExecuteDenoRunOptions = Omit<ExecuteDenoCommand, "args"> & {
 
 export async function executeDenoRun(
   options: ExecuteDenoRunOptions,
-): Promise<Deno.CommandOutput> {
+): Promise<Deno.CommandStatus> {
   const { file, permissions, args = [], ...cmdOptions } = options;
 
   return await executeDenoCommand({
@@ -22,7 +22,7 @@ export type ExecuteDenoCommand = Deno.CommandOptions & {
 
 export async function executeDenoCommand(
   options: ExecuteDenoCommand,
-): Promise<Deno.CommandOutput> {
+): Promise<Deno.CommandStatus> {
   const {
     stderrStream,
     stdoutStream,
@@ -30,8 +30,6 @@ export async function executeDenoCommand(
     stderr = "inherit",
     ...opts
   } = options;
-
-  console.log(opts);
 
   const cmd = new Deno.Command(Deno.execPath(), {
     stdout: stdoutStream ? "piped" : stdout,
@@ -52,7 +50,7 @@ export async function executeDenoCommand(
     await child.stdin.close();
   }
 
-  return await child.output();
+  return await child.status;
 }
 
 export function permissionObjectToFlags(

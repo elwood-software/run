@@ -1,4 +1,4 @@
-import { install } from "../_core/mod.ts";
+import { command, install } from "../_core/mod.ts";
 
 enum Urls {
   DarwinFFmpeg = "https://evermeet.cx/ffmpeg/ffmpeg-5.1.2.zip",
@@ -53,4 +53,7 @@ export async function main() {
   await i.findAndMove(`**/ffmpeg`, `bin://ffmpeg`);
   await i.findAndMove(`**/ffprobe`, `bin://ffprobe`);
   await i.cleanup();
+
+  await command.execute("ffmpeg", { args: ["-version"] });
+  await command.execute("ffprobe", { args: ["-version"] });
 }

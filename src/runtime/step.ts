@@ -16,7 +16,7 @@ import {
   replaceVariablePlaceholdersInVariables,
 } from "../libs/variables.ts";
 
-import { assert } from "../deps.ts";
+import { assert, stripAnsiCode } from "../deps.ts";
 import { ExecuteDenoRunOptions } from "../libs/run-deno.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
 
@@ -34,7 +34,7 @@ export class Step extends State {
   ) {
     super();
     this.id = this.shortId("step");
-    this.name = def.name;
+    this.name = def.name ?? this.id;
   }
 
   get contextDir(): Folder {
@@ -47,6 +47,33 @@ export class Step extends State {
       ...super.getCombinedState(),
       definition: this.def,
     };
+  }
+
+  getContext(): Record<string, unknown> {
+    return {
+      name: this.name,
+      outputs: this.state.output ?? {},
+      status: this.state.status,
+      result: this.state.result,
+    };
+  }
+
+  async evaluateExpress(expression: string): Promise<string> {
+    const ctx = {
+      step: this.getContext(),
+      job: this.job.getContext(),
+      steps: this.job.steps.reduce((acc, step) => {
+        if (step.id === this.id) {
+          return acc;
+        }
+        return {
+          ...acc,
+          [step.name]: step.getContext(),
+        };
+      }, {}),
+    };
+
+    return await evaluateExpress(expression, ctx);
   }
 
   async prepare(): Promise<void> {
@@ -67,7 +94,9 @@ export class Step extends State {
 
       // check to see if this step should be skipped
       const shouldSkip = !isExpressionResultTruthy(
-        await evaluateExpress(makeEvaluableExpression(this.def.when ?? "true")),
+        await this.evaluateExpress(
+          makeEvaluableExpression(this.def.when ?? "true"),
+        ),
       );
 
       if (shouldSkip) {
@@ -84,6 +113,21 @@ export class Step extends State {
         "",
       );
 
+      const stdout_: string[] = [];
+      const stderr_: string[] = [];
+
+      const stdout = new WritableStream({
+        write(chunk) {
+          stdout_.push(stripAnsiCode(new TextDecoder().decode(chunk)));
+        },
+      });
+
+      const stderr = new WritableStream({
+        write(chunk) {
+          stderr_.push(stripAnsiCode(new TextDecoder().decode(chunk)));
+        },
+      });
+
       const result = await this.job.execution.executeDenoRun({
         ...(await this._getDenoRunOptions({
           env: {
@@ -93,6 +137,10 @@ export class Step extends State {
         })),
         file: resolveActionUrlForDenoCommand(this.actionUrl),
         cwd: this.contextDir.path,
+        stdout: "piped",
+        stderr: "piped",
+        stderrStream: stderr,
+        stdoutStream: stdout,
       });
 
       this.setState(
@@ -104,6 +152,9 @@ export class Step extends State {
         "env",
         await parseVariableFile(await this.contextDir.readText(envFilePath)),
       );
+
+      this.setState("stdout", stdout_);
+      this.setState("stderr", stderr_);
 
       switch (result.code) {
         case 0: {
@@ -205,7 +256,7 @@ export class Step extends State {
     const inputEnv: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(withDefinition)) {
-      inputEnv[`INPUT_${key.toLocaleUpperCase()}`] = await evaluateExpress(
+      inputEnv[`INPUT_${key.toLocaleUpperCase()}`] = await this.evaluateExpress(
         value,
       );
     }
