@@ -5,12 +5,12 @@ import type { Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/deno/execute.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
-import { State } from "../libs/state.ts";
+import { State } from "./state.ts";
 import {
   executeDenoRun,
   type ExecuteDenoRunOptions,
 } from "../libs/deno/execute.ts";
-import { Folder } from "../libs/folder.ts";
+import { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
 
 export type ExecutionOptions = unknown;

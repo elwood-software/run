@@ -70,7 +70,19 @@
                             "env": {
                               "anyOf": [
                                 {
-                                  "type": "boolean"
+                                  "anyOf": [
+                                    {
+                                      "type": "boolean"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "inherit",
+                                        "none",
+                                        "*"
+                                      ]
+                                    }
+                                  ]
                                 },
                                 {
                                   "type": "array",
@@ -79,63 +91,19 @@
                                   }
                                 }
                               ],
-                              "default": false
+                              "default": "inherit"
                             },
                             "read": {
-                              "anyOf": [
-                                {
-                                  "type": "boolean"
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              ],
-                              "default": false
+                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
                             },
                             "write": {
-                              "anyOf": [
-                                {
-                                  "type": "boolean"
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              ],
-                              "default": false
+                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
                             },
                             "net": {
-                              "anyOf": [
-                                {
-                                  "type": "boolean"
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              ],
-                              "default": false
+                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
                             },
                             "run": {
-                              "anyOf": [
-                                {
-                                  "type": "boolean"
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              ],
-                              "default": false
+                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
                             }
                           },
                           "additionalProperties": false

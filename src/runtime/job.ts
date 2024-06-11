@@ -1,8 +1,8 @@
 import { assert } from "../deps.ts";
 import { Execution } from "./execution.ts";
 import type { Workflow } from "../types.ts";
-import { State } from "../libs/state.ts";
-import { Folder } from "../libs/folder.ts";
+import { State } from "./state.ts";
+import { Folder } from "./folder.ts";
 import { Step } from "./step.ts";
 import { RunnerResult } from "../constants.ts";
 

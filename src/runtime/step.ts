@@ -4,8 +4,8 @@ import {
   resolveActionUrlForDenoCommand,
   resolveActionUrlFromDefinition,
 } from "../libs/resolve-action-url.ts";
-import { State } from "../libs/state.ts";
-import { Folder } from "../libs/folder.ts";
+import { State } from "./state.ts";
+import { Folder } from "./folder.ts";
 import {
   evaluateExpress,
   isExpressionResultTruthy,

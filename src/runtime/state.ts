@@ -1,7 +1,7 @@
 // deno-lint-ignore-file require-await
 import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
 import type { Result, RuntimeState, Status } from "../types.ts";
-import { shortId } from "./short-id.ts";
+import { shortId } from "../libs/short-id.ts";
 
 export abstract class State implements RuntimeState {
   abstract id: string;

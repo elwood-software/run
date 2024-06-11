@@ -1,4 +1,4 @@
-import { Folder } from "../libs/folder.ts";
+import { Folder } from "./folder.ts";
 import { assert, logger } from "../deps.ts";
 import { Execution } from "./execution.ts";
 import { Workflow } from "../types.ts";
