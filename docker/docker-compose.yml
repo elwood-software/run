@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  runner:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    image: runner
+    container_name: runner
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../tmp-workspace:/elwood/runner/workspace
+      - ../src:/elwood/runner/runtime
+      - ../deno.json:/elwood/runner/deno.json
+      - ../actions:/elwood/runner/actions
+      - ./bootstrap.yml:/elwood/runner/bootstrap.yml
+    working_dir: /elwood/runner/workspace
+    environment:
+      - ELWOOD_RUNNER_STD_ACTIONS_PREFIX=file:///elwood/runner/actions
+      - ELWOOD_RUNNER_MODE_OVERRIDE=bootstrap
+      - ELWOOD_RUNNER_BOOTSTRAP_FILE=/elwood/runner/bootstrap.yml
+
+
+

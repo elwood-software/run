@@ -1,0 +1,13 @@
+cleanup: before
+workflow:
+  name: "bootstrap"
+  jobs:
+    default:
+      name: "bootstrap"
+      steps:
+        - action: "fs/copy"
+          input:
+            src: https://elwood-run.s3.us-west-1.amazonaws.com/public/conan.mp3
+            dest: conan.mp3
+          permissions:
+            net: true

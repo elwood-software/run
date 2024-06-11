@@ -3,14 +3,15 @@ import { assert } from "../deps.ts";
 import { Manager } from "./manager.ts";
 import type { Workflow } from "../types.ts";
 import { Job } from "./job.ts";
-import { executeDenoCommand } from "../libs/run-deno.ts";
+import { executeDenoCommand } from "../libs/deno/execute.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
 import { State } from "../libs/state.ts";
 import {
   executeDenoRun,
   type ExecuteDenoRunOptions,
-} from "../libs/run-deno.ts";
+} from "../libs/deno/execute.ts";
 import { Folder } from "../libs/folder.ts";
+import { RunnerResult, StateName } from "../constants.ts";
 
 export type ExecutionOptions = unknown;
 
@@ -63,6 +64,8 @@ export class Execution extends State {
   }
 
   async prepare(): Promise<void> {
+    this.manager.logger.info(`Preparing execution: ${this.id}`);
+
     this.#workingDir = await this.manager.mkdir("workspace", this.id);
     this.#contextDir = await this.workingDir.mkdir("context");
     this.#stageDir = await this.workingDir.mkdir("stage");
@@ -94,10 +97,10 @@ export class Execution extends State {
     // cache each action file
     const results = await Promise.all(
       uniqueActionUrls.map(async (url) => {
-        console.log(`Preloading action: ${url}`);
+        this.manager.logger.info(` > preloading action: ${url}`);
 
         return await executeDenoCommand({
-          args: ["cache", url],
+          args: ["-q", "cache", url],
           env: this.getDenoEnv(),
         });
       }),
@@ -108,17 +111,22 @@ export class Execution extends State {
         (item) => item[1] !== 0,
       ).map((item) => item[0].toString()).join(", ");
 
+      this.manager.logger.error(` > failed to cache action files: ${names}`);
       await this.fail(`Failed to cache action files: ${names}`);
     }
   }
 
   async execute(): Promise<void> {
-    console.log(`Executing: ${this.id}`);
+    this.manager.logger.info(`Staring executing: ${this.id}`);
 
     try {
       this.start();
 
       for (const job of this.jobs) {
+        this.manager.logger.info(
+          ` > executing job: ${job.name}[${job.id}] (status=${job.status})`,
+        );
+
         if (job.status !== "pending") {
           continue;
         }
@@ -126,17 +134,20 @@ export class Execution extends State {
         await job.execute();
       }
 
-      console.log("done jobs");
+      const failedJobs = this.jobs.filter((job) =>
+        job.result === RunnerResult.Failure
+      );
 
-      const hasFailure = this.jobs.some((job) => job.result === "failure");
-
-      if (hasFailure) {
-        await this.fail("Execution failed");
-        return;
+      if (failedJobs.length > 0) {
+        throw new Error(
+          `Jobs ${failedJobs.map((item) => `${item.name}(${item.id})`)} failed`,
+        );
       }
 
+      this.manager.logger.info(" > succeeded");
       await this.succeed();
     } catch (error) {
+      this.manager.logger.error(` > execution failed: ${error.message}`);
       await this.fail(error.message);
     } finally {
       this.stop();
@@ -154,6 +165,39 @@ export class Execution extends State {
     return {
       status: this.state.status,
       result: this.state.result,
+    };
+  }
+
+  getReport(): Workflow.Report {
+    return {
+      status: this.status,
+      result: this.result,
+      reason: this.state.reason,
+      timing: this.getState(StateName.Timing),
+      jobs: this.jobs.reduce((acc, job) => {
+        return {
+          ...acc,
+          [job.name]: {
+            status: job.status,
+            result: job.result,
+            timing: job.getState(StateName.Timing),
+            steps: job.steps.reduce((acc, step) => {
+              return {
+                ...acc,
+                [step.name]: {
+                  status: step.status,
+                  result: step.result,
+                  reason: step.state.reason,
+                  timing: step.getState(StateName.Timing),
+                  outputs: step.getState(StateName.Outputs, {}),
+                  stdout: step.getState(StateName.Stdout, []),
+                  stderr: step.getState(StateName.Stderr, []),
+                },
+              };
+            }, {}) as Record<string, Workflow.ReportStep>,
+          },
+        };
+      }, {}) as Record<string, Workflow.ReportJob>,
     };
   }
 

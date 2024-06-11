@@ -13,8 +13,8 @@ export async function main() {
   if (script) {
     const cmd = await command.create(bin, {
       args: binArgs,
-      stdout: "piped",
-      stderr: "piped",
+      stdout: "inherit",
+      stderr: "inherit",
       stdin: "piped",
     });
 

@@ -9,6 +9,7 @@ export { basename } from "jsr:@std/path/basename";
 export { dirname } from "jsr:@std/path/dirname";
 export { extname } from "jsr:@std/path/extname";
 export { fromFileUrl } from "jsr:@std/path/from-file-url";
+export { toFileUrl } from "jsr:@std/path/to-file-url";
 export { join } from "jsr:@std/path/join";
 export { relative } from "jsr:@std/path/relative";
 

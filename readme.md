@@ -5,7 +5,7 @@ We are actively developing the code and things will change quickly. If you have 
 
 ## Example Workflow
 ```yaml
-# yaml-language-server: $schema=../schema.json
+# yaml-language-server: $schema=https://elwood.run/schema.json
 
 name: hello-world
 jobs:

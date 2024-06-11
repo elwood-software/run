@@ -17,8 +17,10 @@ import {
 } from "../libs/variables.ts";
 
 import { assert, stripAnsiCode } from "../deps.ts";
-import { ExecuteDenoRunOptions } from "../libs/run-deno.ts";
+import { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
+import { StateName } from "../constants.ts";
+import { denoMergePermissions } from "../libs/deno/permissions.ts";
 
 export class Step extends State {
   readonly id: string;
@@ -42,6 +44,10 @@ export class Step extends State {
     return this.#contextDir;
   }
 
+  get logger() {
+    return this.job.logger;
+  }
+
   getCombinedState() {
     return {
       ...super.getCombinedState(),
@@ -52,7 +58,7 @@ export class Step extends State {
   getContext(): Record<string, unknown> {
     return {
       name: this.name,
-      outputs: this.state.output ?? {},
+      outputs: this.getState(StateName.Outputs, {}),
       status: this.state.status,
       result: this.state.result,
     };
@@ -87,8 +93,6 @@ export class Step extends State {
   async execute(): Promise<void> {
     assert(this.actionUrl, "Action URL not resolved");
 
-    console.log(`Running step: ${this.name} ${this.actionUrl}`);
-
     try {
       this.start();
 
@@ -117,25 +121,40 @@ export class Step extends State {
       const stderr_: string[] = [];
 
       const stdout = new WritableStream({
-        write(chunk) {
-          stdout_.push(stripAnsiCode(new TextDecoder().decode(chunk)));
+        write: (chunk) => {
+          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.info(`  > [stdout] ${txt}`);
+          stdout_.push(txt);
         },
       });
 
       const stderr = new WritableStream({
-        write(chunk) {
-          stderr_.push(stripAnsiCode(new TextDecoder().decode(chunk)));
+        write: (chunk) => {
+          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.error(`  > [stderr] ${txt}`);
+          stderr_.push(txt);
         },
       });
 
+      const runFile = resolveActionUrlForDenoCommand(this.actionUrl);
+      const runOptions = await this._getDenoRunOptions({
+        env: {
+          ELWOOD_OUTPUT: outputFilePath,
+          ELWOOD_ENV: envFilePath,
+        },
+      });
+
+      this.job.execution.manager.logger.info(
+        ` > running step: ${this.name}[${this.id}]`,
+      );
+      this.job.execution.manager.logger.info(`  > file: ${runFile}`);
+      this.job.execution.manager.logger.info(
+        `  > options: ${JSON.stringify(runOptions, null, 2)}`,
+      );
+
       const result = await this.job.execution.executeDenoRun({
-        ...(await this._getDenoRunOptions({
-          env: {
-            ELWOOD_OUTPUT: outputFilePath,
-            ELWOOD_ENV: envFilePath,
-          },
-        })),
-        file: resolveActionUrlForDenoCommand(this.actionUrl),
+        ...runOptions,
+        file: runFile,
         cwd: this.contextDir.path,
         stdout: "piped",
         stderr: "piped",
@@ -144,17 +163,17 @@ export class Step extends State {
       });
 
       this.setState(
-        "output",
+        StateName.Outputs,
         await parseVariableFile(await this.contextDir.readText(outputFilePath)),
       );
 
       this.setState(
-        "env",
+        StateName.Env,
         await parseVariableFile(await this.contextDir.readText(envFilePath)),
       );
 
-      this.setState("stdout", stdout_);
-      this.setState("stderr", stderr_);
+      this.setState(StateName.Stdout, stdout_);
+      this.setState(StateName.Stderr, stderr_);
 
       switch (result.code) {
         case 0: {
@@ -222,31 +241,25 @@ export class Step extends State {
 
     return {
       ...init,
-      permissions: {
-        ...defPermissions,
-        run: _arrayOrTrue(defPermissions?.run, []),
-        read: _arrayOrTrue(defPermissions?.read, [
+      permissions: denoMergePermissions(defPermissions, {
+        read: [
           init.env?.ELWOOD_ENV,
           init.env?.ELWOOD_OUTPUT,
           this.contextDir.path,
           this.job.execution.stageDir.path,
           "<CWD>",
-        ]),
-        write: _arrayOrTrue(
-          defPermissions?.write,
-          [
-            init.env?.ELWOOD_ENV,
-            init.env?.ELWOOD_OUTPUT,
-            this.contextDir.path,
-            this.job.execution.stageDir.path,
-            this.job.execution.binDir.path,
-          ],
-        ),
-        env: _arrayOrTrue(
-          defPermissions?.env,
-          Object.keys(env),
-        ),
-      },
+        ],
+        write: [
+          init.env?.ELWOOD_ENV,
+          init.env?.ELWOOD_OUTPUT,
+          this.contextDir.path,
+          this.job.execution.stageDir.path,
+          this.job.execution.binDir.path,
+        ],
+        env: [
+          ...Object.keys(env),
+        ],
+      }),
       env: await replaceVariablePlaceholdersInVariables(env),
     };
   }

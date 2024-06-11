@@ -1,3 +1,5 @@
+import { denoPermissionObjectToFlags } from "./permissions.ts";
+
 export type ExecuteDenoRunOptions = Omit<ExecuteDenoCommand, "args"> & {
   file: string;
   permissions?: Deno.PermissionOptionsObject;
@@ -10,7 +12,12 @@ export async function executeDenoRun(
   const { file, permissions, args = [], ...cmdOptions } = options;
 
   return await executeDenoCommand({
-    args: ["run", ...permissionObjectToFlags(permissions ?? {}), ...args, file],
+    args: [
+      "run",
+      ...denoPermissionObjectToFlags(permissions ?? {}),
+      ...args,
+      file,
+    ],
     ...cmdOptions,
   });
 }
@@ -51,38 +58,4 @@ export async function executeDenoCommand(
   }
 
   return await child.status;
-}
-
-export function permissionObjectToFlags(
-  options: Deno.PermissionOptionsObject,
-): string[] {
-  const defaults = {
-    env: false,
-    sys: false,
-    hrtime: false,
-    net: false,
-    ffi: false,
-    read: false,
-    run: false,
-    write: false,
-  };
-
-  return Object.entries({ ...defaults, ...options }).reduce(
-    (acc, [name, value]) => {
-      if (value === false || value === "inherit") {
-        return [...acc, `--deny-${name}`];
-      }
-
-      if (value === true || (Array.isArray(value) && value.length === 0)) {
-        return [...acc, `--allow-${name}`];
-      }
-
-      if (Array.isArray(value)) {
-        return [...acc, `--allow-${name}=${value.join(",")}`];
-      }
-
-      return acc;
-    },
-    [] as string[],
-  );
 }

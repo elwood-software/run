@@ -1,16 +1,15 @@
 // deno-lint-ignore-file require-await
-import { RunnerResult, RunnerStatus } from "../constants.ts";
-import type { RunnerDefinition } from "../types.ts";
+import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
+import type { Result, RuntimeState, Status } from "../types.ts";
 import { shortId } from "./short-id.ts";
-import { Logger } from "../deps.ts";
 
-export abstract class State implements RunnerDefinition.State {
+export abstract class State implements RuntimeState {
   abstract id: string;
   abstract name: string;
 
-  protected _status: RunnerDefinition.Status = "pending";
-  protected _result: RunnerDefinition.Result = "none";
-  protected _data: RunnerDefinition.State["state"] = {
+  protected _status: Status = "pending";
+  protected _result: Result = "none";
+  protected _data: RuntimeState["state"] = {
     reason: null,
   };
 
@@ -24,11 +23,12 @@ export abstract class State implements RunnerDefinition.State {
     return this._result;
   }
 
-  get state() {
+  get state(): RuntimeState["state"] {
+    const { reason, ...rest } = this._data;
+
     return {
-      status: this.status,
-      result: this.result,
-      ...this._data,
+      reason,
+      ...rest,
     };
   }
 
@@ -38,6 +38,13 @@ export abstract class State implements RunnerDefinition.State {
 
   setState<V = unknown>(name: string, value: V) {
     this._data[name] = value;
+  }
+
+  getState<V = unknown>(
+    name: StateName,
+    defaultValue: V | undefined = undefined,
+  ): V {
+    return this._data[name] ?? defaultValue;
   }
 
   getCombinedState() {
@@ -78,7 +85,7 @@ export abstract class State implements RunnerDefinition.State {
     if (this.#startTime !== null) {
       const end = performance.now();
 
-      this.setState("timing", {
+      this.setState(StateName.Timing, {
         start: performance.timeOrigin + this.#startTime,
         end: performance.timeOrigin + end,
         elapsed: end - this.#startTime,

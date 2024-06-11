@@ -6,7 +6,7 @@ export class Folder {
   }
 
   async mkdir(...paths: string[]) {
-    await Deno.mkdir(this.join(...paths), { recursive: true });
+    await Deno.mkdir(this.join(...paths), { recursive: true, mode: 0o777 });
     return new Folder(this.join(...paths));
   }
 
@@ -18,9 +18,17 @@ export class Folder {
     await Deno.remove(this.path, { recursive: true });
   }
 
-  async writeText(fileName: string, content: string): Promise<string> {
+  async writeText(
+    fileName: string,
+    content: string,
+    options: Deno.WriteFileOptions = {},
+  ): Promise<string> {
     const filePath = this.join(fileName);
-    await Deno.writeTextFile(filePath, content);
+
+    // mode is permissive by default as these files are almost all
+    // written into the runner working directory, which will need
+    // to read from those files
+    await Deno.writeTextFile(filePath, content, { mode: 0o777, ...options });
     return filePath;
   }
 

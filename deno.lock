@@ -9,6 +9,7 @@
       "jsr:@std/fmt": "jsr:@std/fmt@0.225.4",
       "jsr:@std/fmt@^0.225.4": "jsr:@std/fmt@0.225.4",
       "jsr:@std/fs": "jsr:@std/fs@0.229.2",
+      "jsr:@std/fs@^0.229.2": "jsr:@std/fs@0.229.2",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
       "jsr:@std/io": "jsr:@std/io@0.224.1",
       "jsr:@std/io@^0.224.1": "jsr:@std/io@0.224.1",
@@ -62,7 +63,9 @@
       "@std/log@0.224.2": {
         "integrity": "354fa2a93678e34e2c4b0238ac30a71a75ef645bde59742dc57ae4fce2cce46e",
         "dependencies": [
-          "jsr:@std/fmt@^0.225.4"
+          "jsr:@std/fmt@^0.225.4",
+          "jsr:@std/fs@^0.229.2",
+          "jsr:@std/io@^0.224.1"
         ]
       },
       "@std/path@0.225.2": {

@@ -1,4 +1,4 @@
-import { assert, join } from "../deps.ts";
+import { assert, join, toFileUrl } from "../deps.ts";
 
 export type FilePathOrUrl = string | URL;
 
@@ -56,6 +56,11 @@ export async function normalize(
       );
     }
 
+    case "http:":
+    case "https:": {
+      return url.href;
+    }
+
     default: {
       throw new Error(`Unsupported protocol: ${url.protocol}`);
     }
@@ -63,6 +68,19 @@ export async function normalize(
 }
 
 export function isRemote(pathOrUrl: FilePathOrUrl): boolean {
-  const url = typeof pathOrUrl === "string" ? new URL(pathOrUrl) : pathOrUrl;
+  let url: URL | null;
+
+  if (typeof pathOrUrl === "string") {
+    if (!pathOrUrl.includes("://")) {
+      return false;
+    }
+
+    url = new URL(pathOrUrl);
+  } else {
+    url = pathOrUrl as URL;
+  }
+
+  assert(url, "path.isRemote(): Invalid URL");
+
   return ["https:", "http"].includes(url.protocol);
 }

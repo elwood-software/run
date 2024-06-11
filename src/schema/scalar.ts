@@ -16,10 +16,16 @@ export const Input = z.record(
 
 export const When = z.string().default("true");
 
+export const PermissionValue = z.boolean()
+  .or(z.enum(["inherit", "none", "*"]))
+  .or(z.array(z.string()))
+  .optional()
+  .default("inherit");
+
 export const Permissions = z.object({
-  env: z.boolean().or(z.array(z.string())).optional().default(false),
-  read: z.boolean().or(z.array(z.string())).optional().default(false),
-  write: z.boolean().or(z.array(z.string())).optional().default(false),
-  net: z.boolean().or(z.array(z.string())).optional().default(false),
-  run: z.boolean().or(z.array(z.string())).optional().default(false),
+  env: PermissionValue,
+  read: PermissionValue,
+  write: PermissionValue,
+  net: PermissionValue,
+  run: PermissionValue,
 });

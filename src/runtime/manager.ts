@@ -1,4 +1,5 @@
 import { Folder } from "../libs/folder.ts";
+import { assert, logger } from "../deps.ts";
 import { Execution } from "./execution.ts";
 import { Workflow } from "../types.ts";
 
@@ -10,7 +11,36 @@ export type ManagerOptions = {
 };
 
 export class Manager {
+  static async fromEnv(): Promise<Manager> {
+    const workspaceDir = Deno.env.get("ELWOOD_RUNNER_WORKSPACE_DIR");
+    const executionUid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_UID");
+    const executionGid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_GID");
+    const stdActionsPrefix = Deno.env.get("ELWOOD_RUNNER_STD_ACTIONS_PREFIX") ??
+      "https://x.elwood.run";
+
+    assert(workspaceDir, "ELWOOD_RUNNER_WORKSPACE_DIR not set");
+    assert(
+      Deno.statSync(workspaceDir)?.isDirectory,
+      "Workspace dir does not exist",
+    );
+    assert(executionUid, "ELWOOD_RUNNER_EXECUTION_UID not set");
+    assert(executionGid, "ELWOOD_RUNNER_EXECUTION_GID not set");
+
+    return await Promise.resolve(
+      new Manager({
+        workspaceDir,
+        stdActionsPrefix,
+        executionGid: Number(executionGid),
+        executionUid: Number(executionUid),
+      }),
+    );
+  }
+
   public readonly executions = new Map<string, Execution>();
+
+  public get logger() {
+    return logger.getLogger("elwood-runner");
+  }
 
   #workspaceDir: Folder;
 
@@ -32,6 +62,7 @@ export class Manager {
   }
 
   async prepare(): Promise<void> {
+    this.logger.info("Preparing workspace");
     await this.mkdir("workspace");
   }
 
@@ -54,8 +85,10 @@ export class Manager {
   }
 
   async cleanup(): Promise<void> {
-    for await (const [_, execution] of this.executions) {
-      await execution.workingDir.remove();
+    for await (const entry of Deno.readDir(this.workspaceDir.path)) {
+      await Deno.remove(this.workspaceDir.join(entry.name), {
+        recursive: true,
+      });
     }
   }
 }

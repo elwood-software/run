@@ -13,10 +13,7 @@ export { isAbsolute } from "jsr:@std/path@^0.225.2/is-absolute";
 export { extname } from "jsr:@std/path@^0.225.2/extname";
 
 // logs
-export { Logger } from "jsr:@std/log/logger";
-export { BaseHandler as BaseLogHandler } from "jsr:@std/log/base-handler";
-export { ConsoleHandler as ConsoleLogHandler } from "jsr:@std/log/console-handler";
-export { type LevelName, LogLevels } from "jsr:@std/log/levels";
+export * as logger from "jsr:@std/log";
 
 // zod
 export { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";

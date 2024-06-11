@@ -4,6 +4,7 @@ import type { Workflow } from "../types.ts";
 import { State } from "../libs/state.ts";
 import { Folder } from "../libs/folder.ts";
 import { Step } from "./step.ts";
+import { RunnerResult } from "../constants.ts";
 
 export class Job extends State {
   readonly id: string;
@@ -30,6 +31,10 @@ export class Job extends State {
     return this.#contextDir;
   }
 
+  get logger() {
+    return this.execution.manager.logger;
+  }
+
   async prepare(): Promise<void> {
     this.#contextDir = await this.execution.contextDir.mkdir(this.id);
 
@@ -41,7 +46,7 @@ export class Job extends State {
   }
 
   async execute(): Promise<void> {
-    console.log(`Running job: ${this.id}`);
+    this.logger.info(` > starting job ${this.name}[${this.id}]`);
 
     try {
       this.start();
@@ -54,15 +59,21 @@ export class Job extends State {
         await step.execute();
       }
 
-      const hasFailure = this.steps.some((job) => job.result === "failure");
+      const failedSteps = this.steps.filter((job) =>
+        job.result === RunnerResult.Failure
+      );
 
-      if (hasFailure) {
-        await this.fail("Execution failed");
-        return;
+      if (failedSteps.length > 0) {
+        throw new Error(
+          `Job steps ${
+            failedSteps.map((step) => `${step.name}[${step.id}]`).join(", ")
+          } failed`,
+        );
       }
 
       await this.succeed();
     } catch (error) {
+      this.logger.error(` > job failed: ${error.message}`);
       await this.fail(error.message);
     } finally {
       this.stop();
