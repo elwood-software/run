@@ -4,8 +4,10 @@ FROM amazonlinux:2
 RUN yum -y update \
     # systemd is not a hard requirement for Amazon ECS Anywhere, but the installation script currently only supports systemd to run.
     # Amazon ECS Anywhere can be used without systemd, if you set up your nodes and register them into your ECS cluster **without** the installation script.
-    && yum -y install systemd unzip tar xz curl \
-    && yum clean all
+    && yum -y install systemd unzip tar xz curl python37 \
+    && yum clean all \ 
+    && curl -O https://bootstrap.pypa.io/get-pip.py \
+    && python3 get-pip.py 
 
 RUN groupadd -g 3982 -o elwood_runner
 RUN useradd -m -u 3982 -g 3982 -o -s /bin/bash elwood_runner

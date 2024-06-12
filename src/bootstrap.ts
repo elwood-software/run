@@ -32,8 +32,6 @@ export async function bootstrap(manager: Manager) {
   assert(possibleWorkflow, "No workflow found in bootstrap file");
 
   if (bootstrap.cleanup == "before") {
-    console.log("CLEANUP");
-
     await manager.cleanup();
   }
 

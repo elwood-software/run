@@ -1,5 +1,9 @@
-import { assert } from "../deps.ts";
-import type { Json, JsonObject } from "../types.ts";
+import { assert } from "../../deps.ts";
+import type { Json, JsonObject } from "../../types.ts";
+
+export const ExpressionWorkerPath = import.meta.resolve(
+  "./worker.ts",
+);
 
 export enum ExpressionTokens {
   Prefix = "${{",
@@ -27,7 +31,7 @@ export async function evaluateExpress(
     return normalizeExpressionResult(expression);
   }
 
-  const worker = new Worker(import.meta.resolve("./expression-worker.ts"), {
+  const worker = new Worker(ExpressionWorkerPath, {
     type: "module",
     deno: {
       permissions: "none",
@@ -42,6 +46,7 @@ export async function evaluateExpress(
     );
 
   const code = `
+    Deno = self.Deno = undefined;
     __elwood_internal = undefined;
     Object.assign(self, ${JSON.stringify(state)});
     ${expressionCode}

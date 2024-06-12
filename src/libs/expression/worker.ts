@@ -1,4 +1,4 @@
-import { Json } from "../types.ts";
+import { Json } from "../../types.ts";
 
 // Worker API
 // these functions are available in the worker's

@@ -4,6 +4,7 @@
 We are actively developing the code and things will change quickly. If you have any questions, please reach out to us at <a href="mailto:hello@elwood.software">hello@elwood.software</a>.</p>
 
 ## Example Workflow
+
 ```yaml
 # yaml-language-server: $schema=https://elwood.run/schema.json
 
@@ -40,20 +41,25 @@ jobs:
 ```
 
 You can run this example in docker using:
+
 ```bash
 deno task up
 ```
 
 ## :raised_hand: Support
 
-- [Community Forum](https://github.com/orgs/elwood-software/discussions): Good for developer discussion, help debugging, ask questions. **Not sure, start here**
+- [Community Forum](https://github.com/orgs/elwood-software/discussions): Good
+  for developer discussion, help debugging, ask questions. **Not sure, start
+  here**
 - [Discord](https://discord.gg/mkhKk5db): Join our Discord Server
-- [GitHub Issues](https://github.com/elwood-software/elwood/issues): Good for bugs and errors in running Elwood locally
+- [GitHub Issues](https://github.com/elwood-software/elwood/issues): Good for
+  bugs and errors in running Elwood locally
 - [Email Support](mailto:support@elwood.software): Good for saying hi
 
 ## 🏛️ License
 
-Distributed under the Apache-2.0 license. See [LICENSE](LICENSE) for more information.
+Distributed under the Apache-2.0 license. See [LICENSE](LICENSE) for more
+information.
 
 ## 📧 Contact
 

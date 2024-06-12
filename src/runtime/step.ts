@@ -10,12 +10,11 @@ import {
   evaluateExpress,
   isExpressionResultTruthy,
   makeEvaluableExpression,
-} from "../libs/expression.ts";
+} from "../libs/expression/expression.ts";
 import {
   parseVariableFile,
   replaceVariablePlaceholdersInVariables,
 } from "../libs/variables.ts";
-
 import { assert, stripAnsiCode } from "../deps.ts";
 import { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
@@ -137,11 +136,15 @@ export class Step extends State {
       });
 
       const runFile = resolveActionUrlForDenoCommand(this.actionUrl);
-      const runOptions = await this._getDenoRunOptions({
-        env: {
-          ELWOOD_OUTPUT: outputFilePath,
-          ELWOOD_ENV: envFilePath,
-        },
+      const runOptions = this.job.execution.getDenoRunOptions({
+        file: runFile,
+        cwd: this.contextDir.path,
+        ...(await this._getDenoRunOptions({
+          env: {
+            ELWOOD_OUTPUT: outputFilePath,
+            ELWOOD_ENV: envFilePath,
+          },
+        })),
       });
 
       this.job.execution.manager.logger.info(
@@ -154,8 +157,6 @@ export class Step extends State {
 
       const result = await this.job.execution.executeDenoRun({
         ...runOptions,
-        file: runFile,
-        cwd: this.contextDir.path,
         stdout: "piped",
         stderr: "piped",
         stderrStream: stderr,
@@ -257,6 +258,8 @@ export class Step extends State {
           this.job.execution.binDir.path,
         ],
         env: [
+          "PATH",
+          "ELWOOD_BIN_DIR",
           ...Object.keys(env),
         ],
       }),

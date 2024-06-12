@@ -5,9 +5,7 @@ workflow:
     default:
       name: "bootstrap"
       steps:
-        - action: "fs/copy"
-          input:
-            src: https://elwood-run.s3.us-west-1.amazonaws.com/public/conan.mp3
-            dest: conan.mp3
+        - action: "install/whisper"
           permissions:
             net: true
+            run: true

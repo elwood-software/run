@@ -9,6 +9,7 @@ export const native = globalThis.fetch;
 const fetch = undefined;
 
 export type RequestOptions = RequestInit & {
+  as?: "json" | "text";
   saveTo?: string;
   asStream?: boolean;
 };
@@ -21,7 +22,7 @@ export type Response<D = unknown> = {
 
 export async function request<T = unknown>(
   url: string,
-  init: RequestOptions,
+  init: RequestOptions = {},
 ): Promise<Response<T>> {
   const response = await native(url, init);
   const headers = headersToObject(response.headers);
@@ -64,7 +65,8 @@ export async function request<T = unknown>(
       path: init.saveTo,
     } as T;
   } else if (
-    response.headers.get("Content-Type")?.includes("application/json")
+    response.headers.get("Content-Type")?.includes("application/json") ||
+    init.as === "json"
   ) {
     data = await response.json() as T;
   } else {
@@ -82,9 +84,9 @@ function _methodProxy(
   method: RequestInit["method"],
 ): (
   url: string,
-  options: Omit<RequestOptions, "method">,
+  options?: Omit<RequestOptions, "method">,
 ) => ReturnType<typeof request> {
-  return (url: string, options: Omit<RequestOptions, "method">) =>
+  return (url: string, options: Omit<RequestOptions, "method"> = {}) =>
     request(url, { ...options, method });
 }
 

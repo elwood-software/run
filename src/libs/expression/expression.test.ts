@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../deps.ts";
+import { assertEquals, assertRejects } from "../../deps.ts";
 
 import { evaluateExpress, normalizeExpressionResult } from "./expression.ts";
 

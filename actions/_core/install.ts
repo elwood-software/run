@@ -9,6 +9,7 @@ import {
 
 import * as fetch from "./fetch.ts";
 import * as fs from "./fs.ts";
+import * as command from "./command.ts";
 
 export class Install {
   readonly #dir = Deno.makeTempDirSync({
@@ -46,6 +47,13 @@ export class Install {
   async findAndMove(srcGlob: string, dest: string) {
     const found = await this.find(srcGlob);
     await this.move(found, dest);
+  }
+
+  async execute(bin: string, args: string[] = []) {
+    return await command.execute(bin, {
+      cwd: this.#dir,
+      args,
+    });
   }
 
   async extract(src: string) {

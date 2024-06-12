@@ -207,12 +207,10 @@ export class Execution extends State {
     };
   }
 
-  async executeDenoRun(
-    options: ExecuteDenoRunOptions,
-  ): ReturnType<typeof executeDenoRun> {
+  getDenoRunOptions(options: ExecuteDenoRunOptions): ExecuteDenoRunOptions {
     const { permissions = {}, env = {}, ...opts } = options;
 
-    return await executeDenoRun({
+    return {
       ...opts,
       uid: this.manager.options.executionUid,
       gid: this.manager.options.executionGid,
@@ -222,16 +220,23 @@ export class Execution extends State {
         ELWOOD_STAGE_DIR: this.stageDir.path,
         ELWOOD_BIN_DIR: this.binDir.path,
         PATH: [
+          this.binDir.path,
           "/usr/local/sbin",
           "/usr/local/bin",
           "/usr/sbin",
           "/usr/bin",
           "/sbin",
           "/bin",
-          this.binDir.path,
+          "~/.local/bin",
         ].join(":"),
       },
       permissions,
-    });
+    };
+  }
+
+  async executeDenoRun(
+    options: ExecuteDenoRunOptions,
+  ): ReturnType<typeof executeDenoRun> {
+    return await executeDenoRun(this.getDenoRunOptions(options));
   }
 }
