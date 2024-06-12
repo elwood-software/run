@@ -40,9 +40,24 @@ export type RuntimePermissions = Record<
 >;
 
 export function denoMergePermissions(
-  userPermissions: Partial<Workflow.Permissions>,
+  userPermissions: Array<undefined | Partial<Workflow.Permissions>>,
   runtimePermissions: Partial<RuntimePermissions>,
 ): Deno.PermissionOptionsObject {
+  const mergedPermissions = userPermissions.reduce((acc, item) => {
+    if (item === undefined) {
+      return acc;
+    }
+
+    if (typeof acc !== "object" || typeof item !== "object") {
+      return item;
+    }
+
+    return {
+      ...acc,
+      ...item,
+    };
+  }, {} as Workflow.Permissions);
+
   const defaults: Deno.PermissionOptionsObject = {
     env: "inherit",
     sys: "inherit",
@@ -54,7 +69,40 @@ export function denoMergePermissions(
     write: "inherit",
   };
 
-  for (const [key, value] of Object.entries(userPermissions)) {
+  // if the user says all, we're going to allow everything
+  if (
+    mergedPermissions === true || mergedPermissions === "all" ||
+    mergedPermissions === "*"
+  ) {
+    return {
+      env: true,
+      sys: true,
+      hrtime: true,
+      net: true,
+      ffi: true,
+      read: true,
+      run: true,
+      write: true,
+    };
+  }
+
+  if (
+    mergedPermissions === undefined || mergedPermissions === false ||
+    mergedPermissions === "none"
+  ) {
+    return {
+      env: false,
+      sys: false,
+      hrtime: false,
+      net: false,
+      ffi: false,
+      read: false,
+      run: false,
+      write: false,
+    };
+  }
+
+  for (const [key, value] of Object.entries(mergedPermissions)) {
     const key_ = key as keyof Deno.PermissionOptionsObject;
 
     // false or none means deny
@@ -82,7 +130,9 @@ export function denoMergePermissions(
   // go through everything so we have a normalized object
   for (const [key, defaultValue] of Object.entries(defaults)) {
     const key_ = key as keyof RuntimePermissions;
-    const value_ = runtimePermissions[key_];
+    const value_ = runtimePermissions[key_] as
+      | Array<string | undefined>
+      | undefined;
 
     // false or true we can skip
     if (defaults[key_] === false || defaults[key_] === true) {
@@ -93,7 +143,7 @@ export function denoMergePermissions(
     // the runtime hasn't provided a value, assume
     // the permission is denied.
     if (defaultValue === "inherit" && !value_) {
-      defaults[key_] = false;
+      (defaults[key_] as boolean) = false;
       continue;
     }
 
@@ -106,7 +156,7 @@ export function denoMergePermissions(
     // if it's still inherit, we're going to
     // override with a blank array
     if (defaultValue === "inherit") {
-      defaults[key_] = [];
+      (defaults[key_] as never[]) = [];
     }
 
     // lets merge in the runtime permissions with the user permissions

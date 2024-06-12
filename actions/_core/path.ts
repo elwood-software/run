@@ -44,6 +44,13 @@ export async function normalize(
       );
     }
 
+    case "output:":
+    case "file+output:": {
+      const outputFilename = Deno.env.get("ELWOOD_OUTPUT");
+      assert(outputFilename, "ELWOOD_OUTPUT is required");
+      return outputFilename;
+    }
+
     case "bin:":
     case "file+bin": {
       const binDir = Deno.env.get("ELWOOD_BIN_DIR");

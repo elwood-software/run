@@ -13,6 +13,75 @@
         "description": {
           "type": "string"
         },
+        "defaults": {
+          "type": "object",
+          "properties": {
+            "permissions": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "env": {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "type": "boolean"
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "inherit",
+                                    "none",
+                                    "*"
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "default": "inherit"
+                        },
+                        "read": {
+                          "$ref": "#/definitions/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                        },
+                        "write": {
+                          "$ref": "#/definitions/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                        },
+                        "net": {
+                          "$ref": "#/definitions/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                        },
+                        "run": {
+                          "$ref": "#/definitions/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "all",
+                    "none",
+                    "*"
+                  ]
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
         "jobs": {
           "type": "object",
           "additionalProperties": {
@@ -65,48 +134,7 @@
                           }
                         },
                         "permissions": {
-                          "type": "object",
-                          "properties": {
-                            "env": {
-                              "anyOf": [
-                                {
-                                  "anyOf": [
-                                    {
-                                      "type": "boolean"
-                                    },
-                                    {
-                                      "type": "string",
-                                      "enum": [
-                                        "inherit",
-                                        "none",
-                                        "*"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              ],
-                              "default": "inherit"
-                            },
-                            "read": {
-                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
-                            },
-                            "write": {
-                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
-                            },
-                            "net": {
-                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
-                            },
-                            "run": {
-                              "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions/properties/env"
-                            }
-                          },
-                          "additionalProperties": false
+                          "$ref": "#/definitions/workflow/properties/defaults/properties/permissions"
                         },
                         "run": {
                           "type": "string"

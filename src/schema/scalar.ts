@@ -28,4 +28,4 @@ export const Permissions = z.object({
   write: PermissionValue,
   net: PermissionValue,
   run: PermissionValue,
-});
+}).or(z.boolean()).or(z.enum(["all", "none", "*"]));

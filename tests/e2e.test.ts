@@ -65,5 +65,45 @@ Deno.test("e2e", async function (t) {
     );
   });
 
+  await t.step("command", async function () {
+    const resp = await dockerRequest<{ report: Workflow.Report }>("POST", "", {
+      workflow: {
+        name: "test",
+        jobs: {
+          "default": {
+            steps: [
+              {
+                name: "result",
+                action: "run",
+                input: {
+                  "bin": "deno",
+                  "args": [
+                    "run",
+                    "--allow-env",
+                    "--allow-run",
+                    "--allow-read",
+                    "--allow-write",
+                    "--unstable",
+                    "-",
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      } as Workflow.Configuration,
+    });
+
+    assertEquals(
+      resp.report.result,
+      RunnerResult.Success,
+    );
+
+    assertEquals(
+      resp.report.jobs.default?.steps.result?.outputs.hello,
+      "world",
+    );
+  });
+
   await stop();
 });

@@ -1,11 +1,14 @@
+# yaml-language-server: $schema=../schema/bootstrap.json
+
 cleanup: before
 workflow:
   name: "bootstrap"
+  defaults:
+    permissions: true
   jobs:
     default:
-      name: "bootstrap"
       steps:
-        - action: "install/whisper"
-          permissions:
-            net: true
-            run: true
+        - action: fs/copy
+          input:
+            src: "https://elwood-run.s3.us-west-1.amazonaws.com/public/conan.mp3"
+            dest: "stage://conan.mp3"

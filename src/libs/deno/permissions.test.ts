@@ -99,6 +99,12 @@ Deno.test("denoMergePermissions()", async (t) => {
     run: false,
     write: false,
   };
+  const _defaultsTrue = Object.keys(_defaults).reduce((acc, key) => {
+    return {
+      ...acc,
+      [key]: true,
+    };
+  }, {});
 
   await t.step("should default to deny anything", () => {
     assertEquals(denoMergePermissions({}, {}), _defaults);
@@ -166,6 +172,32 @@ Deno.test("denoMergePermissions()", async (t) => {
         ..._defaults,
         env: ["B"],
       },
+    );
+  });
+
+  await t.step("* or all or true", () => {
+    assertEquals(
+      denoMergePermissions("*", {}),
+      _defaultsTrue,
+    );
+    assertEquals(
+      denoMergePermissions(true, {}),
+      _defaultsTrue,
+    );
+    assertEquals(
+      denoMergePermissions("all", {}),
+      _defaultsTrue,
+    );
+  });
+
+  await t.step("none or true", () => {
+    assertEquals(
+      denoMergePermissions(false, {}),
+      _defaults,
+    );
+    assertEquals(
+      denoMergePermissions("none", {}),
+      _defaults,
     );
   });
 });

@@ -1,4 +1,4 @@
-import { assert } from "../deps.ts";
+import { assert, join } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
 import type { Workflow } from "../types.ts";
@@ -227,7 +227,7 @@ export class Execution extends State {
           "/usr/bin",
           "/sbin",
           "/bin",
-          "~/.local/bin",
+          join(this.manager.workspaceDir.path, "shared-cache/.local/bin"),
         ].join(":"),
       },
       permissions,

@@ -208,61 +208,48 @@ export class Step extends State {
       }
     }
 
-    // if the value is an array, merge it with the append array
-    // otherwise return the value.
-    function _arrayOrTrue(
-      value: string[] | boolean | undefined,
-      append: Array<string | undefined>,
-    ): string[] | boolean {
-      if (value === false) {
-        return value;
-      }
-
-      return [
-        ...(Array.isArray(value) ? value : []),
-        ...append.filter(Boolean) as string[],
-      ];
-    }
-
     const env = {
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
     };
 
+    const runtimePermissions: Record<string, Array<string | undefined>> = {
+      read: [
+        init.env?.ELWOOD_ENV,
+        init.env?.ELWOOD_OUTPUT,
+        this.contextDir.path,
+        this.job.execution.stageDir.path,
+        "<CWD>",
+      ],
+      write: [
+        init.env?.ELWOOD_ENV,
+        init.env?.ELWOOD_OUTPUT,
+        this.contextDir.path,
+        this.job.execution.stageDir.path,
+        this.job.execution.binDir.path,
+      ],
+      env: [
+        "PATH",
+        "ELWOOD_BIN_DIR",
+        ...Object.keys(env),
+      ],
+      run: [],
+    };
+
     if (stepHasRun(this.def)) {
       env.INPUT_BIN = this.def.input?.bin ?? "bash";
       env.INPUT_SCRIPT = this.def.run;
 
-      defPermissions.run = _arrayOrTrue(
-        [env.INPUT_BIN],
-        Array.isArray(defPermissions.run) ? defPermissions.run : [],
-      );
+      runtimePermissions.run.push(env.INPUT_BIN);
     }
 
     return {
       ...init,
-      permissions: denoMergePermissions(defPermissions, {
-        read: [
-          init.env?.ELWOOD_ENV,
-          init.env?.ELWOOD_OUTPUT,
-          this.contextDir.path,
-          this.job.execution.stageDir.path,
-          "<CWD>",
-        ],
-        write: [
-          init.env?.ELWOOD_ENV,
-          init.env?.ELWOOD_OUTPUT,
-          this.contextDir.path,
-          this.job.execution.stageDir.path,
-          this.job.execution.binDir.path,
-        ],
-        env: [
-          "PATH",
-          "ELWOOD_BIN_DIR",
-          ...Object.keys(env),
-        ],
-      }),
+      permissions: denoMergePermissions([
+        this.job.execution.def.defaults?.permissions,
+        defPermissions,
+      ], runtimePermissions),
       env: await replaceVariablePlaceholdersInVariables(env),
     };
   }

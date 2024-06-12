@@ -1,0 +1,252 @@
+{
+  "$ref": "#/definitions/bootstrap",
+  "definitions": {
+    "bootstrap": {
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "type": "object",
+              "properties": {
+                "workflowFile": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "workflowFile"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cleanup": {
+                  "type": "string",
+                  "enum": [
+                    "before",
+                    "after",
+                    "both"
+                  ],
+                  "default": "after"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "type": "object",
+              "properties": {
+                "workflow": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "defaults": {
+                      "type": "object",
+                      "properties": {
+                        "permissions": {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "env": {
+                                      "anyOf": [
+                                        {
+                                          "anyOf": [
+                                            {
+                                              "type": "boolean"
+                                            },
+                                            {
+                                              "type": "string",
+                                              "enum": [
+                                                "inherit",
+                                                "none",
+                                                "*"
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      ],
+                                      "default": "inherit"
+                                    },
+                                    "read": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                    },
+                                    "write": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                    },
+                                    "net": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                    },
+                                    "run": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                    }
+                                  },
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "boolean"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "all",
+                                "none",
+                                "*"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "jobs": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "label": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "when": {
+                            "type": "string",
+                            "default": "true"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 2,
+                                      "pattern": "^[a-zA-Z]"
+                                    },
+                                    "label": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "when": {
+                                      "type": "string",
+                                      "default": "true"
+                                    },
+                                    "input": {
+                                      "type": "object",
+                                      "additionalProperties": {}
+                                    },
+                                    "env": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      },
+                                      "propertyNames": {
+                                        "minLength": 2,
+                                        "pattern": "^[a-zA-Z]"
+                                      }
+                                    },
+                                    "permissions": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions"
+                                    },
+                                    "run": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "run"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/name"
+                                    },
+                                    "label": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/label"
+                                    },
+                                    "description": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/description"
+                                    },
+                                    "when": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/when"
+                                    },
+                                    "input": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/input"
+                                    },
+                                    "env": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/env"
+                                    },
+                                    "permissions": {
+                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions"
+                                    },
+                                    "action": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "action"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
+                            },
+                            "minItems": 1
+                          }
+                        },
+                        "required": [
+                          "steps"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "propertyNames": {
+                        "pattern": "[a-zA-Z-]+"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "jobs"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "workflow"
+              ]
+            },
+            {
+              "$ref": "#/definitions/bootstrap/anyOf/0/allOf/1"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

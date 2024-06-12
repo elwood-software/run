@@ -10,6 +10,7 @@ async function main() {
 
   const result = await command.execute("pip", {
     args: [
+      "--quiet",
       "install",
       "git+https://github.com/openai/whisper.git",
     ],

@@ -18,8 +18,6 @@ export async function create(
   bin: string,
   options: Deno.CommandOptions = {},
 ): Promise<Deno.Command> {
-  console.log(Deno.env.get("PATH"));
-
   return await Promise.resolve(
     new Deno.Command(bin, {
       stdout: "inherit",
