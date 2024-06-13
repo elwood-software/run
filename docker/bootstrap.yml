@@ -11,12 +11,14 @@ workflow:
         - action: install/whisper
         - action: fs/copy
           input:
-            src: "/tmp/gettysburg.wav"
-            dest: "stage://conan.mp3"
+            src: "/tmp/fixtures/Gettysburg_by_Britton.ogg"
+            dest: "stage://sample.ogg"
         - action: run
           input:
             bin: whisper
             args:
               - --verbose
               - "True"
-              - "$ELWOOD_STAGE/conan.mp3"
+              - --language
+              - en
+              - $ELWOOD_STAGE/sample.ogg

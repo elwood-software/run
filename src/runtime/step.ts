@@ -191,6 +191,8 @@ export class Step extends State {
         }
       }
     } catch (error) {
+      this.logger.error(` > step failed: ${error.message}`);
+      this.logger.error(" > stack:", error.stack);
       await this.fail(error.message);
     } finally {
       this.stop();
@@ -212,10 +214,14 @@ export class Step extends State {
       }
     }
 
-    const env = {
+    const env: Record<string, string> = {
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
+      // "HOME": this.job.execution.workingDir.path,
+      "ELWOOD_TOOL_CACHE": this.job.execution.manager.toolCacheDir.path,
+      "NO_COLOR": "1",
+      "HOME": this.job.execution.workingDir.path,
     };
 
     const runtimePermissions: Record<string, Array<string | undefined>> = {

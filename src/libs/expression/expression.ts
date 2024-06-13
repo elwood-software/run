@@ -44,7 +44,7 @@ export async function evaluateExpression(
     .replace(
       ExpressionTokens.Postfix,
       "",
-    );
+    ).replaceAll("Deno.", "__Deno_Not_Available.");
 
   const code = `
     Deno = self.Deno = undefined;

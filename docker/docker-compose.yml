@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../tmp:/tmp
+      - ../tests/fixtures:/tmp/fixtures
       - ../tmp-workspace:/elwood/runner/workspace
       - ../src:/elwood/runner/runtime
       - ../deno.json:/elwood/runner/deno.json

@@ -44,6 +44,15 @@ export async function write(
   );
 }
 
+export async function exists(path: FilePathOrUrl): boolean {
+  try {
+    await Deno.stat(await normalize(path, { allowRemote: false }));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function read(path: FilePathOrUrl) {
   return await Deno.readTextFile(
     await normalize(path),
