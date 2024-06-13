@@ -217,8 +217,8 @@ export class Execution extends State {
       env: {
         ...env,
         ...this.getDenoEnv(),
-        ELWOOD_STAGE_DIR: this.stageDir.path,
-        ELWOOD_BIN_DIR: this.binDir.path,
+        ELWOOD_STAGE: this.stageDir.path,
+        ELWOOD_BIN: this.binDir.path,
         PATH: [
           this.binDir.path,
           "/usr/local/sbin",

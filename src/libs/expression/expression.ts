@@ -1,5 +1,6 @@
 import { assert } from "../../deps.ts";
 import type { Json, JsonObject } from "../../types.ts";
+import { replaceVariablesInValue } from "../variables.ts";
 
 export const ExpressionWorkerPath = import.meta.resolve(
   "./worker.ts",
@@ -10,7 +11,7 @@ export enum ExpressionTokens {
   Postfix = "}}",
 }
 
-export async function evaluateExpress(
+export async function evaluateExpression(
   expression: Json,
   state: JsonObject = {},
 ): Promise<string> {
@@ -18,7 +19,7 @@ export async function evaluateExpress(
 
   // if it's not a string, just return it normalized
   if (typeof expression !== "string") {
-    return normalizeExpressionResult(expression);
+    return normalizeExpressionResult(expression, state.env);
   }
 
   const trimmedExpression = expression.trim();
@@ -28,7 +29,7 @@ export async function evaluateExpress(
   if (
     !isEvaluableExpression(trimmedExpression)
   ) {
-    return normalizeExpressionResult(expression);
+    return normalizeExpressionResult(expression, state.env);
   }
 
   const worker = new Worker(ExpressionWorkerPath, {
@@ -66,17 +67,22 @@ export async function evaluateExpress(
       // stop
       worker.terminate();
 
-      return resolve(normalizeExpressionResult(event.data.result));
+      return resolve(normalizeExpressionResult(event.data.result, state.env));
     };
   });
 }
 
-export function normalizeExpressionResult(value: Json): string {
-  if (typeof value === "string") {
-    return value;
+export function normalizeExpressionResult(
+  value: Json,
+  variables: JsonObject = {},
+): string {
+  const value_ = replaceVariablesInValue(value, variables);
+
+  if (typeof value_ === "string") {
+    return value_;
   }
 
-  return `json:${JSON.stringify(value)}`;
+  return `json:${JSON.stringify(value_)}`;
 }
 
 export function isExpressionResultTruthy(value: string): boolean {

@@ -200,4 +200,27 @@ Deno.test("denoMergePermissions()", async (t) => {
       _defaults,
     );
   });
+
+  await t.step("merge", () => {
+    assertEquals(
+      denoMergePermissions(["*", undefined], {
+        env: ["A"],
+      }),
+      _defaultsTrue,
+    );
+
+    assertEquals(
+      denoMergePermissions([{ env: false }, { env: true }], {
+        env: ["A"],
+      }),
+      { ..._defaults, env: true },
+    );
+
+    assertEquals(
+      denoMergePermissions(["*", undefined], {
+        env: ["A"],
+      }),
+      _defaultsTrue,
+    );
+  });
 });

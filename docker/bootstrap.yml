@@ -8,7 +8,15 @@ workflow:
   jobs:
     default:
       steps:
+        - action: install/whisper
         - action: fs/copy
           input:
-            src: "https://elwood-run.s3.us-west-1.amazonaws.com/public/conan.mp3"
+            src: "/tmp/gettysburg.wav"
             dest: "stage://conan.mp3"
+        - action: run
+          input:
+            bin: whisper
+            args:
+              - --verbose
+              - "True"
+              - "$ELWOOD_STAGE/conan.mp3"

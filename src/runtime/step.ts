@@ -7,7 +7,7 @@ import {
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
 import {
-  evaluateExpress,
+  evaluateExpression,
   isExpressionResultTruthy,
   makeEvaluableExpression,
 } from "../libs/expression/expression.ts";
@@ -63,8 +63,12 @@ export class Step extends State {
     };
   }
 
-  async evaluateExpress(expression: string): Promise<string> {
+  async evaluateExpression(expression: string): Promise<string> {
     const ctx = {
+      env: {
+        ELWOOD_BIN: this.job.execution.binDir.path,
+        ELWOOD_STAGE: this.job.execution.stageDir.path,
+      },
       step: this.getContext(),
       job: this.job.getContext(),
       steps: this.job.steps.reduce((acc, step) => {
@@ -78,7 +82,7 @@ export class Step extends State {
       }, {}),
     };
 
-    return await evaluateExpress(expression, ctx);
+    return await evaluateExpression(expression, ctx);
   }
 
   async prepare(): Promise<void> {
@@ -97,7 +101,7 @@ export class Step extends State {
 
       // check to see if this step should be skipped
       const shouldSkip = !isExpressionResultTruthy(
-        await this.evaluateExpress(
+        await this.evaluateExpression(
           makeEvaluableExpression(this.def.when ?? "true"),
         ),
       );
@@ -198,7 +202,7 @@ export class Step extends State {
   ): Promise<Omit<ExecuteDenoRunOptions, "file" | "cwd">> {
     const commandInputEnv = await this._getCommandInputEnv();
     const argsFromActionUrl: Record<string, string> = {};
-    const defPermissions = this.def.permissions ?? {} as Workflow.Permissions;
+    const defPermissions = this.def.permissions;
 
     // if the action has search params
     // pass them to the action as ARG_ env variables
@@ -231,7 +235,8 @@ export class Step extends State {
       ],
       env: [
         "PATH",
-        "ELWOOD_BIN_DIR",
+        "ELWOOD_BIN",
+        "ELWOOD_STAGE",
         ...Object.keys(env),
       ],
       run: [],
@@ -259,9 +264,10 @@ export class Step extends State {
     const inputEnv: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(withDefinition)) {
-      inputEnv[`INPUT_${key.toLocaleUpperCase()}`] = await this.evaluateExpress(
-        value,
-      );
+      inputEnv[`INPUT_${key.toLocaleUpperCase()}`] = await this
+        .evaluateExpression(
+          value,
+        );
     }
 
     return inputEnv;

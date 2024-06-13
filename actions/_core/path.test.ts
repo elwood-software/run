@@ -5,7 +5,7 @@ import { normalize } from "./path.ts";
 Deno.test("normalize()", async function () {
   assertRejects(() => normalize("stage:///a"));
 
-  Deno.env.set("ELWOOD_STAGE_DIR", "/stage-path");
+  Deno.env.set("ELWOOD_STAGE", "/stage-path");
 
   assertEquals(
     await normalize("/path"),

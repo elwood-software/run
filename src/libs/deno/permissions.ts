@@ -40,9 +40,15 @@ export type RuntimePermissions = Record<
 >;
 
 export function denoMergePermissions(
-  userPermissions: Array<undefined | Partial<Workflow.Permissions>>,
+  userPermissions:
+    | Partial<Workflow.Permissions>
+    | Array<undefined | Partial<Workflow.Permissions>>,
   runtimePermissions: Partial<RuntimePermissions>,
 ): Deno.PermissionOptionsObject {
+  if (!Array.isArray(userPermissions)) {
+    return denoMergePermissions([userPermissions], runtimePermissions);
+  }
+
   const mergedPermissions = userPermissions.reduce((acc, item) => {
     if (item === undefined) {
       return acc;

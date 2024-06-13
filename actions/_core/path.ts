@@ -34,8 +34,8 @@ export async function normalize(
   switch (url.protocol) {
     case "stage:":
     case "file+stage:": {
-      const stageDir = Deno.env.get("ELWOOD_STAGE_DIR");
-      assert(stageDir, "ELWOOD_STAGE_DIR is required");
+      const stageDir = Deno.env.get("ELWOOD_STAGE");
+      assert(stageDir, "ELWOOD_STAGE is required");
 
       return join(
         stageDir,
@@ -53,8 +53,8 @@ export async function normalize(
 
     case "bin:":
     case "file+bin": {
-      const binDir = Deno.env.get("ELWOOD_BIN_DIR");
-      assert(binDir, "ELWOOD_BIN_DIR is required");
+      const binDir = Deno.env.get("ELWOOD_BIN");
+      assert(binDir, "ELWOOD_BIN is required");
 
       return join(
         binDir,
