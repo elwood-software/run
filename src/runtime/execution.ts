@@ -219,6 +219,7 @@ export class Execution extends State {
         ...this.getDenoEnv(),
         ELWOOD_STAGE: this.stageDir.path,
         ELWOOD_BIN: this.binDir.path,
+        ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,
         PATH: [
           this.binDir.path,
           "/usr/local/sbin",
@@ -227,7 +228,7 @@ export class Execution extends State {
           "/usr/bin",
           "/sbin",
           "/bin",
-          join(this.manager.workspaceDir.path, "shared-cache/.local/bin"),
+          this.workingDir.join(".local", "bin"),
         ].join(":"),
       },
       permissions,

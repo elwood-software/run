@@ -28,3 +28,6 @@ export { Untar } from "jsr:@std/archive/untar";
 
 // decode
 export * as base64 from "jsr:@std/encoding/base64";
+
+// crypto
+export { encodeHex } from "jsr:@std/encoding/hex";

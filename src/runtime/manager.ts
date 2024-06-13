@@ -43,6 +43,7 @@ export class Manager {
   }
 
   #workspaceDir: Folder;
+  #toolCacheDir: Folder | null = null;
 
   constructor(public readonly options: ManagerOptions) {
     this.#workspaceDir = new Folder(options.workspaceDir);
@@ -50,6 +51,11 @@ export class Manager {
 
   get workspaceDir(): Folder {
     return this.#workspaceDir;
+  }
+
+  get toolCacheDir(): Folder {
+    assert(this.#toolCacheDir !== null, "Tool cache not prepared");
+    return this.#toolCacheDir;
   }
 
   async mkdir(inFolder: "workspace", ...parts: string[]): Promise<Folder> {
@@ -64,6 +70,8 @@ export class Manager {
   async prepare(): Promise<void> {
     this.logger.info("Preparing workspace");
     await this.mkdir("workspace");
+
+    this.#toolCacheDir = await this.workspaceDir.mkdir("tool-cache");
   }
 
   async executeDefinition(
@@ -85,6 +93,8 @@ export class Manager {
   }
 
   async cleanup(): Promise<void> {
+    this.logger.info("Cleaning up workspace");
+
     for await (const entry of Deno.readDir(this.workspaceDir.path)) {
       await Deno.remove(this.workspaceDir.join(entry.name), {
         recursive: true,

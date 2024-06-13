@@ -1,6 +1,7 @@
 import {
   assert,
   basename,
+  encodeHex,
   expandGlob,
   extname,
   join,
@@ -20,12 +21,35 @@ export class Install {
     return join(this.#dir, ...args);
   }
 
+  async _inToolCache(src: string): Promise<boolean> {
+    const toolCachePath = await this._toolCachePath(src);
+    return fs.exists(toolCachePath);
+  }
+
+  async _toolCachePath(src: string): Promise<string> {
+    const toolCache = Deno.env.get("ELWOOD_TOOL_CACHE") ?? "";
+
+    const cacheName = encodeHex(
+      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src)),
+    );
+
+    return join(toolCache, cacheName);
+  }
+
   async fetch(src: string): Promise<string> {
     const saveTo = this.join(basename(src));
+
+    // see if this is in the tool cache
+    if (await this._inToolCache(src)) {
+      await fs.copy(await this._toolCachePath(src), saveTo);
+    }
 
     await fetch.get(src, {
       saveTo,
     });
+
+    // save it to the tool cache
+    await fs.copy(saveTo, await this._toolCachePath(src));
 
     return saveTo;
   }

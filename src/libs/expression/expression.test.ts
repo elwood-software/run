@@ -78,4 +78,23 @@ Deno.test("evaluateExpress()", async function () {
     await evaluateExpression(["$TEST_1", true], { env: { TEST_1: "test" } }),
     normalizeExpressionResult(["test", true]),
   );
+
+  assertEquals(
+    await evaluateExpression('${{ dirname("/this/is/a/path.json") }}', {}),
+    "/this/is/a",
+  );
+});
+
+Deno.test("evaluateExpress() throws", async function (t) {
+  await t.step("rejects require", () => {
+    assertRejects(
+      async () => await evaluateExpression("${{ require('worker'); }}", {}),
+    );
+  });
+
+  await t.step("no deno", () => {
+    assertRejects(
+      async () => await evaluateExpression("${{ Deno.build.os }}", {}),
+    );
+  });
 });
