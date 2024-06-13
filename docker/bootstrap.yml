@@ -4,7 +4,7 @@ cleanup: before
 workflow:
   name: "bootstrap"
   defaults:
-    permissions: true
+    permissions: "*"
   jobs:
     default:
       steps:
