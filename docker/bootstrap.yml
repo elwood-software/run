@@ -21,4 +21,16 @@ workflow:
               - "True"
               - --language
               - en
+              - --output_dir
+              - $ELWOOD_STAGE
               - $ELWOOD_STAGE/sample.ogg
+        - name: read
+          action: fs/read
+          input:
+            src: "stage:///sample.srt"
+            output: "srt"
+        - action: ai/openai
+          input:
+            model: "text-davinci-003"
+            prompt:
+              - ${{ join(["Identify advertisement segments in the following text:", steps.read.outputs.srt], "\n") }}
