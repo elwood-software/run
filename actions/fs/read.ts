@@ -1,4 +1,4 @@
-import { fs, input } from "../_core/mod.ts";
+import { fs, input, output } from "../_core/mod.ts";
 
 if (import.meta.main) {
   main();
@@ -6,13 +6,13 @@ if (import.meta.main) {
 
 export async function main() {
   const dest = input.get("src");
-  const output = input.getOptional("output");
+  const outputTo = input.getOptional<string>("output");
 
   const data = await fs.read(dest);
 
   // write to output if provided
-  if (output) {
-    await fs.write("output://", `${output}=${data}`);
+  if (outputTo) {
+    await output.set(outputTo, data);
   }
 
   await Deno.stdout.write(new TextEncoder().encode(data));

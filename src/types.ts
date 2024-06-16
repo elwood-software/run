@@ -3,6 +3,10 @@
 import { z } from "./deps.ts";
 import { type WorkflowSchema } from "./schema/workflow.ts";
 import { type JobSchema } from "./schema/job.ts";
+import {
+  type BootstrapWithWorkflowFileSchema,
+  type BootstrapWithWorkflowSchema,
+} from "./schema/bootstrap.ts";
 import type * as step from "./schema/step.ts";
 import type * as scalar from "./schema/scalar.ts";
 
@@ -61,9 +65,13 @@ export namespace Workflow {
     jobs: Record<string, ReportJob>;
   };
 }
+export type BootstrapWithFileOptions = z.infer<
+  typeof BootstrapWithWorkflowFileSchema
+>;
+export type BootstrapWithWorkflowOptions = z.infer<
+  typeof BootstrapWithWorkflowSchema
+>;
 
-export type BootstrapOptions = {
-  workflow?: Workflow.Configuration;
-  workflowUrl?: string;
-  cleanup?: boolean | "before" | "after";
-};
+export type BootstrapOptions =
+  | BootstrapWithFileOptions
+  | BootstrapWithWorkflowOptions;

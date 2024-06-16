@@ -1,7 +1,7 @@
 import { Manager } from "./runtime/manager.ts";
 import { logger } from "./deps.ts";
-import { serve } from "./serve.ts";
-import { bootstrap } from "./bootstrap.ts";
+import { serve } from "./launch/serve.ts";
+import { bootstrap } from "./launch/bootstrap.ts";
 
 enum LaunchMode {
   Bootstrap = "bootstrap",
@@ -17,7 +17,7 @@ if (import.meta.main) {
   const mode_ = modeOverride ?? mode;
 
   // make sure it's a valid mode
-  if (!LaunchModeNames.includes(mode_ as any)) {
+  if (!LaunchModeNames.includes(mode_ as LaunchMode)) {
     console.error("LAUNCH ERROR: Invalid mode");
     console.error(
       `Mode is "${mode_}", but should be one of: ${LaunchModeNames.join(", ")}`,

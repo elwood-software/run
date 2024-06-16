@@ -2,6 +2,7 @@ import { Folder } from "./folder.ts";
 import { assert, logger } from "../deps.ts";
 import { Execution } from "./execution.ts";
 import { Workflow } from "../types.ts";
+import { Reporter } from "../reporters/abstract.ts";
 
 export type ManagerOptions = {
   workspaceDir: string;
@@ -37,6 +38,8 @@ export class Manager {
   }
 
   public readonly executions = new Map<string, Execution>();
+  public readonly env = new Map<string, string>();
+  public readonly reporters: Reporter[] = [];
 
   public get logger() {
     return logger.getLogger("elwood-runner");
@@ -58,6 +61,10 @@ export class Manager {
     return this.#toolCacheDir;
   }
 
+  addReporter(reporter: Reporter) {
+    this.reporters.push(reporter);
+  }
+
   async mkdir(inFolder: "workspace", ...parts: string[]): Promise<Folder> {
     switch (inFolder) {
       case "workspace":
@@ -74,7 +81,7 @@ export class Manager {
     this.#toolCacheDir = await this.workspaceDir.mkdir("tool-cache");
   }
 
-  async executeDefinition(
+  async executeWorkflow(
     def: Workflow.Configuration,
   ): Promise<Execution> {
     const execution = new Execution(this, def, {});
@@ -87,6 +94,11 @@ export class Manager {
     // if something failed in prepare, status will be complete
     if (execution.status === "pending") {
       await execution.execute();
+    }
+
+    // report
+    for (const reporter of this.reporters) {
+      await reporter.report(execution);
     }
 
     return execution;

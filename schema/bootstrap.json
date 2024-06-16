@@ -20,13 +20,76 @@
               "type": "object",
               "properties": {
                 "cleanup": {
-                  "type": "string",
-                  "enum": [
-                    "before",
-                    "after",
-                    "both"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "before",
+                        "after",
+                        "both"
+                      ]
+                    },
+                    {
+                      "type": "boolean"
+                    }
                   ],
                   "default": "after"
+                },
+                "reporters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "options": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "default": {}
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "default": []
+                },
+                "env": {
+                  "type": "object",
+                  "properties": {
+                    "set": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "default": {}
+                    },
+                    "load": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "default": []
+                    },
+                    "passthrough": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "default": []
+                    },
+                    "required": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "default": []
+                    }
+                  },
+                  "additionalProperties": false,
+                  "default": {}
                 }
               }
             }
@@ -48,6 +111,60 @@
                     },
                     "description": {
                       "type": "string"
+                    },
+                    "when": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "*",
+                                        "always"
+                                      ]
+                                    },
+                                    {
+                                      "type": "boolean"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "event": {
+                                        "type": "string"
+                                      },
+                                      "if": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/when/anyOf/0/anyOf/1/items/anyOf/1"
+                        }
+                      ]
                     },
                     "defaults": {
                       "type": "object",
@@ -130,8 +247,7 @@
                             "type": "string"
                           },
                           "when": {
-                            "type": "string",
-                            "default": "true"
+                            "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/when"
                           },
                           "steps": {
                             "type": "array",
@@ -153,7 +269,7 @@
                                     },
                                     "when": {
                                       "type": "string",
-                                      "default": "true"
+                                      "default": "*"
                                     },
                                     "input": {
                                       "type": "object",

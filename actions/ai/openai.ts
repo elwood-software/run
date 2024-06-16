@@ -28,7 +28,7 @@ async function main() {
     prompt,
   });
 
-  await output.set("result", JSON.stringify(result));
+  await output.set("result", result);
 
   Deno.exit(0);
 }

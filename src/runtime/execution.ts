@@ -1,4 +1,4 @@
-import { assert, join } from "../deps.ts";
+import { assert } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
 import type { Workflow } from "../types.ts";
@@ -12,6 +12,7 @@ import {
 } from "../libs/deno/execute.ts";
 import { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
+import { evaluateWhen } from "../libs/expression/when.ts";
 
 export type ExecutionOptions = unknown;
 
@@ -122,6 +123,11 @@ export class Execution extends State {
     try {
       this.start();
 
+      if ((await evaluateWhen(this.def.when, this.getContext())) === false) {
+        await this.skip("when condition is false");
+        return;
+      }
+
       for (const job of this.jobs) {
         this.manager.logger.info(
           ` > executing job: ${job.name}[${job.id}] (status=${job.status})`,
@@ -217,6 +223,15 @@ export class Execution extends State {
       env: {
         ...env,
         ...this.getDenoEnv(),
+        ...Array.from(this.manager.env.entries()).reduce(
+          (acc, [key, value]) => {
+            return {
+              ...acc,
+              [key]: value,
+            };
+          },
+          {},
+        ),
         ELWOOD_STAGE: this.stageDir.path,
         ELWOOD_BIN: this.binDir.path,
         ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,

@@ -1,6 +1,6 @@
-import { Manager } from "./runtime/manager.ts";
-import { JsonObject } from "./types.ts";
-import { verifyWorkflow } from "./libs/load-workflow.ts";
+import { Manager } from "../runtime/manager.ts";
+import { JsonObject } from "../types.ts";
+import { verifyWorkflow } from "../libs/load-workflow.ts";
 
 export async function serve(manager: Manager) {
   // prepare the manager
@@ -52,7 +52,7 @@ export async function serve(manager: Manager) {
       if (request.method === "POST") {
         const { workflow, input = {} } = await request.json();
 
-        const x = await manager.executeDefinition(
+        const x = await manager.executeWorkflow(
           await verifyWorkflow(workflow),
         );
 

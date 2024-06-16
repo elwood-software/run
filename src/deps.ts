@@ -23,3 +23,6 @@ export { parse as parseYaml } from "jsr:@std/yaml/parse";
 
 // fmt
 export { stripAnsiCode } from "jsr:@std/fmt/colors";
+
+// DOTENV
+export * as dotenv from "jsr:@std/dotenv/parse";

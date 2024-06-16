@@ -1,12 +1,39 @@
 # yaml-language-server: $schema=../schema/bootstrap.json
 
 cleanup: before
+env:
+  passthrough:
+    - OPENAI_API_KEY
+  required:
+    - OPENAI_API_KEY
+
+reporters:
+  - name: "file"
+    options:
+      path: "/elwood/runner/workspace/report.json"
 workflow:
   name: "bootstrap"
   defaults:
     permissions: true
   jobs:
+    test:
+      when: true
+      steps:
+        - action: fs/write
+          input:
+            dest: "stage:///test.txt"
+            content: "poop"
+        - name: read
+          action: fs/read
+          input:
+            src: "stage:///test.txt"
+            output: "test"
+        - action: echo
+          input:
+            content: ${{ steps.read.outputs.test }}
+
     default:
+      when: false
       steps:
         - action: install/whisper
         - action: fs/copy
@@ -20,7 +47,7 @@ workflow:
               - --verbose
               - "True"
               - --language
-              - en
+              - enw
               - --output_dir
               - $ELWOOD_STAGE
               - $ELWOOD_STAGE/sample.ogg
@@ -31,6 +58,7 @@ workflow:
             output: "srt"
         - action: ai/openai
           input:
+            command: "createCompletions"
             model: "text-davinci-003"
             prompt:
               - ${{ join(["Identify advertisement segments in the following text:", steps.read.outputs.srt], "\n") }}

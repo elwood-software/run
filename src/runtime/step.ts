@@ -20,6 +20,7 @@ import { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
 import { StateName } from "../constants.ts";
 import { denoMergePermissions } from "../libs/deno/permissions.ts";
+import { evaluateWhen } from "../libs/expression/when.ts";
 
 export class Step extends State {
   readonly id: string;
@@ -100,13 +101,7 @@ export class Step extends State {
       this.start();
 
       // check to see if this step should be skipped
-      const shouldSkip = !isExpressionResultTruthy(
-        await this.evaluateExpression(
-          makeEvaluableExpression(this.def.when ?? "true"),
-        ),
-      );
-
-      if (shouldSkip) {
+      if ((await evaluateWhen(this.def.when, this.getContext())) === false) {
         await this.skip('Step was skipped due to "if" condition');
         return;
       }

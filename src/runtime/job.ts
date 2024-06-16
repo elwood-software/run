@@ -5,6 +5,7 @@ import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
 import { Step } from "./step.ts";
 import { RunnerResult } from "../constants.ts";
+import { evaluateWhen } from "../libs/expression/when.ts";
 
 export class Job extends State {
   readonly id: string;
@@ -50,6 +51,11 @@ export class Job extends State {
 
     try {
       this.start();
+
+      if ((await evaluateWhen(this.def.when, this.getContext()) === false)) {
+        await this.skip("when condition is false");
+        return;
+      }
 
       for (const step of this.steps) {
         if (this.status !== "pending") {

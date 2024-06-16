@@ -13,6 +13,60 @@
         "description": {
           "type": "string"
         },
+        "when": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "*",
+                            "always"
+                          ]
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "event": {
+                            "type": "string"
+                          },
+                          "if": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "$ref": "#/definitions/workflow/properties/when/anyOf/0/anyOf/1/items/anyOf/1"
+            }
+          ]
+        },
         "defaults": {
           "type": "object",
           "properties": {
@@ -94,8 +148,7 @@
                 "type": "string"
               },
               "when": {
-                "type": "string",
-                "default": "true"
+                "$ref": "#/definitions/workflow/properties/when"
               },
               "steps": {
                 "type": "array",
@@ -117,7 +170,7 @@
                         },
                         "when": {
                           "type": "string",
-                          "default": "true"
+                          "default": "*"
                         },
                         "input": {
                           "type": "object",
