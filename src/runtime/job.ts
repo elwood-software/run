@@ -1,6 +1,6 @@
 import { assert } from "../deps.ts";
 import { Execution } from "./execution.ts";
-import type { Workflow } from "../types.ts";
+import type { ReporterChangeData, Workflow } from "../types.ts";
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
 import { Step } from "./step.ts";
@@ -37,6 +37,14 @@ export class Job extends State {
   }
 
   async prepare(): Promise<void> {
+    this.onChange(async (type: string, data: ReporterChangeData) => {
+      await this.execution.manager.reportUpdate(`job:${type}`, {
+        ...data,
+        execution_id: this.execution.id,
+        job_id: this.id,
+      });
+    });
+
     this.#contextDir = await this.execution.contextDir.mkdir(this.id);
 
     for (const def of this.def.steps) {

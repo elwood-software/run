@@ -25,3 +25,17 @@ export enum StateName {
   Stdout = "stdout",
   Stderr = "stderr",
 }
+
+export enum ReporterName {
+  Console = "console",
+  File = "file",
+  Supabase = "supabase",
+}
+
+export enum LaunchMode {
+  Bootstrap = "bootstrap",
+  Worker = "worker",
+  Serve = "serve",
+}
+
+export const LaunchModeNames = Object.values(LaunchMode);

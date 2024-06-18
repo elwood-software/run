@@ -1,3 +1,4 @@
+import { base64 } from "../deps.ts";
 import * as fs from "./fs.ts";
 
 export async function set(
@@ -8,8 +9,8 @@ export async function set(
   let value_ = value;
 
   if (typeof value !== "string") {
-    value_ = `json:${JSON.stringify(value)}`;
+    value_ = `json+base64:${base64.encodeBase64(JSON.stringify(value))}`;
   }
 
-  await fs.write("output://", `${name}=${value_}\n`, { append });
+  await fs.write("output://", `${name}<<EOF\n${value_}\nEOF\n`, { append });
 }

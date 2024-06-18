@@ -1,16 +1,12 @@
 import { Job } from "./job.ts";
-import type { Workflow } from "../types.ts";
+import type { ReporterChangeData, Workflow } from "../types.ts";
 import {
   resolveActionUrlForDenoCommand,
   resolveActionUrlFromDefinition,
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
-import {
-  evaluateExpression,
-  isExpressionResultTruthy,
-  makeEvaluableExpression,
-} from "../libs/expression/expression.ts";
+import { evaluateExpression } from "../libs/expression/expression.ts";
 import {
   parseVariableFile,
   replaceVariablePlaceholdersInVariables,
@@ -21,6 +17,7 @@ import { stepHasRun } from "../libs/config-helpers.ts";
 import { StateName } from "../constants.ts";
 import { denoMergePermissions } from "../libs/deno/permissions.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
+import { toObject } from "../libs/utils.ts";
 
 export class Step extends State {
   readonly id: string;
@@ -67,6 +64,7 @@ export class Step extends State {
   async evaluateExpression(expression: string): Promise<string> {
     const ctx = {
       env: {
+        ...toObject(this.job.execution.manager.env),
         ELWOOD_BIN: this.job.execution.binDir.path,
         ELWOOD_STAGE: this.job.execution.stageDir.path,
       },
@@ -87,8 +85,16 @@ export class Step extends State {
   }
 
   async prepare(): Promise<void> {
-    this.#contextDir = await this.job.contextDir.mkdir(this.id);
+    this.onChange(async (type: string, data: ReporterChangeData) => {
+      await this.job.execution.manager.reportUpdate(`step:${type}`, {
+        ...data,
+        execution_id: this.job.execution.id,
+        job_id: this.job.id,
+        step_id: this.id,
+      });
+    });
 
+    this.#contextDir = await this.job.contextDir.mkdir(this.id);
     this.actionUrl = await resolveActionUrlFromDefinition(this.def, {
       stdPrefix: this.job.execution.manager.options.stdActionsPrefix,
     });
@@ -123,6 +129,16 @@ export class Step extends State {
           const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
           this.logger.info(`  > [stdout] ${txt}`);
           stdout_.push(txt);
+
+          this.job.execution.manager.reportUpdate("stdout", {
+            at: Date.now(),
+            status: this.status,
+            result: this.result,
+            execution_id: this.job.execution.id,
+            job_id: this.job.id,
+            step_id: this.id,
+            text: txt,
+          }).then();
         },
       });
 
@@ -131,6 +147,16 @@ export class Step extends State {
           const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
           this.logger.error(`  > [stderr] ${txt}`);
           stderr_.push(txt);
+
+          this.job.execution.manager.reportUpdate("stderr", {
+            at: Date.now(),
+            status: this.status,
+            result: this.result,
+            execution_id: this.job.execution.id,
+            job_id: this.job.id,
+            step_id: this.id,
+            text: txt,
+          }).then();
         },
       });
 
@@ -156,6 +182,7 @@ export class Step extends State {
 
       const result = await this.job.execution.executeDenoRun({
         ...runOptions,
+        args: ["--no-check=remote", "-q", "--no-prompt", "--cached-only"],
         stdout: "piped",
         stderr: "piped",
         stderrStream: stderr,

@@ -44,7 +44,7 @@ export async function write(
   );
 }
 
-export async function exists(path: FilePathOrUrl): boolean {
+export async function exists(path: FilePathOrUrl): Promise<boolean> {
   try {
     await Deno.stat(await normalize(path, { allowRemote: false }));
     return true;
@@ -79,7 +79,8 @@ function parseContentString(content: string): ContentString {
   let content_: string = content;
   const [prefix, ...data] = content.substring(5).split(",");
   const data_ = data.join(",");
-  const [contentType, ...params] = prefix.split(";");
+
+  const [contentType, ...params] = (prefix ?? "").split(";");
   const encodingType = params.pop();
 
   if (encodingType === "base64") {

@@ -9,6 +9,7 @@ import {
 } from "./schema/bootstrap.ts";
 import type * as step from "./schema/step.ts";
 import type * as scalar from "./schema/scalar.ts";
+import { type Execution } from "./runtime/execution.ts";
 
 // deno-lint-ignore no-explicit-any
 export type Json = any;
@@ -41,6 +42,8 @@ export namespace Workflow {
   export type Permissions = z.infer<typeof scalar.Permissions>;
 
   export type ReportState = {
+    id: string;
+    name: string;
     status: Status;
     result: Result;
     reason: string | null;
@@ -75,3 +78,19 @@ export type BootstrapWithWorkflowOptions = z.infer<
 export type BootstrapOptions =
   | BootstrapWithFileOptions
   | BootstrapWithWorkflowOptions;
+
+export type ReporterChangeData = {
+  execution_id: string;
+  job_id?: string;
+  step_id?: string;
+  status: Status;
+  result: Result;
+  reason?: string | null;
+  text?: string;
+  at: number;
+};
+
+export interface Reporter {
+  report(report: Workflow.Report): Promise<void>;
+  change(type: string, data: ReporterChangeData): Promise<void>;
+}

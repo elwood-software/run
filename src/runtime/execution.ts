@@ -1,7 +1,7 @@
 import { assert } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
-import type { Workflow } from "../types.ts";
+import type { ReporterChangeData, Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/deno/execute.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
@@ -65,6 +65,10 @@ export class Execution extends State {
   }
 
   async prepare(): Promise<void> {
+    this.onChange(async (type: string, data: ReporterChangeData) => {
+      await this.manager.reportUpdate(`execution:${type}`, data);
+    });
+
     this.manager.logger.info(`Preparing execution: ${this.id}`);
 
     this.#workingDir = await this.manager.mkdir("workspace", this.id);
@@ -176,6 +180,8 @@ export class Execution extends State {
 
   getReport(): Workflow.Report {
     return {
+      id: this.id,
+      name: this.name,
       status: this.status,
       result: this.result,
       reason: this.state.reason,
@@ -184,6 +190,8 @@ export class Execution extends State {
         return {
           ...acc,
           [job.name]: {
+            id: this.id,
+            name: this.name,
             status: job.status,
             result: job.result,
             timing: job.getState(StateName.Timing),
@@ -191,6 +199,8 @@ export class Execution extends State {
               return {
                 ...acc,
                 [step.name]: {
+                  id: this.id,
+                  name: this.name,
                   status: step.status,
                   result: step.result,
                   reason: step.state.reason,

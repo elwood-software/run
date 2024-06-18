@@ -13,7 +13,7 @@ export async function main() {
   // write to output if provided
   if (outputTo) {
     await output.set(outputTo, data);
+  } else {
+    await Deno.stdout.write(new TextEncoder().encode(data));
   }
-
-  await Deno.stdout.write(new TextEncoder().encode(data));
 }
