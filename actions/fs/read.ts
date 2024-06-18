@@ -1,4 +1,4 @@
-import { fs, input, output } from "../_core/mod.ts";
+import { fs, input, output } from "../_sdk/mod.ts";
 
 if (import.meta.main) {
   main();

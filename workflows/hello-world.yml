@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../schema/workflow.json
+# yaml-language-server: $schema=https://elwood.run/schema.json
 
 name: hello-world
 jobs:
@@ -15,18 +15,3 @@ jobs:
         description: "Prints 'Hello, World!' to stdout."
         input:
           content: "Hello, World!"
-  expressions:
-    steps:
-      - action: "echo"
-        input:
-          content: ${{ step.name }}
-      - action: "echo"
-        input:
-          content: ${{ "awesome".toUpperCase() }}
-  output:
-    steps:
-      - name: whoami
-        run: echo "name=Mr. Awesome" >> $ELWOOD_OUTPUT
-      - action: echo
-        input:
-          content: ${{ steps.whoami.outputs.name }}

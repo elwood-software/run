@@ -1,6 +1,6 @@
-import { input, output } from "../_core/mod.ts";
+import { input, output } from "../_sdk/mod.ts";
 import { OpenAI } from "https://deno.land/x/openai@v4.51.0/mod.ts";
-import { assert } from "../deps.ts";
+import { assert } from "../_deps.ts";
 
 const Commands = {
   CreateCompletions: "createCompletions",
