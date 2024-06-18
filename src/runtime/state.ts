@@ -1,7 +1,15 @@
 // deno-lint-ignore-file require-await
 import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
-import type { Result, RuntimeState, Status } from "../types.ts";
+import type {
+  ReporterChangeData,
+  Result,
+  RuntimeState,
+  Status,
+} from "../types.ts";
 import { shortId } from "../libs/short-id.ts";
+import { EventEmitter } from "../deps.ts";
+
+type Listener = (type: string, data: ReporterChangeData) => void;
 
 export abstract class State implements RuntimeState {
   abstract id: string;
@@ -13,6 +21,7 @@ export abstract class State implements RuntimeState {
     reason: null,
   };
 
+  readonly #emitter = new EventEmitter();
   #startTime: number | null = null;
 
   get status() {
@@ -30,6 +39,10 @@ export abstract class State implements RuntimeState {
       reason,
       ...rest,
     };
+  }
+
+  onChange(listener: Listener): void {
+    this.#emitter.addListener("change", listener);
   }
 
   shortId(prefix: string = ""): string {
@@ -59,22 +72,54 @@ export abstract class State implements RuntimeState {
     this._status = RunnerStatus.Complete;
     this._result = RunnerResult.Failure;
     this._data.reason = reason;
+
+    this.#emitter.emit("change", "fail", {
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      result: this._result,
+      reason: this._data.reason,
+    });
   }
 
   async succeed(reason: string = "") {
     this._status = RunnerStatus.Complete;
     this._result = RunnerResult.Success;
     this._data.reason = reason;
+
+    this.#emitter.emit("change", "succeed", {
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      result: this._result,
+      reason: this._data.reason,
+    });
   }
 
   async skip(reason: string = "") {
     this._status = RunnerStatus.Complete;
     this._result = RunnerResult.Skipped;
     this._data.reason = reason;
+
+    this.#emitter.emit("change", "skip", {
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      result: this._result,
+      reason: this._data.reason,
+    });
   }
 
   start() {
     this.#startTime = performance.now();
+
+    this.#emitter.emit("change", "start", {
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      result: this._result,
+      reason: this._data.reason,
+    });
   }
 
   stop() {
@@ -91,5 +136,13 @@ export abstract class State implements RuntimeState {
         elapsed: end - this.#startTime,
       });
     }
+
+    this.#emitter.emit("change", "stop", {
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      result: this._result,
+      reason: this._data.reason,
+    });
   }
 }

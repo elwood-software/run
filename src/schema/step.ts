@@ -8,7 +8,7 @@ export const StepSchemaBase = z.object({
   }).optional(),
   label: z.string().optional(),
   description: z.string().optional(),
-  when: z.string().default("true").optional(),
+  when: z.string().default("*").optional(),
   input: Input.optional(),
   env: Environment.optional(),
   permissions: Permissions.optional(),

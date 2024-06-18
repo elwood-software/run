@@ -14,7 +14,16 @@ export const Input = z.record(
   z.any(),
 );
 
-export const When = z.string().default("true");
+export const WhenObject = z.object({
+  event: z.string().optional(),
+  if: z.string().optional(),
+});
+
+export const When = z.enum(["*", "always"])
+  .or(z.boolean())
+  .or(z.string())
+  .or(z.array(z.string().or(WhenObject)))
+  .or(WhenObject);
 
 export const PermissionValue = z.boolean()
   .or(z.enum(["inherit", "none", "*"]))

@@ -62,7 +62,7 @@ export function replaceVariablesInValue(
 
 export async function parseVariableFile(
   content: string,
-): Promise<Record<string, string>> {
+): Promise<Record<string, Json>> {
   const vars: Record<string, string> = {};
   const lines = content.split("\n");
   let currentName = "";
@@ -70,9 +70,10 @@ export async function parseVariableFile(
   let eof: string | null = null;
 
   for (const line of lines) {
-    if (eof && line.includes(eof)) {
+    if (eof && line.trim().includes(eof)) {
       const [end] = line.split(eof);
-      vars[currentName] = (currentValue + end).trim();
+      vars[currentName] = decodeValue((currentValue + end).trim());
+      eof = null;
       continue;
     }
 
@@ -86,6 +87,7 @@ export async function parseVariableFile(
 
     if (eof) {
       currentValue += line + "\n";
+      continue;
     }
 
     if (!line.includes("=")) {
@@ -93,8 +95,20 @@ export async function parseVariableFile(
     }
 
     const [name, value] = line.split("=");
-    vars[name!.trim()] = value!.trim();
+    vars[name!.trim()] = decodeValue(value!.trim());
   }
 
   return await Promise.resolve(vars);
+}
+
+export function decodeValue(value: string): Json {
+  if (value.startsWith("json+base64:")) {
+    return JSON.parse(atob(value.substring(12)));
+  }
+
+  if (value.startsWith("json:")) {
+    return JSON.parse(value.substring(5));
+  }
+
+  return value;
 }

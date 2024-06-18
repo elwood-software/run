@@ -17,6 +17,16 @@ export async function evaluateExpression(
 ): Promise<string> {
   assert(typeof state === "object", "State must be an object");
 
+  if (Array.isArray(expression)) {
+    const value_: Json[] = [];
+
+    for (const value of expression) {
+      value_.push(await evaluateExpression(value, state));
+    }
+
+    return normalizeExpressionResult(value_, state.env);
+  }
+
   // if it's not a string, just return it normalized
   if (typeof expression !== "string") {
     return normalizeExpressionResult(expression, state.env);

@@ -9,7 +9,7 @@ const pathApi = _createPathApi();
 // these functions are available in the worker's
 // execution context
 Object.assign(self, {
-  ...pathApi,
+  path: pathApi,
   stageUrl(...path: string[]) {
     return `stage://${pathApi.join(...path)}`;
   },
@@ -26,6 +26,9 @@ Object.assign(self, {
     }
 
     return JSON.parse(value);
+  },
+  join(values: string[], separator: string = ","): string {
+    return values.map((str) => String(str)).join(separator);
   },
 });
 

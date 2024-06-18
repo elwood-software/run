@@ -1,8 +1,8 @@
 export type * from "./src/types.ts";
 export * from "./src/schema/job.ts";
 export * from "./src/launch.ts";
-export * from "./src/serve.ts";
-export * from "./src/bootstrap.ts";
+export * from "./src/launch/serve.ts";
+export * from "./src/launch/bootstrap.ts";
 
 if (import.meta.main) {
   console.error("This module should not be executed directly.");

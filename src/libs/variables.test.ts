@@ -53,4 +53,19 @@ Deno.test("parseVariableFile", async function () {
     ),
     { start: "this has a lot of spaces", end: "end of empty lines @" },
   );
+
+  assertEquals(
+    await parseVariableFile(
+      [
+        "result<<EOF",
+        `json+base64:${btoa(JSON.stringify({ value: "here" }))}`,
+        "EOF",
+      ].join("\n"),
+    ),
+    {
+      result: {
+        value: "here",
+      },
+    },
+  );
 });

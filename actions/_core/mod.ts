@@ -6,3 +6,4 @@ export * as install from "./install.ts";
 export * as command from "./command.ts";
 export * as args from "./args.ts";
 export * as io from "./io.ts";
+export * as output from "./output.ts";
