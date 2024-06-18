@@ -1,4 +1,4 @@
-import type { JsonObject, Reporter } from "../types.ts";
+import type { JsonObject, Reporter, ReporterConstructor } from "../types.ts";
 import { ReporterName } from "../constants.ts";
 
 import { FileReporter, type FileReporterOptions } from "./file.ts";
@@ -7,17 +7,16 @@ import { ConsoleReporter } from "./console.ts";
 
 export function createReporter(
   name: string,
-  options: JsonObject,
 ): Reporter {
   switch (name) {
     case ReporterName.File:
-      return new FileReporter(options as FileReporterOptions);
+      return new FileReporter();
 
     case ReporterName.Supabase:
-      return new SupabaseReporter(options as SupabaseReporterOptions);
+      return new SupabaseReporter();
 
     case ReporterName.Console:
-      return new ConsoleReporter(options);
+      return new ConsoleReporter();
 
     default: {
       throw new Error(`Unknown reporter: ${name}`);

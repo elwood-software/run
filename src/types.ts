@@ -15,7 +15,7 @@ import { type Execution } from "./runtime/execution.ts";
 export type Json = any;
 export type JsonObject = Record<string, Json>;
 
-export type Status = "pending" | "running" | "complete";
+export type Status = "pending" | "running" | "complete" | "queued";
 export type Result = "none" | "success" | "failure" | "cancelled" | "skipped";
 
 export interface RuntimeState {
@@ -65,6 +65,7 @@ export namespace Workflow {
   };
 
   export type Report = ReportState & {
+    tracking_id: string;
     jobs: Record<string, ReportJob>;
   };
 }
@@ -81,6 +82,7 @@ export type BootstrapOptions =
 
 export type ReporterChangeData = {
   execution_id: string;
+  tracking_id: string;
   job_id?: string;
   step_id?: string;
   status: Status;
@@ -90,7 +92,13 @@ export type ReporterChangeData = {
   at: number;
 };
 
-export interface Reporter {
+export interface Reporter<Options extends JsonObject = JsonObject> {
+  destroy(): Promise<void>;
+  setOptions(options: Options): void;
   report(report: Workflow.Report): Promise<void>;
   change(type: string, data: ReporterChangeData): Promise<void>;
+}
+
+export interface ReporterConstructor {
+  new (): Reporter;
 }

@@ -1,7 +1,7 @@
 import { assert } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
-import type { ReporterChangeData, Workflow } from "../types.ts";
+import type { JsonObject, ReporterChangeData, Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/deno/execute.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
@@ -14,13 +14,16 @@ import { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
 
-export type ExecutionOptions = unknown;
+export type ExecutionOptions = {
+  tracking_id?: string;
+};
 
 export class Execution extends State {
   readonly id: string;
   readonly name = "execution";
   readonly #jobs = new Map<string, Job>();
 
+  #tracking_id: string = crypto.randomUUID();
   #workingDir: Folder | null = null;
   #contextDir: Folder | null = null;
   #stageDir: Folder | null = null;
@@ -34,10 +37,15 @@ export class Execution extends State {
   ) {
     super();
     this.id = this.shortId("execution");
+    this.#tracking_id = options.tracking_id ?? this.#tracking_id;
   }
 
   get jobs(): Job[] {
     return Array.from(this.#jobs.values());
+  }
+
+  get tracking_id(): string {
+    return this.#tracking_id;
   }
 
   get workingDir(): Folder {
@@ -121,8 +129,12 @@ export class Execution extends State {
     }
   }
 
-  async execute(): Promise<void> {
+  async execute(
+    input: JsonObject = {},
+  ): Promise<void> {
     this.manager.logger.info(`Staring executing: ${this.id}`);
+
+    this.setState(StateName.Input, input);
 
     try {
       this.start();
@@ -182,6 +194,7 @@ export class Execution extends State {
     return {
       id: this.id,
       name: this.name,
+      tracking_id: this.tracking_id,
       status: this.status,
       result: this.result,
       reason: this.state.reason,

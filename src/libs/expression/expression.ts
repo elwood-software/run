@@ -11,25 +11,35 @@ export enum ExpressionTokens {
   Postfix = "}}",
 }
 
-export async function evaluateExpression(
-  expression: Json,
+export async function evaluateExpression<T = Json>(
+  expression: T,
   state: JsonObject = {},
-): Promise<string> {
+): Promise<T> {
   assert(typeof state === "object", "State must be an object");
 
   if (Array.isArray(expression)) {
     const value_: Json[] = [];
 
     for (const value of expression) {
-      value_.push(await evaluateExpression(value, state));
+      value_.push(await evaluateExpression<T>(value, state));
     }
 
-    return normalizeExpressionResult(value_, state.env);
+    return await evaluateExpression<T>(value_ as T, state.env);
+  }
+
+  if (typeof expression === "object") {
+    const value_ = expression as JsonObject;
+
+    for (const [key, value] of Object.entries(value_)) {
+      value_[key] = await evaluateExpression(value, state);
+    }
+
+    return replaceVariablesInValue(value_, state.env) as T;
   }
 
   // if it's not a string, just return it normalized
   if (typeof expression !== "string") {
-    return normalizeExpressionResult(expression, state.env);
+    return replaceVariablesInValue(expression, state.env);
   }
 
   const trimmedExpression = expression.trim();
@@ -39,7 +49,7 @@ export async function evaluateExpression(
   if (
     !isEvaluableExpression(trimmedExpression)
   ) {
-    return normalizeExpressionResult(expression, state.env);
+    return replaceVariablesInValue(expression, state.env);
   }
 
   const worker = new Worker(ExpressionWorkerPath, {
@@ -77,9 +87,19 @@ export async function evaluateExpression(
       // stop
       worker.terminate();
 
-      return resolve(normalizeExpressionResult(event.data.result, state.env));
+      return resolve(replaceVariablesInValue(event.data.result, state.env));
     };
   });
+}
+
+export async function evaluateAndNormalizeExpression(
+  expression: Json,
+  state: JsonObject = {},
+): Promise<string> {
+  return normalizeExpressionResult(
+    await evaluateExpression(expression, state),
+    state.env,
+  );
 }
 
 export function normalizeExpressionResult(

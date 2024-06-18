@@ -46,7 +46,7 @@ export abstract class State implements RuntimeState {
   }
 
   shortId(prefix: string = ""): string {
-    return shortId(prefix);
+    return shortId(prefix.slice(0, 1)).toUpperCase();
   }
 
   setState<V = unknown>(name: string, value: V) {

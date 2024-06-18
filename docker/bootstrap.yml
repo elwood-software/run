@@ -4,6 +4,9 @@ cleanup: before
 env:
   passthrough:
     - OPENAI_API_KEY
+    - SUPABASE_URL
+    - SUPABASE_ANON_KEY
+    - SUPABASE_SERVICE_KEY
   required:
     - OPENAI_API_KEY
 
@@ -11,7 +14,11 @@ reporters:
   - name: "file"
     options:
       path: "/elwood/runner/workspace/report-{id}.json"
-  - name: "console"
+  - name: "supabase"
+    options:
+      url: ${{ env.SUPABASE_URL }}
+      anon_key: ${{ env.SUPABASE_ANON_KEY }}
+      service_key: ${{ env.SUPABASE_SERVICE_KEY }}
 
 workflow:
   name: "bootstrap"

@@ -1,6 +1,7 @@
 import type { Result, Status } from "./types.ts";
 
 export const RunnerStatus: Record<string, Status> = {
+  Queued: "queued",
   Pending: "pending",
   Running: "running",
   Complete: "complete",
@@ -19,6 +20,7 @@ export enum EnvName {
 }
 
 export enum StateName {
+  Input = "input",
   Outputs = "outputs",
   Timing = "timing",
   Env = "env",

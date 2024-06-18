@@ -41,6 +41,7 @@ export class Job extends State {
       await this.execution.manager.reportUpdate(`job:${type}`, {
         ...data,
         execution_id: this.execution.id,
+        tracking_id: this.execution.tracking_id,
         job_id: this.id,
       });
     });

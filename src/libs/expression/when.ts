@@ -1,5 +1,8 @@
 import type { JsonObject, Workflow } from "../../types.ts";
-import { evaluateExpression, isExpressionResultTruthy } from "./expression.ts";
+import {
+  evaluateAndNormalizeExpression,
+  isExpressionResultTruthy,
+} from "./expression.ts";
 
 export async function evaluateWhen(
   when: Workflow.When | undefined,
@@ -19,7 +22,9 @@ export async function evaluateWhen(
 
   // any other string is evaluated as an expression
   if (typeof when === "string") {
-    return isExpressionResultTruthy(await evaluateExpression(when, state));
+    return isExpressionResultTruthy(
+      await evaluateAndNormalizeExpression(when, state),
+    );
   }
 
   // if it's an object, push it to an array just to make sure it's iterable

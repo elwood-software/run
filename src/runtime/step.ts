@@ -6,7 +6,7 @@ import {
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
-import { evaluateExpression } from "../libs/expression/expression.ts";
+import { evaluateAndNormalizeExpression } from "../libs/expression/expression.ts";
 import {
   parseVariableFile,
   replaceVariablePlaceholdersInVariables,
@@ -81,7 +81,7 @@ export class Step extends State {
       }, {}),
     };
 
-    return await evaluateExpression(expression, ctx);
+    return await evaluateAndNormalizeExpression(expression, ctx);
   }
 
   async prepare(): Promise<void> {
@@ -135,6 +135,7 @@ export class Step extends State {
             status: this.status,
             result: this.result,
             execution_id: this.job.execution.id,
+            tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
             text: txt,
@@ -153,6 +154,7 @@ export class Step extends State {
             status: this.status,
             result: this.result,
             execution_id: this.job.execution.id,
+            tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
             text: txt,

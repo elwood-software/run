@@ -55,5 +55,7 @@ class ShortUniqueId {
 const suid = new ShortUniqueId();
 
 export function shortId(prefix = ""): string {
-  return [prefix, suid.seq()].join("--");
+  const num = Math.floor(Math.random() * 1000).toString().slice(0, 1);
+
+  return [prefix, num, suid.seq()].join("");
 }

@@ -56,8 +56,9 @@ export async function launchBootstrap() {
 
     if (Array.isArray(bootstrap.reporters)) {
       for (const reporter of bootstrap.reporters) {
-        manager.addReporter(
-          createReporter(reporter.name, reporter.options ?? {}),
+        await manager.addReporter(
+          createReporter(reporter.name),
+          reporter.options ?? {},
         );
       }
     }
@@ -75,6 +76,9 @@ export async function launchBootstrap() {
     if (bootstrap.cleanup !== false && bootstrap.cleanup != "before") {
       await manager.cleanup();
     }
+
+    // destroy the manager
+    await manager.destroy();
 
     // exit with the appropriate code from the execution
     Deno.exit(exec.result === RunnerResult.Success ? 0 : 1);
