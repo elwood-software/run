@@ -1,4 +1,4 @@
-import { assert } from "./deps.ts";
+import { assert } from "./_deps.ts";
 import { args, command, input } from "./_sdk/mod.ts";
 
 if (import.meta.main) {

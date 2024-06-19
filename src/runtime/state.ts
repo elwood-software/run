@@ -6,7 +6,7 @@ import type {
   RuntimeState,
   Status,
 } from "../types.ts";
-import { shortId } from "../libs/short-id.ts";
+import { longId, shortId } from "../libs/short-id.ts";
 import { EventEmitter } from "../deps.ts";
 
 type Listener = (type: string, data: ReporterChangeData) => void;
@@ -46,7 +46,11 @@ export abstract class State implements RuntimeState {
   }
 
   shortId(prefix: string = ""): string {
-    return shortId(prefix.slice(0, 1)).toUpperCase();
+    return shortId(prefix).toUpperCase();
+  }
+
+  longId(prefix: string = ""): string {
+    return longId(prefix).toLowerCase();
   }
 
   setState<V = unknown>(name: string, value: V) {
@@ -69,7 +73,7 @@ export abstract class State implements RuntimeState {
   }
 
   async fail(reason: string = "") {
-    this._status = RunnerStatus.Complete;
+    this._status = RunnerStatus.Complete!;
     this._result = RunnerResult.Failure;
     this._data.reason = reason;
 

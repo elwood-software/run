@@ -54,6 +54,8 @@ Deno.test("e2e", async function (t) {
       } as Workflow.Configuration,
     });
 
+    console.log(resp.report);
+
     assertEquals(
       resp.report.result,
       RunnerResult.Success,

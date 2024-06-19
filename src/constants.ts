@@ -1,18 +1,18 @@
 import type { Result, Status } from "./types.ts";
 
-export const RunnerStatus: Record<string, Status> = {
-  Queued: "queued",
-  Pending: "pending",
-  Running: "running",
-  Complete: "complete",
+export const RunnerStatus = {
+  Queued: "queued" as Status,
+  Pending: "pending" as Status,
+  Running: "running" as Status,
+  Complete: "complete" as Status,
 } as const;
 
-export const RunnerResult: Record<string, Result> = {
-  None: "none",
-  Success: "success",
-  Failure: "failure",
-  Cancelled: "cancelled",
-  Skipped: "skipped",
+export const RunnerResult = {
+  None: "none" as Result,
+  Success: "success" as Result,
+  Failure: "failure" as Result,
+  Cancelled: "cancelled" as Result,
+  Skipped: "skipped" as Result,
 } as const;
 
 export enum EnvName {

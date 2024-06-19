@@ -38,7 +38,7 @@ export async function executeDenoCommand(
     ...opts
   } = options;
 
-  const cmd = new Deno.Command(Deno.execPath(), {
+  const cmd = new Deno.Command("/elwood/run/runner/bin/deno", {
     stdout: stdoutStream ? "piped" : stdout,
     stderr: stderrStream ? "piped" : stderr,
     ...opts,

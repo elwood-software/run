@@ -1,6 +1,6 @@
 // deno-lint-ignore-file require-await
 import { AbstractReporter } from "./abstract.ts";
-import type { ReporterChangeData, Workflow } from "../types.ts";
+import type { Json, ReporterChangeData, Workflow } from "../types.ts";
 import { assert, supabase } from "../deps.ts";
 
 export interface SupabaseReporterOptions {
@@ -9,7 +9,7 @@ export interface SupabaseReporterOptions {
   service_key: string;
 }
 
-type Client = supabase.SupabaseClient<any, "public">;
+type Client = supabase.SupabaseClient<Json, "public">;
 
 export class SupabaseReporter
   extends AbstractReporter<SupabaseReporterOptions> {
@@ -25,7 +25,7 @@ export class SupabaseReporter
     return this.#client;
   }
 
-  setOptions(options: SupabaseReporterOptions) {
+  override setOptions(options: SupabaseReporterOptions) {
     super.setOptions(options);
 
     assert(options.url, "Supabase URL is required");
@@ -49,7 +49,7 @@ export class SupabaseReporter
     }, 1000 * 60 * 1);
   }
 
-  async destroy() {
+  override async destroy() {
     await this._flush();
     this._stopChangeQueue();
   }

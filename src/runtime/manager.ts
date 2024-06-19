@@ -1,12 +1,11 @@
 import { Folder } from "./folder.ts";
 import { assert, dotenv, isAbsolute, join, logger } from "../deps.ts";
-import { Execution } from "./execution.ts";
+import { Execution, ExecutionOptions } from "./execution.ts";
 import { evaluateExpression } from "../libs/expression/expression.ts";
 import type {
   JsonObject,
   Reporter,
   ReporterChangeData,
-  ReporterConstructor,
   Workflow,
 } from "../types.ts";
 
@@ -154,8 +153,9 @@ export class Manager {
 
   async executeWorkflow(
     def: Workflow.Configuration,
+    options: ExecutionOptions = {},
   ): Promise<Execution> {
-    const execution = new Execution(this, def, {});
+    const execution = new Execution(this, def, options);
 
     // store the execution in the manager
     this.executions.set(execution.id, execution);

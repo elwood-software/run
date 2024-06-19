@@ -65,14 +65,18 @@ export async function launchServe(options: ServeOptions = {}) {
       }
 
       if (request.method === "POST") {
-        const { workflow } = await request.json();
+        const { workflow, tracking_id } = await request.json();
 
         const x = await manager.executeWorkflow(
           await verifyWorkflow(workflow),
+          {
+            tracking_id,
+          },
         );
 
         return _response({
           id: x.id,
+          tracking_id: x.tracking_id,
           report: x.getReport(),
         });
       }

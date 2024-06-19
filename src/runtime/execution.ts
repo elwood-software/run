@@ -13,6 +13,7 @@ import {
 import { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
+import { asError } from "../libs/utils.ts";
 
 export type ExecutionOptions = {
   tracking_id?: string;
@@ -107,13 +108,22 @@ export class Execution extends State {
       ...new Set(actionUrls.map(resolveActionUrlForDenoCommand)),
     ];
 
+    await this.cacheDir.mkdir("deno");
+
     // cache each action file
     const results = await Promise.all(
       uniqueActionUrls.map(async (url) => {
         this.manager.logger.info(` > preloading action: ${url}`);
 
         return await executeDenoCommand({
-          args: ["-q", "cache", url],
+          args: [
+            "cache",
+            "-q",
+            "--no-config",
+            "--lock",
+            this.cacheDir.join("deno.lock"),
+            url,
+          ],
           env: this.getDenoEnv(),
         });
       }),
@@ -122,7 +132,7 @@ export class Execution extends State {
     if (results.some((item) => item.code !== 0)) {
       const names = results.map((item, i) => [actionUrls[i], item.code]).filter(
         (item) => item[1] !== 0,
-      ).map((item) => item[0].toString()).join(", ");
+      ).map((item) => item[0]!.toString()).join(", ");
 
       this.manager.logger.error(` > failed to cache action files: ${names}`);
       await this.fail(`Failed to cache action files: ${names}`);
@@ -169,14 +179,16 @@ export class Execution extends State {
       this.manager.logger.info(" > succeeded");
       await this.succeed();
     } catch (error) {
-      this.manager.logger.error(` > execution failed: ${error.message}`);
-      await this.fail(error.message);
+      const error_ = asError(error);
+
+      this.manager.logger.error(` > execution failed: ${error_.message}`);
+      await this.fail(error_.message);
     } finally {
       this.stop();
     }
   }
 
-  getCombinedState() {
+  override getCombinedState() {
     return {
       ...super.getCombinedState(),
       jobs: this.jobs.map((job) => job.getCombinedState()),
@@ -232,6 +244,7 @@ export class Execution extends State {
 
   getDenoEnv(): Record<string, string> {
     return {
+      HOME: this.workingDir.path,
       DENO_DIR: this.cacheDir.join("deno"),
     };
   }
@@ -241,8 +254,6 @@ export class Execution extends State {
 
     return {
       ...opts,
-      uid: this.manager.options.executionUid,
-      gid: this.manager.options.executionGid,
       env: {
         ...env,
         ...this.getDenoEnv(),

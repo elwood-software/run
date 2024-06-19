@@ -36,7 +36,7 @@ export async function setupDocker(): Promise<StopDockerFn> {
     "8000:8000",
     "-d",
     "-e",
-    "ELWOOD_RUNNER_STD_ACTIONS_PREFIX=file:///elwood/runner/actions",
+    "ELWOOD_RUNNER_STD_ACTIONS_PREFIX=file:///elwood/run/actions",
     tagName,
   ]);
 

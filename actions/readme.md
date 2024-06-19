@@ -23,10 +23,13 @@ The Elwood Run Action SDK provides reusable helpers to make developing actions e
 ### Installation
 ```bash
 # jsr
-jsr add @elwood/run-sdk
+jsr add @elwood/run-action-sdk
 
 # deno 
-deno add @elwood/run-sdk
+deno add @elwood/run-action-sdk
+
+# npm
+npx jsr add @elwood/run-action-sdk
 ```
 
 ### Usage
@@ -35,7 +38,8 @@ deno add @elwood/run-sdk
 import { sdk } from "https://x.elwood.run/a/sdk@latest.ts"
 
 # using JSR
-import {sdk} from "jsr:@elwood/run-sdk"
+import { sdk } from "jsr:@elwood/run-action-sdk"
+
 
 # get an input variable
 const value = await sdk.input.get("name")

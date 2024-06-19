@@ -9,5 +9,13 @@
     "useUnknownInCatchVariables": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true
+  },
+  "lint": {
+    "exclude": [
+      "tmp*"
+    ]
+  },
+  "imports": {
+    "@types/node": "npm:@types/node@^20.14.5"
   }
 }

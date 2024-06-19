@@ -1,5 +1,5 @@
 import { Manager } from "../runtime/manager.ts";
-import { EnvName, RunnerResult } from "../constants.ts";
+import { EnvName } from "../constants.ts";
 import { assert, parseYaml } from "../deps.ts";
 import type {
   BootstrapOptions,
@@ -10,6 +10,7 @@ import type {
 import { loadWorkflowFile, verifyWorkflow } from "../libs/load-workflow.ts";
 import { BootstrapSchema } from "../schema/bootstrap.ts";
 import { createReporter } from "../reporters/create.ts";
+import { asError } from "../libs/utils.ts";
 
 export async function launchBootstrap() {
   try {
@@ -65,12 +66,16 @@ export async function launchBootstrap() {
 
     await manager.prepare();
 
-    const exec = await manager.executeWorkflow(workflow);
+    const workflows_ = Array.isArray(workflow) ? workflow : [workflow];
 
-    // print the report to stdout
-    Deno.stdout.write(
-      new TextEncoder().encode(`report:=${JSON.stringify(exec.getReport())}`),
-    );
+    for (const workflow of workflows_) {
+      const exec = await manager.executeWorkflow(workflow);
+
+      // print the report to stdout
+      Deno.stdout.write(
+        new TextEncoder().encode(`report:=${JSON.stringify(exec.getReport())}`),
+      );
+    }
 
     // always cleanup the manager
     if (bootstrap.cleanup !== false && bootstrap.cleanup != "before") {
@@ -81,9 +86,11 @@ export async function launchBootstrap() {
     await manager.destroy();
 
     // exit with the appropriate code from the execution
-    Deno.exit(exec.result === RunnerResult.Success ? 0 : 1);
+    Deno.exit(0);
   } catch (error) {
-    console.error(`Error running bootstrap: ${error.message}`);
+    const error_ = asError(error);
+
+    console.error(`Error running bootstrap: ${error_.message}`);
     Deno.exit(1);
   }
 }

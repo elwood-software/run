@@ -1,4 +1,4 @@
-import { assert, join, toFileUrl } from "../_deps.ts";
+import { assert, join } from "../_deps.ts";
 
 export type FilePathOrUrl = string | URL;
 

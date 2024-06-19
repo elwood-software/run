@@ -19,7 +19,7 @@ class ShortUniqueId {
     crypto.getRandomValues(buf);
     let ret = "";
     for (let i = 0; i < buf.length; ++i) {
-      ret += ("0" + buf[i].toString(16)).slice(-2);
+      ret += ("0" + buf[i]!.toString(16)).slice(-2);
     }
     return ret;
   }
@@ -56,6 +56,9 @@ const suid = new ShortUniqueId();
 
 export function shortId(prefix = ""): string {
   const num = Math.floor(Math.random() * 1000).toString().slice(0, 1);
+  return [prefix.slice(0, 1), num, suid.seq()].join("");
+}
 
-  return [prefix, num, suid.seq()].join("");
+export function longId(prefix = ""): string {
+  return [prefix, suid.seq()].join("");
 }

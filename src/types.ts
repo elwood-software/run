@@ -9,7 +9,6 @@ import {
 } from "./schema/bootstrap.ts";
 import type * as step from "./schema/step.ts";
 import type * as scalar from "./schema/scalar.ts";
-import { type Execution } from "./runtime/execution.ts";
 
 // deno-lint-ignore no-explicit-any
 export type Json = any;

@@ -13,7 +13,7 @@ env:
 reporters:
   - name: "file"
     options:
-      path: "/elwood/runner/workspace/report-{id}.json"
+      path: "/elwood/run/runner/workspace/{id}/report.json"
   - name: "supabase"
     options:
       url: ${{ env.SUPABASE_URL }}
@@ -28,62 +28,60 @@ workflow:
     hi:
       when: true
       steps:
+        - run: echo "hi" >> $ELWOOD_OUTPUT
+
+    test:
+      when: false
+      steps:
+        - action: fs/write
+          input:
+            dest: "stage:///test.txt"
+            content: "poop"
+        - name: read
+          action: fs/read
+          input:
+            src: "stage:///test.txt"
+            output: "test"
         - action: echo
           input:
-            content: "hi"
+            content: ${{ steps.read.outputs.test }}
 
-    # test:
-    #   when: true
-    #   steps:
-    #     - action: fs/write
-    #       input:
-    #         dest: "stage:///test.txt"
-    #         content: "poop"
-    #     - name: read
-    #       action: fs/read
-    #       input:
-    #         src: "stage:///test.txt"
-    #         output: "test"
-    #     - action: echo
-    #       input:
-    #         content: ${{ steps.read.outputs.test }}
+    full:
+      when: false
+      steps:
+        - action: install/whisper
+        - action: fs/copy
+          input:
+            src: "/tmp/fixtures/conan.mp3"
+            dest: "stage://sample.mp3"
+        - action: run
+          input:
+            bin: whisper
+            args:
+              - --verbose
+              - "True"
+              - --language
+              - en
+              - --output_dir
+              - $ELWOOD_STAGE
+              - $ELWOOD_STAGE/sample.mp3
 
-    # full:
-    #   when: false
-    #   steps:
-    #     - action: install/whisper
-    #     - action: fs/copy
-    #       input:
-    #         src: "/tmp/fixtures/conan.mp3"
-    #         dest: "stage://sample.mp3"
-    #     - action: run
-    #       input:
-    #         bin: whisper
-    #         args:
-    #           - --verbose
-    #           - "True"
-    #           - --language
-    #           - en
-    #           - --output_dir
-    #           - $ELWOOD_STAGE
-    #           - $ELWOOD_STAGE/sample.mp3
-
-    # write:
-    #   when: false
-    #   steps:
-    #     - action: fs/copy
-    #       input:
-    #         src: "/tmp/fixtures/sample.srt"
-    #         dest: "stage:///sample.srt"
-    #     - name: read
-    #       action: fs/read
-    #       input:
-    #         src: "stage:///sample.srt"
-    #         output: "srt"
-    #     - action: ai/openai
-    #       input:
-    #         api_key: ${{ env.OPENAI_API_KEY }}
-    #         command: "createCompletions"
-    #         model: "gpt-4o"
-    #         prompt:
-    #           - ${{ "Identify advertisement segments in the following SRT text text:" + steps.read.outputs.srt }}
+    write:
+      when: false
+      steps:
+        - action: fs/copy
+          input:
+            src: "/tmp/fixtures/sample.srt"
+            dest: "stage:///sample.srt"
+        - name: read
+          action: fs/read
+          input:
+            src: "stage:///sample.srt"
+            output: "srt"
+        - action: ai/openai
+          input:
+            api_key: ${{ env.OPENAI_API_KEY }}
+            command: "createCompletions"
+            model: "gpt-4o"
+            prompt:
+              - ${{ "Identify advertisement segments in the following SRT text text:" + steps.read.outputs.srt }}

@@ -3,6 +3,7 @@ import * as fs from "./fs.ts";
 
 export async function set(
   name: string,
+  // deno-lint-ignore no-explicit-any -- intentional
   value: any,
   append = true,
 ): Promise<void> {
