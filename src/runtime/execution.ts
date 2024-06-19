@@ -119,12 +119,14 @@ export class Execution extends State {
           args: [
             "cache",
             "-q",
+            "--no-check",
             "--no-config",
             "--lock",
             this.cacheDir.join("deno.lock"),
             url,
           ],
           env: this.getDenoEnv(),
+          retry: true,
         });
       }),
     );

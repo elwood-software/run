@@ -69,6 +69,7 @@ export class SupabaseReporter
     const result = await this.client.from("run").upsert([
       {
         status: report.status,
+        result: report.result,
         tracking_id: report.tracking_id,
         report: report,
       },

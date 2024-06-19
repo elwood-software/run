@@ -69,12 +69,7 @@ export async function launchBootstrap() {
     const workflows_ = Array.isArray(workflow) ? workflow : [workflow];
 
     for (const workflow of workflows_) {
-      const exec = await manager.executeWorkflow(workflow);
-
-      // print the report to stdout
-      Deno.stdout.write(
-        new TextEncoder().encode(`report:=${JSON.stringify(exec.getReport())}`),
-      );
+      await manager.executeWorkflow(workflow);
     }
 
     // always cleanup the manager

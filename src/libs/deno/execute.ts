@@ -25,6 +25,7 @@ export async function executeDenoRun(
 export type ExecuteDenoCommand = Deno.CommandOptions & {
   stdoutStream?: WritableStream<Uint8Array>;
   stderrStream?: WritableStream<Uint8Array>;
+  retry?: boolean;
 };
 
 export async function executeDenoCommand(
@@ -35,6 +36,7 @@ export async function executeDenoCommand(
     stdoutStream,
     stdout = "inherit",
     stderr = "inherit",
+    retry = false,
     ...opts
   } = options;
 
@@ -57,5 +59,12 @@ export async function executeDenoCommand(
     await child.stdin.close();
   }
 
-  return await child.status;
+  const status = await child.status;
+
+  // if the command failed and we haven't retried yet, try again
+  if (status.code !== 0 && retry) {
+    return await executeDenoCommand({ ...options, retry: false });
+  }
+
+  return status;
 }

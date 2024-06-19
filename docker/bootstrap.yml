@@ -28,7 +28,7 @@ workflow:
     hi:
       when: true
       steps:
-        - run: echo "hi" >> $ELWOOD_OUTPUT
+        - run: echo "say=hi" >> $ELWOOD_OUTPUT
 
     test:
       when: false

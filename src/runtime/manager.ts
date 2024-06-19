@@ -117,7 +117,10 @@ export class Manager {
     return this.#toolCacheDir;
   }
 
-  async addReporter(reporter: Reporter, options: JsonObject = {}) {
+  async addReporter<Options extends JsonObject = JsonObject>(
+    reporter: Reporter,
+    options: Options = {} as Options,
+  ) {
     const options_ = await evaluateExpression(options, {
       env: Object.fromEntries(this.env),
     });

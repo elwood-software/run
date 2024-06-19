@@ -21,7 +21,7 @@ services:
     working_dir: /elwood/run/runner/workspace
     environment:
       - ELWOOD_RUNNER_STD_ACTIONS_PREFIX=file:///elwood/run/actions
-      - ELWOOD_RUNNER_MODE_OVERRIDE=bootstrap
+      - ELWOOD_RUNNER_MODE_OVERRIDE=worker
       - ELWOOD_RUNNER_BOOTSTRAP_FILE=/elwood/run/bootstrap.yml
 
 
