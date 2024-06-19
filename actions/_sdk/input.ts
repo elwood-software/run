@@ -16,7 +16,13 @@ export function get(name: string, strict = true): string {
     return "";
   }
 
-  return Deno.env.get(inputEnvName) as string ?? "";
+  const value = Deno.env.get(inputEnvName) as string ?? "";
+
+  if (value.startsWith("json:")) {
+    return String(JSON.parse(value.substring(5)));
+  }
+
+  return value;
 }
 
 export function getOptional<T = unknown>(

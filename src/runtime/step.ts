@@ -89,6 +89,7 @@ export class Step extends State {
       await this.job.execution.manager.reportUpdate(`step:${type}`, {
         ...data,
         execution_id: this.job.execution.id,
+        tracking_id: this.job.execution.tracking_id,
         job_id: this.job.id,
         step_id: this.id,
       });

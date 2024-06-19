@@ -11,7 +11,7 @@ import {
   type ExecuteDenoRunOptions,
 } from "../libs/deno/execute.ts";
 import { Folder } from "./folder.ts";
-import { RunnerResult, StateName } from "../constants.ts";
+import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
 import { asError } from "../libs/utils.ts";
 
@@ -75,7 +75,11 @@ export class Execution extends State {
 
   async prepare(): Promise<void> {
     this.onChange(async (type: string, data: ReporterChangeData) => {
-      await this.manager.reportUpdate(`execution:${type}`, data);
+      await this.manager.reportUpdate(`execution:${type}`, {
+        ...data,
+        tracking_id: this.tracking_id,
+        execution_id: this.id,
+      });
     });
 
     this.manager.logger.info(`Preparing execution: ${this.id}`);

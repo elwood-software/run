@@ -2,6 +2,7 @@ import { Folder } from "./folder.ts";
 import { assert, dotenv, isAbsolute, join, logger } from "../deps.ts";
 import { Execution, ExecutionOptions } from "./execution.ts";
 import { evaluateExpression } from "../libs/expression/expression.ts";
+import { EnvName } from "../constants.ts";
 import type {
   JsonObject,
   Reporter,
@@ -28,8 +29,8 @@ export class Manager {
     const workspaceDir = Deno.env.get("ELWOOD_RUNNER_WORKSPACE_DIR");
     const executionUid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_UID");
     const executionGid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_GID");
-    const stdActionsPrefix = Deno.env.get("ELWOOD_RUNNER_STD_ACTIONS_PREFIX") ??
-      "https://x.elwood.run";
+    const stdActionsPrefix = Deno.env.get(EnvName.StdActionPrefix) ??
+      "https://x.elwood.run/a";
 
     assert(workspaceDir, "ELWOOD_RUNNER_WORKSPACE_DIR not set");
     assert(

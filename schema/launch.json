@@ -1,10 +1,83 @@
 {
-  "$ref": "#/definitions/bootstrap",
+  "$ref": "#/definitions/launch",
   "definitions": {
-    "bootstrap": {
-      "anyOf": [
-        {
-          "allOf": [
+    "launch": {
+      "type": "object",
+      "properties": {
+        "cleanup": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "before",
+                "after",
+                "both"
+              ]
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "default": "after"
+        },
+        "reporters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "options": {
+                "type": "object",
+                "additionalProperties": {},
+                "default": {}
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "default": []
+        },
+        "env": {
+          "type": "object",
+          "properties": {
+            "set": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "default": {}
+            },
+            "load": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "passthrough": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "execute": {
+          "anyOf": [
             {
               "type": "object",
               "properties": {
@@ -14,89 +87,9 @@
               },
               "required": [
                 "workflowFile"
-              ]
+              ],
+              "additionalProperties": false
             },
-            {
-              "type": "object",
-              "properties": {
-                "cleanup": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "enum": [
-                        "before",
-                        "after",
-                        "both"
-                      ]
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ],
-                  "default": "after"
-                },
-                "reporters": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "options": {
-                        "type": "object",
-                        "additionalProperties": {},
-                        "default": {}
-                      }
-                    },
-                    "required": [
-                      "name"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "default": []
-                },
-                "env": {
-                  "type": "object",
-                  "properties": {
-                    "set": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "string"
-                      },
-                      "default": {}
-                    },
-                    "load": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "default": []
-                    },
-                    "passthrough": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "default": []
-                    },
-                    "required": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "default": []
-                    }
-                  },
-                  "additionalProperties": false,
-                  "default": {}
-                }
-              }
-            }
-          ]
-        },
-        {
-          "allOf": [
             {
               "type": "object",
               "properties": {
@@ -162,7 +155,7 @@
                           ]
                         },
                         {
-                          "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/when/anyOf/0/anyOf/1/items/anyOf/1"
+                          "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/when/anyOf/0/anyOf/1/items/anyOf/1"
                         }
                       ]
                     },
@@ -203,16 +196,16 @@
                                       "default": "inherit"
                                     },
                                     "read": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
                                     },
                                     "write": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
                                     },
                                     "net": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
                                     },
                                     "run": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions/anyOf/0/anyOf/0/properties/env"
                                     }
                                   },
                                   "additionalProperties": false
@@ -247,7 +240,7 @@
                             "type": "string"
                           },
                           "when": {
-                            "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/when"
+                            "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/when"
                           },
                           "steps": {
                             "type": "array",
@@ -286,7 +279,7 @@
                                       }
                                     },
                                     "permissions": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/defaults/properties/permissions"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions"
                                     },
                                     "run": {
                                       "type": "string"
@@ -301,25 +294,25 @@
                                   "type": "object",
                                   "properties": {
                                     "name": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/name"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/name"
                                     },
                                     "label": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/label"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/label"
                                     },
                                     "description": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/description"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/description"
                                     },
                                     "when": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/when"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/when"
                                     },
                                     "input": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/input"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/input"
                                     },
                                     "env": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/env"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/env"
                                     },
                                     "permissions": {
-                                      "$ref": "#/definitions/bootstrap/anyOf/1/allOf/0/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions"
                                     },
                                     "action": {
                                       "type": "string"
@@ -354,14 +347,33 @@
               },
               "required": [
                 "workflow"
-              ]
-            },
-            {
-              "$ref": "#/definitions/bootstrap/anyOf/0/allOf/1"
+              ],
+              "additionalProperties": false
             }
           ]
+        },
+        "worker": {
+          "type": "object",
+          "properties": {
+            "checkInterval": {
+              "type": "number",
+              "default": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        "server": {
+          "type": "object",
+          "properties": {
+            "port": {
+              "type": "number",
+              "default": 8080
+            }
+          },
+          "additionalProperties": false
         }
-      ]
+      },
+      "additionalProperties": false
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"

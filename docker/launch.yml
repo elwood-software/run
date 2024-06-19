@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=../schema/launch.json
+
+cleanup: before
+env:
+  passthrough:
+    - OPENAI_API_KEY
+    - SUPABASE_URL
+    - SUPABASE_ANON_KEY
+    - SUPABASE_SERVICE_KEY
+  required:
+    - OPENAI_API_KEY
+
+reporters:
+  - name: "file"
+    options:
+      path: "/elwood/run/runner/workspace/{id}/report.json"
+  - name: "supabase"
+    options:
+      url: ${{ env.SUPABASE_URL }}
+      anon_key: ${{ env.SUPABASE_ANON_KEY }}
+      service_key: ${{ env.SUPABASE_SERVICE_KEY }}
+
+worker:
+  checkInterval: 1000
+
+execute:
+  workflow:
+    name: "bootstrap"
+    defaults:
+      permissions: true
+    jobs:
+      hi:
+        when: true
+        steps:
+          - run: echo "say=hi" >> $ELWOOD_OUTPUT
+          - action: wait
+            input:
+              seconds: 60
+
+      test:
+        when: false
+        steps:
+          - action: fs/write
+            input:
+              dest: "stage:///test.txt"
+              content: "poop"
+          - name: read
+            action: fs/read
+            input:
+              src: "stage:///test.txt"
+              output: "test"
+          - action: echo
+            input:
+              content: ${{ steps.read.outputs.test }}
+
+      full:
+        when: false
+        steps:
+          - action: install/whisper
+          - action: fs/copy
+            input:
+              src: "/tmp/fixtures/conan.mp3"
+              dest: "stage://sample.mp3"
+          - action: run
+            input:
+              bin: whisper
+              args:
+                - --verbose
+                - "True"
+                - --language
+                - en
+                - --output_dir
+                - $ELWOOD_STAGE
+                - $ELWOOD_STAGE/sample.mp3
+
+      write:
+        when: false
+        steps:
+          - action: fs/copy
+            input:
+              src: "/tmp/fixtures/sample.srt"
+              dest: "stage:///sample.srt"
+          - name: read
+            action: fs/read
+            input:
+              src: "stage:///sample.srt"
+              output: "srt"
+          - action: ai/openai
+            input:
+              api_key: ${{ env.OPENAI_API_KEY }}
+              command: "createCompletions"
+              model: "gpt-4o"
+              prompt:
+                - ${{ "Identify advertisement segments in the following SRT text text:" + steps.read.outputs.srt }}

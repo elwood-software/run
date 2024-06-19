@@ -3,7 +3,12 @@ import { assert, parseYaml, supabase } from "../deps.ts";
 import { createReporter } from "../reporters/create.ts";
 import { SupabaseReporterOptions } from "../reporters/supabase.ts";
 import { RunnerResult, RunnerStatus } from "../constants.ts";
-import { JsonObject, Workflow } from "../types.ts";
+import type {
+  JsonObject,
+  LaunchOptions,
+  LaunchWorkerOptions,
+  Workflow,
+} from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
 import { asError } from "../libs/utils.ts";
 
@@ -15,8 +20,14 @@ type PossibleConfiguration =
   | Workflow.Configuration
   | PossibleConfigurationFormat;
 
-export async function launchWorker() {
-  const manager = await Manager.fromEnv({});
+export async function launchWorker(
+  options: LaunchOptions & LaunchWorkerOptions,
+) {
+  const manager = await Manager.fromEnv({
+    env: options.env?.set ?? {},
+    passthroughEnv: options.env?.passthrough ?? [],
+    loadEnv: options.env?.load ?? [],
+  });
   const abortController = new AbortController();
 
   const url = Deno.env.get("SUPABASE_URL");
@@ -94,6 +105,11 @@ export async function launchWorker() {
       manager.logger.info(`Verifying run ${id} ${tracking_id}`);
 
       try {
+        await client.from("run").update({
+          status: RunnerStatus.Running,
+          started_at: new Date(),
+        }).eq("id", id);
+
         const execution = await manager.executeWorkflow(
           await verifyWorkflow(unverifiedConfiguration),
           {
@@ -104,6 +120,7 @@ export async function launchWorker() {
         await client.from("run").update({
           status: execution.status,
           result: execution.result,
+          ended_at: new Date(),
         }).eq("id", id);
       } catch (err) {
         manager.logger.error(`Error ${asError(err).message} processing`);
@@ -111,6 +128,7 @@ export async function launchWorker() {
         await client.from("run").update({
           status: RunnerStatus.Complete,
           result: RunnerResult.Failure,
+          ended_at: new Date(),
           report: {
             reason: err.message,
             result: RunnerResult.Failure,
@@ -124,7 +142,7 @@ export async function launchWorker() {
     } finally {
       lock = false;
     }
-  }, 1000);
+  }, 1000 * 10);
 
   abortController.signal.addEventListener("abort", async () => {
     manager.logger.info("Abort signal received, shutting down server");

@@ -1,7 +1,8 @@
 // deno-lint-ignore-file require-await
 import { AbstractReporter } from "./abstract.ts";
-import type { Json, ReporterChangeData, Workflow } from "../types.ts";
+import type { Json, ReporterChangeData, Status, Workflow } from "../types.ts";
 import { assert, supabase } from "../deps.ts";
+import { RunnerStatus } from "../constants.ts";
 
 export interface SupabaseReporterOptions {
   url: string;
@@ -18,10 +19,10 @@ export class SupabaseReporter
   #lock = false;
   #changeQueueInterval: number | null = null;
   #changeQueue: Array<{ type: string; data: ReporterChangeData }> = [];
+  #lastStatus: Status = RunnerStatus.Pending;
 
   get client(): Client {
     assert(this.#client, "Client not initialized");
-
     return this.#client;
   }
 
@@ -84,6 +85,26 @@ export class SupabaseReporter
 
   async change(type: string, data: ReporterChangeData): Promise<void> {
     this.#changeQueue.push({ type, data });
+
+    // always update status right away
+    if (this.#lastStatus !== data.status) {
+      if (!data.tracking_id) {
+        console.error("No tracking_id in change data", data);
+        return;
+      }
+
+      await this.client.from("run").upsert([
+        {
+          status: data.status,
+          tracking_id: data.tracking_id,
+        },
+      ], {
+        onConflict: "tracking_id",
+        ignoreDuplicates: false,
+      }).eq("tracking_id", data.tracking_id);
+
+      this.#lastStatus = data.status;
+    }
   }
 
   async _flush(): Promise<void> {

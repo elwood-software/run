@@ -4,9 +4,13 @@ import { z } from "./deps.ts";
 import { type WorkflowSchema } from "./schema/workflow.ts";
 import { type JobSchema } from "./schema/job.ts";
 import {
-  type BootstrapWithWorkflowFileSchema,
-  type BootstrapWithWorkflowSchema,
-} from "./schema/bootstrap.ts";
+  type ExecuteSchema,
+  type ExecuteWithWorkflowFileSchema,
+  type ExecuteWithWorkflowSchema,
+  type LaunchSchema,
+  type ServerSchema,
+  type WorkerSchema,
+} from "./schema/launch.ts";
 import type * as step from "./schema/step.ts";
 import type * as scalar from "./schema/scalar.ts";
 
@@ -68,16 +72,20 @@ export namespace Workflow {
     jobs: Record<string, ReportJob>;
   };
 }
-export type BootstrapWithFileOptions = z.infer<
-  typeof BootstrapWithWorkflowFileSchema
+export type LaunchExecuteWithFileOptions = z.infer<
+  typeof ExecuteWithWorkflowFileSchema
 >;
-export type BootstrapWithWorkflowOptions = z.infer<
-  typeof BootstrapWithWorkflowSchema
+export type LaunchExecuteWithWorkflowOptions = z.infer<
+  typeof ExecuteWithWorkflowSchema
 >;
 
-export type BootstrapOptions =
-  | BootstrapWithFileOptions
-  | BootstrapWithWorkflowOptions;
+export type LaunchExecuteOptions = z.infer<typeof ExecuteSchema>;
+
+export type LaunchWorkerOptions = z.infer<typeof WorkerSchema>;
+
+export type LaunchServerOptions = z.infer<typeof ServerSchema>;
+
+export type LaunchOptions = z.infer<typeof LaunchSchema>;
 
 export type ReporterChangeData = {
   execution_id: string;

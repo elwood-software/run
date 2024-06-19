@@ -16,7 +16,9 @@ export const RunnerResult = {
 } as const;
 
 export enum EnvName {
-  BootstrapFile = "ELWOOD_RUNNER_BOOTSTRAP_FILE",
+  LaunchFile = "ELWOOD_RUN_LAUNCH_FILE",
+  LaunchOverrideMode = "ELWOOD_RUN_MODE_OVERRIDE",
+  StdActionPrefix = "ELWOOD_RUN_STD_ACTIONS_PREFIX",
 }
 
 export enum StateName {
@@ -35,7 +37,7 @@ export enum ReporterName {
 }
 
 export enum LaunchMode {
-  Bootstrap = "bootstrap",
+  Execute = "execute",
   Worker = "worker",
   Serve = "serve",
 }

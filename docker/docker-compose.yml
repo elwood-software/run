@@ -17,12 +17,12 @@ services:
       - ../src:/elwood/run/runtime
       - ../deno.json:/elwood/run/deno.json
       - ../actions:/elwood/run/actions
-      - ./bootstrap.yml:/elwood/run/bootstrap.yml
+      - ./launch.yml:/elwood/run/launch.yml
     working_dir: /elwood/run/runner/workspace
     environment:
-      - ELWOOD_RUNNER_STD_ACTIONS_PREFIX=file:///elwood/run/actions
-      - ELWOOD_RUNNER_MODE_OVERRIDE=worker
-      - ELWOOD_RUNNER_BOOTSTRAP_FILE=/elwood/run/bootstrap.yml
+      - ELWOOD_RUN_STD_ACTIONS_PREFIX=file:///elwood/run/actions
+      - ELWOOD_RUN_MODE_OVERRIDE=worker
+      - ELWOOD_RUN_LAUNCH_FILE=/elwood/run/launch.yml
 
 
 

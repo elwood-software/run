@@ -115,6 +115,8 @@ export abstract class State implements RuntimeState {
   }
 
   start() {
+    this._status = RunnerStatus.Running;
+
     this.#startTime = performance.now();
 
     this.#emitter.emit("change", "start", {

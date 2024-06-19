@@ -1,15 +1,8 @@
 import { Manager } from "../runtime/manager.ts";
-import { JsonObject } from "../types.ts";
+import type { JsonObject, LaunchServerOptions } from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
 
-export type ServeOptions = {
-  env?: Record<string, string>;
-  passthroughEnv?: string[];
-  loadEnv?: string[];
-  requiredEnv?: string[];
-};
-
-export async function launchServe(options: ServeOptions = {}) {
+export async function launchServe(options: LaunchServerOptions = {}) {
   // create our manager from the environment
   const manager = await Manager.fromEnv({
     env: options.env,
