@@ -96,6 +96,10 @@
                 "workflow": {
                   "type": "object",
                   "properties": {
+                    "$schema": {
+                      "type": "string",
+                      "default": "https://x.elwood.run/schema@latest.json"
+                    },
                     "name": {
                       "type": "string"
                     },
@@ -336,6 +340,10 @@
                       "propertyNames": {
                         "pattern": "[a-zA-Z-]+"
                       }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": {}
                     }
                   },
                   "required": [
@@ -355,11 +363,31 @@
         "worker": {
           "type": "object",
           "properties": {
-            "checkInterval": {
+            "intervalSeconds": {
               "type": "number",
-              "default": 1000
+              "default": 60
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "default": {}
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
             }
           },
+          "required": [
+            "source"
+          ],
           "additionalProperties": false
         },
         "server": {

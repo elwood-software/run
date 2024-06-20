@@ -1,12 +1,7 @@
 import { assert, logger, parseYaml } from "./deps.ts";
 import { EnvName, LaunchMode, LaunchModeNames } from "./constants.ts";
 import { LaunchSchema } from "./schema/launch.ts";
-import type {
-  LaunchExecuteOptions,
-  LaunchOptions,
-  LaunchServerOptions,
-  LaunchWorkerOptions,
-} from "./types.ts";
+import type { LaunchOptions } from "./types.ts";
 
 // launch modes
 import { launchServe } from "./launch/serve.ts";

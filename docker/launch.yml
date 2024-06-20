@@ -21,7 +21,13 @@ reporters:
       service_key: ${{ env.SUPABASE_SERVICE_KEY }}
 
 worker:
-  checkInterval: 1000
+  intervalSeconds: 30
+  source:
+    name: supabase
+    options:
+      url: ${{ env.SUPABASE_URL }}
+      anon_key: ${{ env.SUPABASE_ANON_KEY }}
+      service_key: ${{ env.SUPABASE_SERVICE_KEY }}
 
 execute:
   workflow:
@@ -33,9 +39,6 @@ execute:
         when: true
         steps:
           - run: echo "say=hi" >> $ELWOOD_OUTPUT
-          - action: wait
-            input:
-              seconds: 60
 
       test:
         when: false

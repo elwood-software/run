@@ -3,7 +3,11 @@ import { WorkflowSchema } from "./workflow.ts";
 
 // WORKER
 export const WorkerSchema = z.object({
-  checkInterval: z.number().default(1000).optional(),
+  intervalSeconds: z.number().default(60).optional(),
+  source: z.object({
+    name: z.string(),
+    options: z.record(z.any()).default({}).optional(),
+  }),
 });
 
 // BOOTSTRAP

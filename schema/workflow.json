@@ -4,6 +4,10 @@
     "workflow": {
       "type": "object",
       "properties": {
+        "$schema": {
+          "type": "string",
+          "default": "https://x.elwood.run/schema@latest.json"
+        },
         "name": {
           "type": "string"
         },
@@ -244,6 +248,10 @@
           "propertyNames": {
             "pattern": "[a-zA-Z-]+"
           }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {}
         }
       },
       "required": [

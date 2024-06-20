@@ -1,4 +1,3 @@
-// deno-lint-ignore-file require-await
 import { AbstractReporter } from "./abstract.ts";
 import type { Json, ReporterChangeData, Status, Workflow } from "../types.ts";
 import { assert, supabase } from "../deps.ts";

@@ -11,7 +11,7 @@ import {
   type ExecuteDenoRunOptions,
 } from "../libs/deno/execute.ts";
 import { Folder } from "./folder.ts";
-import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
+import { RunnerResult, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
 import { asError } from "../libs/utils.ts";
 
@@ -21,7 +21,7 @@ export type ExecutionOptions = {
 
 export class Execution extends State {
   readonly id: string;
-  readonly name = "execution";
+  readonly name: string;
   readonly #jobs = new Map<string, Job>();
 
   #tracking_id: string = crypto.randomUUID();
@@ -39,6 +39,7 @@ export class Execution extends State {
     super();
     this.id = this.shortId("execution");
     this.#tracking_id = options.tracking_id ?? this.#tracking_id;
+    this.name = this.def.name ?? this.id;
   }
 
   get jobs(): Job[] {
@@ -99,6 +100,9 @@ export class Execution extends State {
 
     for (const [name, def] of Object.entries(this.def.jobs)) {
       const job = new Job(this, name, def);
+
+      console.log("aaa", name, job.name);
+
       this.#jobs.set(job.id, job);
       await job.prepare();
 
@@ -221,8 +225,8 @@ export class Execution extends State {
         return {
           ...acc,
           [job.name]: {
-            id: this.id,
-            name: this.name,
+            id: job.id,
+            name: job.name,
             status: job.status,
             result: job.result,
             timing: job.getState(StateName.Timing),
@@ -230,8 +234,8 @@ export class Execution extends State {
               return {
                 ...acc,
                 [step.name]: {
-                  id: this.id,
-                  name: this.name,
+                  id: step.id,
+                  name: step.name,
                   status: step.status,
                   result: step.result,
                   reason: step.state.reason,

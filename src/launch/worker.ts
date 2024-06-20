@@ -3,14 +3,10 @@ import { assert, parseYaml, supabase } from "../deps.ts";
 import { createReporter } from "../reporters/create.ts";
 import { SupabaseReporterOptions } from "../reporters/supabase.ts";
 import { RunnerResult, RunnerStatus } from "../constants.ts";
-import type {
-  JsonObject,
-  LaunchOptions,
-  LaunchWorkerOptions,
-  Workflow,
-} from "../types.ts";
+import type { JsonObject, LaunchOptions, Workflow } from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
 import { asError } from "../libs/utils.ts";
+import { evaluateExpression } from "../libs/expression/expression.ts";
 
 type PossibleConfigurationFormat = {
   format: "yaml";
@@ -20,19 +16,35 @@ type PossibleConfiguration =
   | Workflow.Configuration
   | PossibleConfigurationFormat;
 
+type SupabaseWorkerOptions = {
+  url?: string;
+  anon_key?: string;
+  service_key?: string;
+};
+
 export async function launchWorker(
-  options: LaunchOptions & LaunchWorkerOptions,
+  options: LaunchOptions,
 ) {
+  assert(
+    options.worker,
+    "Worker is not defined",
+  );
+
   const manager = await Manager.fromEnv({
     env: options.env?.set ?? {},
     passthroughEnv: options.env?.passthrough ?? [],
     loadEnv: options.env?.load ?? [],
   });
   const abortController = new AbortController();
+  const tickInterval = options.worker.intervalSeconds ?? 1000;
 
-  const url = Deno.env.get("SUPABASE_URL");
-  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_KEY");
+  const { url, anon_key: anonKey, service_key: serviceKey } =
+    await evaluateExpression<SupabaseWorkerOptions>(
+      options.worker.source.options ?? {},
+      {
+        env: Object.fromEntries(manager.env),
+      },
+    );
 
   assert(url, "Supabase URL is required");
   assert(anonKey, "Supabase anon key is required");
@@ -142,7 +154,7 @@ export async function launchWorker(
     } finally {
       lock = false;
     }
-  }, 1000 * 10);
+  }, tickInterval * 1000);
 
   abortController.signal.addEventListener("abort", async () => {
     manager.logger.info("Abort signal received, shutting down server");

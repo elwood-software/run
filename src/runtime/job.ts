@@ -10,7 +10,6 @@ import { asError } from "../libs/utils.ts";
 
 export class Job extends State {
   readonly id: string;
-
   readonly #steps = new Map<string, Step>();
 
   #contextDir: Folder | null = null;
@@ -68,7 +67,7 @@ export class Job extends State {
       }
 
       for (const step of this.steps) {
-        if (this.status !== "pending") {
+        if (step.status !== "pending") {
           continue;
         }
 
