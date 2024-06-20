@@ -6,10 +6,10 @@ import { Folder } from "./folder.ts";
 import { Step } from "./step.ts";
 import { RunnerResult } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
+import { asError } from "../libs/utils.ts";
 
 export class Job extends State {
   readonly id: string;
-
   readonly #steps = new Map<string, Step>();
 
   #contextDir: Folder | null = null;
@@ -41,6 +41,7 @@ export class Job extends State {
       await this.execution.manager.reportUpdate(`job:${type}`, {
         ...data,
         execution_id: this.execution.id,
+        tracking_id: this.execution.tracking_id,
         job_id: this.id,
       });
     });
@@ -66,7 +67,7 @@ export class Job extends State {
       }
 
       for (const step of this.steps) {
-        if (this.status !== "pending") {
+        if (step.status !== "pending") {
           continue;
         }
 
@@ -87,14 +88,16 @@ export class Job extends State {
 
       await this.succeed();
     } catch (error) {
-      this.logger.error(` > job failed: ${error.message}`);
-      await this.fail(error.message);
+      const error_ = asError(error);
+
+      this.logger.error(` > job failed: ${error_.message}`);
+      await this.fail(error_.message);
     } finally {
       this.stop();
     }
   }
 
-  getCombinedState() {
+  override getCombinedState() {
     return {
       ...super.getCombinedState(),
       definition: this.def,

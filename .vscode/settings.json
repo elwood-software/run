@@ -1,5 +1,6 @@
 {
-  "deno.enablePaths": ["."],
+  "deno.enable": true,
+  "deno.enablePaths": ["./"],
   "deno.lint": true,
   "eslint.workingDirectories": [
     {
@@ -18,6 +19,7 @@
   },
   "editor.tabSize": 2,
   "cSpell.words": [
+    "deno",
     "supabase"
   ]
 }

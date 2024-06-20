@@ -1,4 +1,4 @@
-import { command, install } from "../_core/mod.ts";
+import { command, install } from "../_sdk/mod.ts";
 
 enum Urls {
   DarwinFFmpeg = "https://evermeet.cx/ffmpeg/ffmpeg-5.1.2.zip",

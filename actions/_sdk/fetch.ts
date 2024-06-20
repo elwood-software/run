@@ -1,4 +1,4 @@
-import { toWritableStream } from "../deps.ts";
+import { toWritableStream } from "../_deps.ts";
 import { normalize } from "./path.ts";
 
 export const native = globalThis.fetch;

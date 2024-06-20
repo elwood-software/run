@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "../deps.ts";
+import { assertEquals, assertThrows } from "../_deps.ts";
 
 import { get, getOptional } from "./input.ts";
 Deno.test("get()", async function (t) {

@@ -9,7 +9,14 @@ import type {
 export abstract class AbstractReporter<
   Options extends JsonObject = JsonObject,
 > implements Reporter {
-  constructor(public readonly options: Options) {}
+  options: Options = {} as Options;
+
+  async destroy(): Promise<void> {
+  }
+
+  setOptions(options: Options): void {
+    this.options = options;
+  }
 
   async reportFromExecution(execution: Execution): Promise<void> {
     return await this.report(execution.getReport());

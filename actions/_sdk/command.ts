@@ -1,5 +1,3 @@
-import { join } from "../deps.ts";
-
 export async function execute(
   bin: string,
   options: Deno.CommandOptions = {},

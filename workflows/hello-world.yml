@@ -1,32 +1,34 @@
-# yaml-language-server: $schema=../schema.json
+# yaml-language-server: $schema=../schema/workflow.json
 
 name: hello-world
+description: ":wave: Hello, World! in so many ways"
 jobs:
+  # A bunch of ways to say hello!
   echo:
     steps:
       # simple example uses bash to echo "hello world" to
-      # standard output
+      # standard output using bash
       - run: echo "Hello, World!"
-        description: "Prints 'Hello, World!' to stdout."
+
+      # We can also use deno instead of bash
+      - run: "Deno.stdout.write(new TextEncoder().encode('Hello, World!'));"
+        input:
+          bin: "deno"
 
       # We can do the same thing with the "echo" action
       # You an check out the echo action in ../actions/echo.ts
       - action: "echo"
-        description: "Prints 'Hello, World!' to stdout."
         input:
           content: "Hello, World!"
-  expressions:
+
+  # Use outputs to say the same thing
+  outputs:
     steps:
-      - action: "echo"
+      # first we use $ELWOOD_OUTPUT to write to the output file
+      - name: say_what
+        run: echo "say=Hello World" >> $ELWOOD_OUTPUT
+
+      # then we say hello
+      - run: echo
         input:
-          content: ${{ step.name }}
-      - action: "echo"
-        input:
-          content: ${{ "awesome".toUpperCase() }}
-  output:
-    steps:
-      - name: whoami
-        run: echo "name=Mr. Awesome" >> $ELWOOD_OUTPUT
-      - action: echo
-        input:
-          content: ${{ steps.whoami.outputs.name }}
+          content: ${{ steps.say_what.outputs.say }}

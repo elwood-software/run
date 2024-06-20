@@ -1,5 +1,5 @@
-import { assert } from "./deps.ts";
-import { args, command, input } from "./_core/mod.ts";
+import { assert } from "./_deps.ts";
+import { args, command, input } from "./_sdk/mod.ts";
 
 if (import.meta.main) {
   main();

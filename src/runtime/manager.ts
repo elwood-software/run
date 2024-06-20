@@ -1,7 +1,14 @@
 import { Folder } from "./folder.ts";
 import { assert, dotenv, isAbsolute, join, logger } from "../deps.ts";
-import { Execution } from "./execution.ts";
-import type { Reporter, ReporterChangeData, Workflow } from "../types.ts";
+import { Execution, ExecutionOptions } from "./execution.ts";
+import { evaluateExpression } from "../libs/expression/expression.ts";
+import { EnvName } from "../constants.ts";
+import type {
+  JsonObject,
+  Reporter,
+  ReporterChangeData,
+  Workflow,
+} from "../types.ts";
 
 export type ManagerOptions = {
   rootDir?: string;
@@ -22,8 +29,8 @@ export class Manager {
     const workspaceDir = Deno.env.get("ELWOOD_RUNNER_WORKSPACE_DIR");
     const executionUid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_UID");
     const executionGid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_GID");
-    const stdActionsPrefix = Deno.env.get("ELWOOD_RUNNER_STD_ACTIONS_PREFIX") ??
-      "https://x.elwood.run";
+    const stdActionsPrefix = Deno.env.get(EnvName.StdActionPrefix) ??
+      "https://x.elwood.run/a";
 
     assert(workspaceDir, "ELWOOD_RUNNER_WORKSPACE_DIR not set");
     assert(
@@ -57,6 +64,49 @@ export class Manager {
 
   constructor(public readonly options: ManagerOptions) {
     this.#workspaceDir = new Folder(options.workspaceDir);
+
+    // set default env options
+    if (options.env) {
+      Object.entries(options.env).forEach(([key, value]) => {
+        this.env.set(key, value);
+      });
+    }
+
+    if (options.loadEnv) {
+      for (const file of options.loadEnv) {
+        const file_ = isAbsolute(file)
+          ? file
+          : join(this.options.rootDir ?? "", file);
+        const env_ = dotenv.parse(Deno.readTextFileSync(file_));
+
+        for (const [key, value] of Object.entries(env_)) {
+          this.env.set(key, value);
+        }
+      }
+    }
+
+    if (Array.isArray(options.passthroughEnv)) {
+      for (const name of options.passthroughEnv) {
+        if (Deno.env.has(name)) {
+          this.env.set(name, Deno.env.get(name)!);
+        }
+      }
+    }
+
+    if (Array.isArray(options.requiredEnv)) {
+      const missingEnv = options.requiredEnv.filter((key) => {
+        return this.env.get(key) === undefined;
+      });
+
+      assert(
+        missingEnv.length === 0,
+        `Missing env variables ${missingEnv.join(", ")}`,
+      );
+    }
+  }
+
+  async destroy() {
+    await Promise.all(this.reporters.map((r) => r.destroy()));
   }
 
   get workspaceDir(): Folder {
@@ -68,7 +118,18 @@ export class Manager {
     return this.#toolCacheDir;
   }
 
-  addReporter(reporter: Reporter) {
+  async addReporter<Options extends JsonObject = JsonObject>(
+    reporter: Reporter,
+    options: Options = {} as Options,
+  ) {
+    const options_ = await evaluateExpression(options, {
+      env: Object.fromEntries(this.env),
+    });
+
+    reporter.setOptions(
+      options_,
+    );
+
     this.reporters.push(reporter);
   }
 
@@ -86,45 +147,6 @@ export class Manager {
     await this.mkdir("workspace");
 
     this.#toolCacheDir = await this.workspaceDir.mkdir("tool-cache");
-
-    // set default env options
-    if (this.options.env) {
-      Object.entries(this.options.env).forEach(([key, value]) => {
-        this.env.set(key, value);
-      });
-    }
-
-    if (this.options.loadEnv) {
-      for (const file of this.options.loadEnv) {
-        const file_ = isAbsolute(file)
-          ? file
-          : join(this.options.rootDir ?? "", file);
-        const env_ = dotenv.parse(await Deno.readTextFile(file_));
-
-        for (const [key, value] of Object.entries(env_)) {
-          this.env.set(key, value);
-        }
-      }
-    }
-
-    if (Array.isArray(this.options.passthroughEnv)) {
-      for (const name of this.options.passthroughEnv) {
-        if (Deno.env.has(name)) {
-          this.env.set(name, Deno.env.get(name)!);
-        }
-      }
-    }
-
-    if (Array.isArray(this.options.requiredEnv)) {
-      const missingEnv = this.options.requiredEnv.filter((key) => {
-        return this.env.get(key) === undefined;
-      });
-
-      assert(
-        missingEnv.length === 0,
-        `Missing env variables ${missingEnv.join(", ")}`,
-      );
-    }
   }
 
   async reportUpdate(type: string, data: ReporterChangeData) {
@@ -135,8 +157,9 @@ export class Manager {
 
   async executeWorkflow(
     def: Workflow.Configuration,
+    options: ExecutionOptions = {},
   ): Promise<Execution> {
-    const execution = new Execution(this, def, {});
+    const execution = new Execution(this, def, options);
 
     // store the execution in the manager
     this.executions.set(execution.id, execution);

@@ -1,4 +1,4 @@
-import { command } from "../_core/mod.ts";
+import { command } from "../_sdk/mod.ts";
 import { main as installFFmpeg } from "./ffmpeg.ts";
 
 if (import.meta.main) {

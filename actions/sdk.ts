@@ -1,4 +1,4 @@
-export * from "./_core/mod.ts";
+export * as sdk from "./_sdk/mod.ts";
 
 // this file can't be directly executed. It's only
 // meant to be a short to the _core helper modules

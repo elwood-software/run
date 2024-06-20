@@ -1,8 +1,9 @@
-import { base64 } from "../deps.ts";
+import { base64 } from "../_deps.ts";
 import * as fs from "./fs.ts";
 
 export async function set(
   name: string,
+  // deno-lint-ignore no-explicit-any -- intentional
   value: any,
   append = true,
 ): Promise<void> {

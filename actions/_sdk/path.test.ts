@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../deps.ts";
+import { assertEquals, assertRejects } from "../_deps.ts";
 
 import { normalize } from "./path.ts";
 

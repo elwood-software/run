@@ -6,7 +6,7 @@ import {
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
-import { evaluateExpression } from "../libs/expression/expression.ts";
+import { evaluateAndNormalizeExpression } from "../libs/expression/expression.ts";
 import {
   parseVariableFile,
   replaceVariablePlaceholdersInVariables,
@@ -17,7 +17,7 @@ import { stepHasRun } from "../libs/config-helpers.ts";
 import { StateName } from "../constants.ts";
 import { denoMergePermissions } from "../libs/deno/permissions.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
-import { toObject } from "../libs/utils.ts";
+import { asError, toObject } from "../libs/utils.ts";
 
 export class Step extends State {
   readonly id: string;
@@ -45,7 +45,7 @@ export class Step extends State {
     return this.job.logger;
   }
 
-  getCombinedState() {
+  override getCombinedState() {
     return {
       ...super.getCombinedState(),
       definition: this.def,
@@ -81,7 +81,7 @@ export class Step extends State {
       }, {}),
     };
 
-    return await evaluateExpression(expression, ctx);
+    return await evaluateAndNormalizeExpression(expression, ctx);
   }
 
   async prepare(): Promise<void> {
@@ -89,6 +89,7 @@ export class Step extends State {
       await this.job.execution.manager.reportUpdate(`step:${type}`, {
         ...data,
         execution_id: this.job.execution.id,
+        tracking_id: this.job.execution.tracking_id,
         job_id: this.job.id,
         step_id: this.id,
       });
@@ -113,11 +114,11 @@ export class Step extends State {
       }
 
       const outputFilePath = await this.contextDir.writeText(
-        this.shortId("set-output"),
+        this.longId("set-output"),
         "",
       );
       const envFilePath = await this.contextDir.writeText(
-        this.shortId("set-env"),
+        this.longId("set-env"),
         "",
       );
 
@@ -135,6 +136,7 @@ export class Step extends State {
             status: this.status,
             result: this.result,
             execution_id: this.job.execution.id,
+            tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
             text: txt,
@@ -153,6 +155,7 @@ export class Step extends State {
             status: this.status,
             result: this.result,
             execution_id: this.job.execution.id,
+            tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
             text: txt,
@@ -182,7 +185,16 @@ export class Step extends State {
 
       const result = await this.job.execution.executeDenoRun({
         ...runOptions,
-        args: ["--no-check=remote", "-q", "--no-prompt", "--cached-only"],
+        clearEnv: true,
+        args: [
+          "--no-check=remote",
+          "-q",
+          "--no-config",
+          "--no-prompt",
+          "--cached-only",
+          "--lock",
+          this.job.execution.cacheDir.join("deno.lock"),
+        ],
         stdout: "piped",
         stderr: "piped",
         stderrStream: stderr,
@@ -213,9 +225,11 @@ export class Step extends State {
         }
       }
     } catch (error) {
-      this.logger.error(` > step failed: ${error.message}`);
-      this.logger.error(" > stack:", error.stack);
-      await this.fail(error.message);
+      const error_ = asError(error);
+
+      this.logger.error(` > step failed: ${error_.message}`);
+      this.logger.error(" > stack:", error_.stack);
+      await this.fail(error_.message);
     } finally {
       this.stop();
     }
@@ -240,7 +254,6 @@ export class Step extends State {
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
-      // "HOME": this.job.execution.workingDir.path,
       "ELWOOD_TOOL_CACHE": this.job.execution.manager.toolCacheDir.path,
       "NO_COLOR": "1",
       "HOME": this.job.execution.workingDir.path,
@@ -274,7 +287,7 @@ export class Step extends State {
       env.INPUT_BIN = this.def.input?.bin ?? "bash";
       env.INPUT_SCRIPT = this.def.run;
 
-      runtimePermissions.run.push(env.INPUT_BIN);
+      runtimePermissions.run!.push(env.INPUT_BIN);
     }
 
     return {

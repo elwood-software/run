@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { zodToJsonSchema } from "npm:zod-to-json-schema";
 
 import { WorkflowSchema } from "../src/schema/workflow.ts";
-import { BootstrapSchema } from "../src/schema/bootstrap.ts";
+import { LaunchSchema } from "../src/schema/launch.ts";
 
 Deno.writeTextFileSync(
   join(import.meta.dirname, "../schema/workflow.json"),
@@ -12,6 +12,6 @@ Deno.writeTextFileSync(
 );
 
 Deno.writeTextFileSync(
-  join(import.meta.dirname, "../schema/bootstrap.json"),
-  JSON.stringify(zodToJsonSchema(BootstrapSchema, "bootstrap"), null, 2),
+  join(import.meta.dirname, "../schema/launch.json"),
+  JSON.stringify(zodToJsonSchema(LaunchSchema, "launch"), null, 2),
 );

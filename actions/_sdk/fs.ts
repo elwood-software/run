@@ -1,5 +1,5 @@
 import { type FilePathOrUrl, normalize } from "./path.ts";
-import { base64 } from "../deps.ts";
+import { base64 } from "../_deps.ts";
 
 export async function copy(src: FilePathOrUrl, dest: FilePathOrUrl) {
   await Deno.copyFile(

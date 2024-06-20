@@ -1,24 +1,28 @@
 import type { Result, Status } from "./types.ts";
 
-export const RunnerStatus: Record<string, Status> = {
-  Pending: "pending",
-  Running: "running",
-  Complete: "complete",
+export const RunnerStatus = {
+  Queued: "queued" as Status,
+  Pending: "pending" as Status,
+  Running: "running" as Status,
+  Complete: "complete" as Status,
 } as const;
 
-export const RunnerResult: Record<string, Result> = {
-  None: "none",
-  Success: "success",
-  Failure: "failure",
-  Cancelled: "cancelled",
-  Skipped: "skipped",
+export const RunnerResult = {
+  None: "none" as Result,
+  Success: "success" as Result,
+  Failure: "failure" as Result,
+  Cancelled: "cancelled" as Result,
+  Skipped: "skipped" as Result,
 } as const;
 
 export enum EnvName {
-  BootstrapFile = "ELWOOD_RUNNER_BOOTSTRAP_FILE",
+  LaunchFile = "ELWOOD_RUN_LAUNCH_FILE",
+  LaunchOverrideMode = "ELWOOD_RUN_MODE_OVERRIDE",
+  StdActionPrefix = "ELWOOD_RUN_STD_ACTIONS_PREFIX",
 }
 
 export enum StateName {
+  Input = "input",
   Outputs = "outputs",
   Timing = "timing",
   Env = "env",
@@ -33,7 +37,7 @@ export enum ReporterName {
 }
 
 export enum LaunchMode {
-  Bootstrap = "bootstrap",
+  Execute = "execute",
   Worker = "worker",
   Serve = "serve",
 }

@@ -6,7 +6,7 @@ import {
   extname,
   join,
   relative,
-} from "../deps.ts";
+} from "../_deps.ts";
 
 import * as fetch from "./fetch.ts";
 import * as fs from "./fs.ts";

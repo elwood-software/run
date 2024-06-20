@@ -1,21 +1,14 @@
 import { Manager } from "../runtime/manager.ts";
-import { JsonObject } from "../types.ts";
+import type { JsonObject, LaunchOptions } from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
 
-export type ServeOptions = {
-  env?: Record<string, string>;
-  passthroughEnv?: string[];
-  loadEnv?: string[];
-  requiredEnv?: string[];
-};
-
-export async function launchServe(options: ServeOptions = {}) {
+export async function launchServe(options: LaunchOptions = {}) {
   // create our manager from the environment
   const manager = await Manager.fromEnv({
-    env: options.env,
-    passthroughEnv: options.passthroughEnv,
-    loadEnv: options.loadEnv,
-    requiredEnv: options.requiredEnv,
+    env: options.env?.set,
+    passthroughEnv: options.env?.passthrough,
+    loadEnv: options.env?.load,
+    requiredEnv: options.env?.required,
   });
 
   // prepare the manager
@@ -65,14 +58,18 @@ export async function launchServe(options: ServeOptions = {}) {
       }
 
       if (request.method === "POST") {
-        const { workflow } = await request.json();
+        const { workflow, tracking_id } = await request.json();
 
         const x = await manager.executeWorkflow(
           await verifyWorkflow(workflow),
+          {
+            tracking_id,
+          },
         );
 
         return _response({
           id: x.id,
+          tracking_id: x.tracking_id,
           report: x.getReport(),
         });
       }

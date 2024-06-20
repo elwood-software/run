@@ -1,7 +1,7 @@
 import { assert } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
-import type { ReporterChangeData, Workflow } from "../types.ts";
+import type { JsonObject, ReporterChangeData, Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/deno/execute.ts";
 import { resolveActionUrlForDenoCommand } from "../libs/resolve-action-url.ts";
@@ -13,14 +13,18 @@ import {
 import { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
+import { asError } from "../libs/utils.ts";
 
-export type ExecutionOptions = unknown;
+export type ExecutionOptions = {
+  tracking_id?: string;
+};
 
 export class Execution extends State {
   readonly id: string;
-  readonly name = "execution";
+  readonly name: string;
   readonly #jobs = new Map<string, Job>();
 
+  #tracking_id: string = crypto.randomUUID();
   #workingDir: Folder | null = null;
   #contextDir: Folder | null = null;
   #stageDir: Folder | null = null;
@@ -34,10 +38,16 @@ export class Execution extends State {
   ) {
     super();
     this.id = this.shortId("execution");
+    this.#tracking_id = options.tracking_id ?? this.#tracking_id;
+    this.name = this.def.name ?? this.id;
   }
 
   get jobs(): Job[] {
     return Array.from(this.#jobs.values());
+  }
+
+  get tracking_id(): string {
+    return this.#tracking_id;
   }
 
   get workingDir(): Folder {
@@ -66,7 +76,11 @@ export class Execution extends State {
 
   async prepare(): Promise<void> {
     this.onChange(async (type: string, data: ReporterChangeData) => {
-      await this.manager.reportUpdate(`execution:${type}`, data);
+      await this.manager.reportUpdate(`execution:${type}`, {
+        ...data,
+        tracking_id: this.tracking_id,
+        execution_id: this.id,
+      });
     });
 
     this.manager.logger.info(`Preparing execution: ${this.id}`);
@@ -86,6 +100,9 @@ export class Execution extends State {
 
     for (const [name, def] of Object.entries(this.def.jobs)) {
       const job = new Job(this, name, def);
+
+      console.log("aaa", name, job.name);
+
       this.#jobs.set(job.id, job);
       await job.prepare();
 
@@ -99,14 +116,25 @@ export class Execution extends State {
       ...new Set(actionUrls.map(resolveActionUrlForDenoCommand)),
     ];
 
+    await this.cacheDir.mkdir("deno");
+
     // cache each action file
     const results = await Promise.all(
       uniqueActionUrls.map(async (url) => {
         this.manager.logger.info(` > preloading action: ${url}`);
 
         return await executeDenoCommand({
-          args: ["-q", "cache", url],
+          args: [
+            "cache",
+            "-q",
+            "--no-check",
+            "--no-config",
+            "--lock",
+            this.cacheDir.join("deno.lock"),
+            url,
+          ],
           env: this.getDenoEnv(),
+          retry: true,
         });
       }),
     );
@@ -114,15 +142,19 @@ export class Execution extends State {
     if (results.some((item) => item.code !== 0)) {
       const names = results.map((item, i) => [actionUrls[i], item.code]).filter(
         (item) => item[1] !== 0,
-      ).map((item) => item[0].toString()).join(", ");
+      ).map((item) => item[0]!.toString()).join(", ");
 
       this.manager.logger.error(` > failed to cache action files: ${names}`);
       await this.fail(`Failed to cache action files: ${names}`);
     }
   }
 
-  async execute(): Promise<void> {
+  async execute(
+    input: JsonObject = {},
+  ): Promise<void> {
     this.manager.logger.info(`Staring executing: ${this.id}`);
+
+    this.setState(StateName.Input, input);
 
     try {
       this.start();
@@ -157,14 +189,16 @@ export class Execution extends State {
       this.manager.logger.info(" > succeeded");
       await this.succeed();
     } catch (error) {
-      this.manager.logger.error(` > execution failed: ${error.message}`);
-      await this.fail(error.message);
+      const error_ = asError(error);
+
+      this.manager.logger.error(` > execution failed: ${error_.message}`);
+      await this.fail(error_.message);
     } finally {
       this.stop();
     }
   }
 
-  getCombinedState() {
+  override getCombinedState() {
     return {
       ...super.getCombinedState(),
       jobs: this.jobs.map((job) => job.getCombinedState()),
@@ -182,6 +216,7 @@ export class Execution extends State {
     return {
       id: this.id,
       name: this.name,
+      tracking_id: this.tracking_id,
       status: this.status,
       result: this.result,
       reason: this.state.reason,
@@ -190,8 +225,8 @@ export class Execution extends State {
         return {
           ...acc,
           [job.name]: {
-            id: this.id,
-            name: this.name,
+            id: job.id,
+            name: job.name,
             status: job.status,
             result: job.result,
             timing: job.getState(StateName.Timing),
@@ -199,8 +234,8 @@ export class Execution extends State {
               return {
                 ...acc,
                 [step.name]: {
-                  id: this.id,
-                  name: this.name,
+                  id: step.id,
+                  name: step.name,
                   status: step.status,
                   result: step.result,
                   reason: step.state.reason,
@@ -219,6 +254,7 @@ export class Execution extends State {
 
   getDenoEnv(): Record<string, string> {
     return {
+      HOME: this.workingDir.path,
       DENO_DIR: this.cacheDir.join("deno"),
     };
   }
@@ -228,8 +264,6 @@ export class Execution extends State {
 
     return {
       ...opts,
-      uid: this.manager.options.executionUid,
-      gid: this.manager.options.executionGid,
       env: {
         ...env,
         ...this.getDenoEnv(),

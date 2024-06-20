@@ -3,6 +3,8 @@ import { JobSchema } from "./job.ts";
 import { Permissions, When } from "./scalar.ts";
 
 export const WorkflowSchema = z.object({
+  "$schema": z.string().default("https://x.elwood.run/schema@latest.json")
+    .optional(),
   name: z.string(),
   title: z.string().optional(),
   description: z.string().optional(),
@@ -16,4 +18,5 @@ export const WorkflowSchema = z.object({
     }),
     JobSchema,
   ),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
