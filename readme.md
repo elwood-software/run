@@ -17,7 +17,7 @@ Workflows are a set of actions that are executed in a specific order. **[More ab
 ### Example
 
 ```yaml
-# yaml-language-server: $schema=https://elwood.run/schema.json
+# yaml-language-server: $schema=https:/x.elwood.run/schema@latest.json
 
 name: hello-world
 jobs:

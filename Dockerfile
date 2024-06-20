@@ -29,7 +29,6 @@ RUN curl -fsSL https://deno.land/install.sh | DENO_DIR=/elwood/run/deno-data DEN
 # worker deno
 RUN curl -fsSL https://deno.land/install.sh | DENO_DIR=/elwood/run/runner/deno-cache DENO_INSTALL=/elwood/run/runner /bin/sh 
 
-
 RUN chown -R 3982:3982 /elwood/run/runner
 RUN chmod -R 777 /elwood/run/runner/workspace
 RUN chmod -R 755 /elwood/run/runner/bin

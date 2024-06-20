@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=../schema/workflow.json
+
+name: transcribe
+description: "Create a transcript from an audio or video file"
+jobs:
+  transcribe:
+    steps:
+      # install whisper
+      - action: install/whisper
+
+      # download the audio or video file
+      - name: source
+        action: "io/copy"
+        input:
+          src: ${{ variables.src }}
+
+      # run whisper and write the transcript files to the stage
+      - name: "whisper"
+        run: bin://whisper
+        input:
+          args:
+            - --verbose
+            - "True"
+            - --language
+            - en
+            - --output_dir
+            - $ELWOOD_STAGE
+            - ${{ steps.source.outputs.dest[0] }}
