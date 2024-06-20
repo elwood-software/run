@@ -10,9 +10,10 @@ jobs:
 
       # download the audio or video file
       - name: source
-        action: "io/copy"
+        action: "fs/copy"
         input:
-          src: ${{ variables.src }}
+          src: ${{ vars.src }}
+          dest: ${{ ["source", path.extname(vars.src)].join("") }}
 
       # run whisper and write the transcript files to the stage
       - name: "whisper"
@@ -25,4 +26,6 @@ jobs:
             - en
             - --output_dir
             - $ELWOOD_STAGE
-            - ${{ steps.source.outputs.dest[0] }}
+            - ${{ steps.source.outputs.dest.path }}
+
+      - action: "fs/read"
