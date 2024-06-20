@@ -24,8 +24,15 @@ jobs:
             - "True"
             - --language
             - en
+            - --output_format
+            - srt
             - --output_dir
             - $ELWOOD_STAGE
             - ${{ steps.source.outputs.dest.path }}
 
+      # read the srt file into outputs so they're available
+      # in the report
       - action: "fs/read"
+        input:
+          src: stage://source.srt
+          output: srt
