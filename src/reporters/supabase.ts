@@ -28,9 +28,15 @@ export class SupabaseReporter
   override setOptions(options: SupabaseReporterOptions) {
     super.setOptions(options);
 
-    assert(options.url, "Supabase URL is required");
-    assert(options.anon_key, "Supabase anon key is required");
-    assert(options.service_key, "Supabase service key is required");
+    assert(options.url, "Supabase URL is required for SupabaseReporter");
+    assert(
+      options.anon_key,
+      "Supabase anon key is required for SupabaseReporter",
+    );
+    assert(
+      options.service_key,
+      "Supabase service key is required for SupabaseReporter",
+    );
 
     this.#client = supabase.createClient(options.url, options.anon_key, {
       db: {

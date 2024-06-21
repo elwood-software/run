@@ -46,9 +46,9 @@ export async function launchWorker(
       },
     );
 
-  assert(url, "Supabase URL is required");
-  assert(anonKey, "Supabase anon key is required");
-  assert(serviceKey, "Supabase service key is required");
+  assert(url, "Supabase URL is required for Worker");
+  assert(anonKey, "Supabase anon key is required for Worker");
+  assert(serviceKey, "Supabase service key is required for Worker");
 
   const client = supabase.createClient(url, anonKey, {
     db: {

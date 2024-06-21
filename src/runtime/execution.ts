@@ -17,6 +17,8 @@ import { asError } from "../libs/utils.ts";
 
 export type ExecutionOptions = {
   tracking_id?: string;
+  variables?: JsonObject;
+  secrets?: Record<string, string>;
 };
 
 export class Execution extends State {
