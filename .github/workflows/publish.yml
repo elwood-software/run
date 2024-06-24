@@ -45,7 +45,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: elwood-software/run:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
