@@ -142,7 +142,7 @@ export async function launchWorker(
           result: RunnerResult.Failure,
           ended_at: new Date(),
           report: {
-            reason: err.message,
+            reason: asError(err).message,
             result: RunnerResult.Failure,
             status: RunnerStatus.Complete,
             tracking_id,

@@ -103,8 +103,6 @@ export class Execution extends State {
     for (const [name, def] of Object.entries(this.def.jobs)) {
       const job = new Job(this, name, def);
 
-      console.log("aaa", name, job.name);
-
       this.#jobs.set(job.id, job);
       await job.prepare();
 
@@ -211,6 +209,8 @@ export class Execution extends State {
     return {
       status: this.state.status,
       result: this.state.result,
+      env: Object.fromEntries(this.manager.env.entries()),
+      vars: this.options.variables ?? {},
     };
   }
 

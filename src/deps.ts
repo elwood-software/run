@@ -32,3 +32,6 @@ export { default as EventEmitter } from "https://deno.land/x/events@v1.0.0/mod.t
 
 // supabase
 export * as supabase from "https://esm.sh/@supabase/supabase-js@2.43.5";
+
+// cli
+export { parseArgs } from "jsr:@std/cli/parse-args";

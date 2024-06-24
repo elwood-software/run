@@ -3,6 +3,8 @@ tmp*/
 node_modules
 *.log
 *.local
+*.zip
 .env
 .cache
 .dev
+dist/

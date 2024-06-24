@@ -1,4 +1,4 @@
-import { assert, logger, parseYaml } from "./deps.ts";
+import { assert, logger, parseArgs, parseYaml } from "./deps.ts";
 import { EnvName, LaunchMode, LaunchModeNames } from "./constants.ts";
 import { LaunchSchema } from "./schema/launch.ts";
 import type { LaunchOptions } from "./types.ts";
@@ -12,9 +12,17 @@ import { launchWorker } from "./launch/worker.ts";
 // it will read from the env to figure out mode
 // and then launch the runtime
 if (import.meta.main) {
-  const [mode] = Deno.args;
+  const args = parseArgs(Deno.args);
   const modeOverride = Deno.env.get(EnvName.LaunchOverrideMode);
-  const mode_ = modeOverride ?? mode;
+  const mode_ = modeOverride ?? args._[0];
+
+  // asking for version
+  if (args.version) {
+    Deno.stdout.writeSync(
+      new TextEncoder().encode(Deno.env.get("Elwood Run -- v0.1.0")),
+    );
+    Deno.exit(0);
+  }
 
   // make sure it's a valid mode
   if (!LaunchModeNames.includes(mode_ as LaunchMode)) {

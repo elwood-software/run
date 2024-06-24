@@ -6,6 +6,7 @@
   },
   "builders": [
     {
+      "skip_create_ami": "true",
       "type": "amazon-ebs",
       "region": "{{user `region`}}",
       "source_ami": "{{user `source_ami`}}",
@@ -16,13 +17,36 @@
       "ami_name": "elwood-run-{{timestamp}}",
       "tags":{
         "Name": "Elwood Run - {{timestamp}}"
-      }
+      },
+      "profile": ""
     }
   ],
   "provisioners": [
     {
+      "type": "shell-local",
+      "inline": [
+        "cd ..",
+        "zip source.zip build/*.sh src/**/* deno.lock deno.json"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "source.zip",
+      "destination": "/tmp/source.zip"
+    },
+    {
       "type": "shell",
-      "script": "./build.sh"
+      "inline": [
+        "yum -y install unzip",
+        "mkdir -p /elwood/run-compiler",
+        "unzip /tmp/source.zip -d /elwood/run-compiler",
+        "cd /elwood/run-compiler",
+        "./build/compile.sh",
+        "mkdir -p /elwood/run/bin/",
+        "mv runtime /elwood/run/bin/runtime",
+        "./build/bootstrap.sh",
+        "rm -r /elwood/run-compiler"
+      ]
     }
   ]
 }

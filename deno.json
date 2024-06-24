@@ -2,7 +2,8 @@
   "tasks": {
     "up": "docker compose -f ./docker/docker-compose.yml up",
     "down": "docker compose -f ./docker/docker-compose.yml down",
-    "test": "deno test -A --unstable-worker-options ./**/*.test.ts"
+    "test": "deno test -A --unstable-worker-options ./**/*.test.ts",
+    "compile": "deno compile -A --unstable-worker-options --include ./src/libs/expression/worker.ts -o ./dist/elwood-run ./src/launch.ts"
   },
   "compilerOptions": {
     "strict": true,
