@@ -427,6 +427,18 @@
                 "name"
               ],
               "additionalProperties": false
+            },
+            "selector": {
+              "type": "object",
+              "additionalProperties": {},
+              "default": {}
+            },
+            "exitAfterRuns": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
             }
           },
           "required": [

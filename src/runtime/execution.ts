@@ -282,6 +282,7 @@ export class Execution extends State {
         ELWOOD_BIN: this.binDir.path,
         ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,
         PATH: [
+          "/elwood/run/runner/bin",
           this.binDir.path,
           "/usr/local/sbin",
           "/usr/local/bin",

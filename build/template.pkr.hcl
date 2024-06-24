@@ -27,8 +27,14 @@ variable "ssh_username" {
   default = "ec2-user"
 }
 
+
+variable "skip_ami" {
+  type    = bool
+  default = false
+}
+
 source "amazon-ebs" "linux" {
-  skip_create_ami = true
+  skip_create_ami = var.skip_ami
   region          = "${var.region}"
   source_ami      = "${var.source_ami}"
   instance_type   = "${var.instance_type}"

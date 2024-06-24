@@ -7,6 +7,7 @@ import type { JsonObject, LaunchOptions, Workflow } from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
 import { asError } from "../libs/utils.ts";
 import { evaluateExpression } from "../libs/expression/expression.ts";
+import { LaunchWorkerOptions } from "../types.ts";
 
 type PossibleConfigurationFormat = {
   format: "yaml";
@@ -20,6 +21,12 @@ type SupabaseWorkerOptions = {
   url?: string;
   anon_key?: string;
   service_key?: string;
+};
+
+type RunData = {
+  id: number;
+  configuration: PossibleConfiguration;
+  tracking_id: string;
 };
 
 export async function launchWorker(
@@ -74,6 +81,7 @@ export async function launchWorker(
   await manager.prepare();
 
   let lock = false;
+  let numberOfRuns = 0;
 
   manager.logger.info("Worker started");
 
@@ -85,24 +93,17 @@ export async function launchWorker(
     lock = true;
 
     try {
-      const result = await client.from("run")
-        .select("id,configuration,tracking_id")
-        .eq(
-          "status",
-          RunnerStatus.Queued,
-        )
-        .limit(1).maybeSingle();
+      const data = await selectRun(
+        client,
+        options.worker?.selector,
+      );
 
-      if (!result.data) {
+      if (!data) {
         manager.logger.info("No queued runs found");
         return;
       }
 
-      const { id, configuration, tracking_id } = result.data as {
-        id: number;
-        tracking_id: string;
-        configuration: PossibleConfiguration;
-      };
+      const { id, configuration, tracking_id } = data as RunData;
       let unverifiedConfiguration: JsonObject = {};
 
       manager.logger.info(`Processing run ${id}`);
@@ -117,6 +118,8 @@ export async function launchWorker(
       manager.logger.info(`Verifying run ${id} ${tracking_id}`);
 
       try {
+        numberOfRuns++;
+
         await client.from("run").update({
           status: RunnerStatus.Running,
           started_at: new Date(),
@@ -153,6 +156,14 @@ export async function launchWorker(
       manager.logger.error(`Error ${asError(err).message} processing`);
     } finally {
       lock = false;
+
+      if (
+        options.worker?.exitAfterRuns &&
+        numberOfRuns >= options.worker.exitAfterRuns
+      ) {
+        manager.logger.info("Exiting after processing all runs");
+        abortController.abort();
+      }
     }
   }, tickInterval * 1000);
 
@@ -174,4 +185,28 @@ export async function launchWorker(
     manager.logger.info("SIGINT received, shutting down server");
     abortController.abort();
   });
+}
+
+async function selectRun(
+  client: supabase.SupabaseClient,
+  selector: LaunchWorkerOptions["selector"],
+): Promise<RunData | undefined> {
+  const q = client.from("run")
+    .select("id,configuration,tracking_id")
+    .eq(
+      "status",
+      RunnerStatus.Queued,
+    );
+
+  if (selector?.tracking_id) {
+    q.eq("tracking_id", selector.tracking_id);
+  }
+
+  const { data, error } = await q.limit(1).maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as RunData | undefined;
 }

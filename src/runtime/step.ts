@@ -6,7 +6,10 @@ import {
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
 import { Folder } from "./folder.ts";
-import { evaluateAndNormalizeExpression } from "../libs/expression/expression.ts";
+import {
+  evaluateAndNormalizeExpression,
+  normalizeExpressionResult,
+} from "../libs/expression/expression.ts";
 import {
   parseVariableFile,
   replaceVariablePlaceholdersInVariables,
@@ -225,6 +228,8 @@ export class Step extends State {
         }
       }
     } catch (error) {
+      console.log(error.stack);
+
       const error_ = asError(error);
 
       this.logger.error(` > step failed: ${error_.message}`);
@@ -284,8 +289,12 @@ export class Step extends State {
     };
 
     if (stepHasRun(this.def)) {
-      env.INPUT_BIN = this.def.input?.bin ?? "bash";
+      env.INPUT_BIN = this.def.input?.bin ?? "deno";
       env.INPUT_SCRIPT = this.def.run;
+
+      if (env.INPUT_BIN == "deno") {
+        env.INPUT_ARGS = normalizeExpressionResult(["-q", "run"]);
+      }
 
       runtimePermissions.run!.push(env.INPUT_BIN);
     }

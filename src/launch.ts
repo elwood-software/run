@@ -7,6 +7,7 @@ import type { LaunchOptions } from "./types.ts";
 import { launchServe } from "./launch/serve.ts";
 import { launchExecute } from "./launch/execute.ts";
 import { launchWorker } from "./launch/worker.ts";
+import { asError } from "./libs/utils.ts";
 
 // entrypoint if the file is run directly
 // it will read from the env to figure out mode
@@ -24,28 +25,30 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
-  // make sure it's a valid mode
-  if (!LaunchModeNames.includes(mode_ as LaunchMode)) {
-    console.error("LAUNCH ERROR: Invalid mode");
-    console.error(
+  try {
+    // make sure we have a valid node
+    assert(
+      LaunchModeNames.includes(mode_ as LaunchMode),
       `Mode is "${mode_}", but should be one of: ${LaunchModeNames.join(", ")}`,
     );
+
+    const launchFile = Deno.env.get(EnvName.LaunchFile);
+
+    assert(launchFile, `Launch file ${EnvName.LaunchFile} not set`);
+    assert(
+      Deno.statSync(launchFile)?.isFile,
+      `Bootstrap file at "${launchFile}" does not exist`,
+    );
+
+    const launchOptions = await LaunchSchema.parseAsync(parseYaml(
+      await Deno.readTextFile(launchFile),
+    )) as LaunchOptions;
+
+    await launch(mode_ as LaunchMode, launchOptions);
+  } catch (err) {
+    Deno.stderr.write(new TextEncoder().encode(asError(err).message));
     Deno.exit(1);
   }
-
-  const launchFile = Deno.env.get(EnvName.LaunchFile);
-
-  assert(launchFile, `Launch file ${EnvName.LaunchFile} not set`);
-  assert(
-    Deno.statSync(launchFile)?.isFile,
-    `Bootstrap file at "${launchFile}" does not exist`,
-  );
-
-  const launchOptions = await LaunchSchema.parseAsync(parseYaml(
-    await Deno.readTextFile(launchFile),
-  )) as LaunchOptions;
-
-  await launch(mode_ as LaunchMode, launchOptions);
 }
 
 /**

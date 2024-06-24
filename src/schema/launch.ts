@@ -8,6 +8,8 @@ export const WorkerSchema = z.object({
     name: z.string(),
     options: z.record(z.any()).default({}).optional(),
   }),
+  selector: z.record(z.any()).default({}).optional(),
+  exitAfterRuns: z.number().nullable().default(null).optional(),
 });
 
 // BOOTSTRAP
