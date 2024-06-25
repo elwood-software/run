@@ -5,8 +5,8 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const dest = input.get("dest");
-  const content = input.get("content");
+  const dest = input.get<string>("dest");
+  const content = input.get<string>("content");
 
   await fs.write(dest, content);
 }

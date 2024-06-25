@@ -5,8 +5,8 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const seconds = input.get("seconds");
-  const seconds_ = parseInt(seconds, 10);
+  const seconds = input.get<string>("seconds");
+  const seconds_ = parseInt(String(seconds), 10);
 
   if (isNaN(seconds_)) {
     console.error(

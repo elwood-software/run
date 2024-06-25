@@ -5,6 +5,6 @@
     ".": "./sdk.ts",
     "./fs": "./_sdk/fs.ts",
     "./args": "./_sdk/args.ts",
-    "./command": "./_sdk/command.ts",
+    "./command": "./_sdk/command.ts"
   }
 }

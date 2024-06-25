@@ -1,18 +1,22 @@
-
 # Elwood Run
 
 <p> 🚨 Elwood Run is currently in public <strong>ALPHA</strong> and NOT ready for Production. 🚨 <br/>
 We are actively developing the code and things will change quickly. If you have any questions, please reach out to us at <a href="mailto:hello@elwood.software">hello@elwood.software</a> or on <a href="https://discord.gg/mkhKk5db">Discord</a></p>
 
 ## Documentation
+
 Read the full documentation at [elwood.run/docs](https://elwood.run/docs)
 
 ## 🚀 Actions
-Actions are the building blocks of Elwood Run. They are small, reusable, and composable units of work that can be combined to create workflows.
+
+Actions are the building blocks of Elwood Run. They are small, reusable, and
+composable units of work that can be combined to create workflows.
 **[More about Elwood Run Actions](./actions/readme.md)**
 
 ## 📔 Workflows
-Workflows are a set of actions that are executed in a specific order. **[More about Elwood Run Workflows](./workflows/readme.md)**
+
+Workflows are a set of actions that are executed in a specific order.
+**[More about Elwood Run Workflows](./workflows/readme.md)**
 
 ### Example
 

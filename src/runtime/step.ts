@@ -229,10 +229,7 @@ export class Step extends State {
         }
       }
     } catch (error) {
-      console.log(error.stack);
-
       const error_ = asError(error);
-
       this.logger.error(` > step failed: ${error_.message}`);
       this.logger.error(" > stack:", error_.stack);
       await this.fail(error_.message);

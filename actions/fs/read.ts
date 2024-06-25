@@ -5,7 +5,7 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const dest = input.get("src");
+  const dest = input.get<string>("src");
   const outputTo = input.getOptional<string>("output");
 
   const data = await fs.read(dest);
