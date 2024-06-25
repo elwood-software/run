@@ -1,7 +1,6 @@
 import { Manager } from "../runtime/manager.ts";
 import { assert, parseYaml, supabase } from "../deps.ts";
 import { createReporter } from "../reporters/create.ts";
-import { SupabaseReporterOptions } from "../reporters/supabase.ts";
 import { RunnerResult, RunnerStatus } from "../constants.ts";
 import type { JsonObject, LaunchOptions, Workflow } from "../types.ts";
 import { verifyWorkflow } from "../libs/load-workflow.ts";
@@ -69,14 +68,14 @@ export async function launchWorker(
     },
   });
 
-  await manager.addReporter<SupabaseReporterOptions>(
-    createReporter("supabase"),
-    {
-      url,
-      anon_key: anonKey,
-      service_key: serviceKey,
-    },
-  );
+  if (Array.isArray(options.reporters)) {
+    for (const reporter of options.reporters) {
+      await manager.addReporter(
+        createReporter(reporter.name),
+        reporter.options ?? {},
+      );
+    }
+  }
 
   await manager.prepare();
 

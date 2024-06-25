@@ -8,7 +8,7 @@ if (import.meta.main) {
 export async function main() {
   const bin = input.getOptional<string>("bin") ?? args.get("bin") ?? "bash";
   const script = input.getOptional<string>("script");
-  const binArgs = input.getOptionalJson("args", []) as string[] | undefined;
+  const binArgs = input.getOptional("args", []) as string[] | undefined;
 
   if (script) {
     const cmd = await command.create(bin, {

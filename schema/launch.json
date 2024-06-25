@@ -81,6 +81,11 @@
             {
               "type": "object",
               "properties": {
+                "variables": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "default": {}
+                },
                 "workflowFile": {
                   "type": "string"
                 }
@@ -93,6 +98,11 @@
             {
               "type": "object",
               "properties": {
+                "variables": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "default": {}
+                },
                 "workflow": {
                   "type": "object",
                   "properties": {

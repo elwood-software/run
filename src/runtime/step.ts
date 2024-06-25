@@ -66,6 +66,7 @@ export class Step extends State {
 
   async evaluateExpression(expression: string): Promise<string> {
     const ctx = {
+      vars: this.job.execution.getState(StateName.Variables, {}),
       env: {
         ...toObject(this.job.execution.manager.env),
         ELWOOD_BIN: this.job.execution.binDir.path,
@@ -293,7 +294,7 @@ export class Step extends State {
       env.INPUT_SCRIPT = this.def.run;
 
       if (env.INPUT_BIN == "deno") {
-        env.INPUT_ARGS = normalizeExpressionResult(["-q", "run"]);
+        env.INPUT_ARGS = normalizeExpressionResult(["-q", "run", "-"]);
       }
 
       runtimePermissions.run!.push(env.INPUT_BIN);

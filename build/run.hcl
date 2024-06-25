@@ -27,20 +27,39 @@ variable "ssh_username" {
   default = "ec2-user"
 }
 
-
 variable "skip_ami" {
   type    = bool
   default = false
 }
 
+variable "profile" {
+  type    = string
+  default = "elwood"
+}
+
+variable "access_key" {
+  type    = string
+  default = env("AWS_ACCESS_KEY_ID")
+  sensitive = true
+}
+
+variable "secret_key" {
+  type    = string
+  default = env("AWS_SECRET_KEY")
+  sensitive = true
+}
+
 source "amazon-ebs" "linux" {
   skip_create_ami = var.skip_ami
-  region          = "${var.region}"
-  source_ami      = "${var.source_ami}"
-  instance_type   = "${var.instance_type}"
-  ssh_username    = "${var.ssh_username}"
-  ami_name        = "elwood-run-{{timestamp}}"
-  profile         = "elwood"
+  region          = var.region
+  source_ami      = var.source_ami
+  instance_type   = var.instance_type
+  ssh_username    = var.ssh_username
+  ami_name        = "elwood-run-{{timestamp}}" 
+  profile         = var.profile
+  access_key      = var.access_key
+  secret_key      = var.secret_key
+
 }
 
 build {

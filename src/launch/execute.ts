@@ -56,7 +56,9 @@ export async function launchExecute(options: LaunchOptions) {
     const workflows_ = Array.isArray(workflow) ? workflow : [workflow];
 
     for (const workflow of workflows_) {
-      await manager.executeWorkflow(workflow);
+      await manager.executeWorkflow(workflow, {
+        variables: options.execute.variables ?? {},
+      });
     }
 
     // always cleanup the manager

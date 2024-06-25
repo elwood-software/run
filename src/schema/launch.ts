@@ -14,10 +14,12 @@ export const WorkerSchema = z.object({
 
 // BOOTSTRAP
 export const ExecuteWithWorkflowSchema = z.object({
+  variables: z.record(z.any()).default({}).optional(),
   workflow: WorkflowSchema,
 });
 
 export const ExecuteWithWorkflowFileSchema = z.object({
+  variables: z.record(z.any()).default({}).optional(),
   workflowFile: z.string(),
 });
 
