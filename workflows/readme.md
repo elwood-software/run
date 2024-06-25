@@ -1,6 +1,7 @@
 # Elwood Run Workflow
 
 ## Example
+
 ```yaml
 # yaml-language-server: $schema=https://elwood.run/schema.json
 

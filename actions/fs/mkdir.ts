@@ -6,7 +6,7 @@ if (import.meta.main) {
 }
 
 export async function main() {
-  const dir = input.get("path");
+  const dir = input.get<string>("path");
   const recursive = input.getBoolean("recursive");
 
   // we can use "fs" here because path can only be local

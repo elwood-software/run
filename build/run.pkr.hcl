@@ -34,7 +34,7 @@ variable "skip_ami" {
 
 variable "profile" {
   type    = string
-  default = "elwood"
+  default = null
 }
 
 variable "access_key" {
@@ -71,14 +71,13 @@ build {
 
   provisioner "shell-local" {
     inline = [
-      "cd ..",
       "zip -r source.zip build/*.sh src/ deno.lock deno.json"
     ]
   }
 
   provisioner "file" {
     generated = true
-    source = "../source.zip"
+    source = "./source.zip"
     destination = "/tmp/source.zip"
   }
 
