@@ -23,13 +23,13 @@ jobs:
 
       - name: Run `packer init`
         id: init
-        run: "packer init ./build/run.hcl"
+        run: "packer init ./build/run.pkr.hcl"
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ./build/run.hcl"
+        run: "packer validate ./build/run.pkr.hcl"
 
-      - run: packer build -color=false -on-error=abort -var 'profile=null' ./build/run.hcl
+      - run: packer build -color=false -on-error=abort -var 'profile=null' ./build/run.pkr.hcl
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
