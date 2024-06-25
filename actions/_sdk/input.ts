@@ -1,88 +1,78 @@
 import { normalize } from "./path.ts";
 
-export function get(name: string, strict = true): string {
-  const inputEnvName = `INPUT_${name.toUpperCase()}`;
+export function envName(name: string): string {
+  return `INPUT_${name.toUpperCase()}`;
+}
 
-  if (strict && !Deno.env.has(inputEnvName)) {
+export function get<T = unknown>(name: string): T {
+  const inputEnvName = envName(name);
+
+  if (!Deno.env.has(inputEnvName)) {
     throw new Error(`Missing required environment variable: ${inputEnvName}`);
-  }
-
-  // if they don't strictly require the input, make sure we have permission
-  // to read it before trying to read it
-  if (
-    Deno.permissions.querySync({ name: "env", variable: inputEnvName })
-      .state !== "granted"
-  ) {
-    return "";
   }
 
   const value = Deno.env.get(inputEnvName) as string ?? "";
 
   if (value.startsWith("json:")) {
-    return String(JSON.parse(value.substring(5)));
+    return JSON.parse(value.substring(5)) as T;
   }
 
-  return value;
+  return value as T;
 }
 
 export function getOptional<T = unknown>(
   name: string,
   fallback: T | undefined = undefined,
-): string | T | undefined {
+): T | undefined {
   try {
-    const value = get(name, false);
+    const name_ = envName(name);
 
-    return value === "" ? fallback : value;
-  } catch {
-    return fallback;
-  }
-}
+    // if they don't have permission to read the env variable, return the fallback
+    if (
+      Deno.permissions.querySync({ name: "env", variable: name_ })
+        .state !== "granted"
+    ) {
+      return fallback;
+    }
 
-export function getJson<T = unknown>(
-  name: string,
-  strict = true,
-): Record<string, T> | T[] {
-  const value = get(name, strict);
+    const value = get<T>(name);
 
-  if (value && value.startsWith("json:")) {
-    return JSON.parse(value.substring(5));
-  }
-
-  throw new Error(`Input ${name} is not valid JSON: ${value}`);
-}
-
-export function getOptionalJson<T = unknown>(
-  name: string,
-  fallback: T | undefined = undefined,
-): ReturnType<typeof getJson> | T | undefined {
-  try {
-    return getJson<T>(name, false);
+    return value === undefined ? fallback : value;
   } catch {
     return fallback;
   }
 }
 
 export function getBoolean(name: string, strict = true): boolean {
-  const value = get(name, strict);
+  const value = strict ? get(name) : getOptional(name);
 
-  if (!value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    switch (value.toLowerCase()) {
+      case "1":
+      case "yes":
+      case "true":
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
+  if (typeof value !== "number") {
     return false;
   }
 
-  switch (value.toLowerCase()) {
-    case "1":
-    case "yes":
-    case "true":
-      return true;
-
-    default:
-      return false;
-  }
+  return value === 1;
 }
 
 export async function getNormalizedPath(
   name: string,
-  strict = true,
 ): Promise<string> {
-  return await normalize(get(name, strict));
+  return await normalize(
+    get<string>(name),
+  );
 }

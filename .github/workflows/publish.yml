@@ -9,7 +9,32 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  packer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: latest
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init ./build/run.hcl"
+
+      - name: Run `packer validate`
+        id: validate
+        run: "packer validate ./build/run.hcl"
+
+      - run: packer build -color=false -on-error=abort -var="profile=null" ./build/run.hcl
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+
+  docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read

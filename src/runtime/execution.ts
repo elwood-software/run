@@ -98,6 +98,8 @@ export class Execution extends State {
       JSON.stringify(this.def, null, 2),
     );
 
+    this.setState(StateName.Variables, this.options.variables ?? {});
+
     const actionUrls: URL[] = [];
 
     for (const [name, def] of Object.entries(this.def.jobs)) {
@@ -149,12 +151,8 @@ export class Execution extends State {
     }
   }
 
-  async execute(
-    input: JsonObject = {},
-  ): Promise<void> {
+  async execute(): Promise<void> {
     this.manager.logger.info(`Staring executing: ${this.id}`);
-
-    this.setState(StateName.Input, input);
 
     try {
       this.start();
@@ -210,7 +208,7 @@ export class Execution extends State {
       status: this.state.status,
       result: this.state.result,
       env: Object.fromEntries(this.manager.env.entries()),
-      vars: this.options.variables ?? {},
+      vars: this.getState(StateName.Variables) ?? {},
     };
   }
 
@@ -282,6 +280,7 @@ export class Execution extends State {
         ELWOOD_BIN: this.binDir.path,
         ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,
         PATH: [
+          "/elwood/run/runner/bin",
           this.binDir.path,
           "/usr/local/sbin",
           "/usr/local/bin",

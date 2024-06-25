@@ -81,6 +81,11 @@
             {
               "type": "object",
               "properties": {
+                "variables": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "default": {}
+                },
                 "workflowFile": {
                   "type": "string"
                 }
@@ -93,6 +98,11 @@
             {
               "type": "object",
               "properties": {
+                "variables": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "default": {}
+                },
                 "workflow": {
                   "type": "object",
                   "properties": {
@@ -427,6 +437,18 @@
                 "name"
               ],
               "additionalProperties": false
+            },
+            "selector": {
+              "type": "object",
+              "additionalProperties": {},
+              "default": {}
+            },
+            "exitAfterRuns": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "default": null
             }
           },
           "required": [

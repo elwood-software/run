@@ -16,7 +16,7 @@ async function main() {
   const command = input.get("command") as CommandName;
   const model = input.getOptional("model", "text-davinci-003");
   const apiKey = input.getOptional<string>("api_key", undefined);
-  const prompt = input.getOptionalJson<string[]>("prompt") as string[];
+  const prompt = input.getOptional<string[]>("prompt") as string[];
 
   assert(command, "Command is required");
   assert(apiKey, "API Key is required");

@@ -22,7 +22,7 @@ export enum EnvName {
 }
 
 export enum StateName {
-  Input = "input",
+  Variables = "vars",
   Outputs = "outputs",
   Timing = "timing",
   Env = "env",

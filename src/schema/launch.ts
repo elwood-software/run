@@ -8,14 +8,18 @@ export const WorkerSchema = z.object({
     name: z.string(),
     options: z.record(z.any()).default({}).optional(),
   }),
+  selector: z.record(z.any()).default({}).optional(),
+  exitAfterRuns: z.number().nullable().default(null).optional(),
 });
 
 // BOOTSTRAP
 export const ExecuteWithWorkflowSchema = z.object({
+  variables: z.record(z.any()).default({}).optional(),
   workflow: WorkflowSchema,
 });
 
 export const ExecuteWithWorkflowFileSchema = z.object({
+  variables: z.record(z.any()).default({}).optional(),
   workflowFile: z.string(),
 });
 

@@ -15,7 +15,7 @@ export async function replaceVariablePlaceholdersInVariables(
 
 export function replaceVariablesInValue(
   value: Json,
-  vars: Record<string, string>,
+  vars: Record<string, string> = {},
 ): Json {
   let value_ = value;
 
