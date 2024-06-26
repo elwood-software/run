@@ -82,12 +82,14 @@ export async function launchWorker(
   let lock = false;
   let numberOfRuns = 0;
 
-  manager.logger.info("Worker started");
+  manager.logger.info(`Worker started with lock at ${lock}`);
 
   const ticker = setInterval(async () => {
     if (lock) {
       return;
     }
+
+    manager.logger.info("Checking for runs");
 
     lock = true;
 
@@ -154,8 +156,6 @@ export async function launchWorker(
     } catch (err) {
       manager.logger.error(`Error ${asError(err).message} processing`);
     } finally {
-      lock = false;
-
       if (
         options.worker?.exitAfterRuns &&
         numberOfRuns >= options.worker.exitAfterRuns
@@ -163,6 +163,8 @@ export async function launchWorker(
         manager.logger.info("Exiting after processing all runs");
         abortController.abort();
       }
+
+      lock = false;
     }
   }, tickInterval * 1000);
 

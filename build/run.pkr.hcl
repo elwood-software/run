@@ -92,7 +92,12 @@ build {
       "sudo mkdir -p /elwood/run/bin/",
       "sudo mv /elwood/run-compiler/runtime /elwood/run/bin/runtime",
       "sudo /elwood/run-compiler/build/bootstrap.sh",
-      "sudo rm -r /elwood/run-compiler"
+      "sudo rm -r /elwood/run-compiler",
+      "echo \"export ELWOOD_RUNNER_ROOT=/elwood/run\" >> /home/ec2-user/.bashrc",
+      "echo \"export ELWOOD_RUNNER_WORKSPACE_DIR=/elwood/run/runner/workspace\" >> /home/ec2-user/.bashrc",
+      "echo \"export ELWOOD_RUNNER_EXECUTION_UID=3982\" >> /home/ec2-user/.bashrc",
+      "echo \"export ELWOOD_RUNNER_EXECUTION_GID=3982\" >> /home/ec2-user/.bashrc",
+      "echo \"export ELWOOD_RUNNER_DENO_BIN=/elwood/run/runner/bin/deno\" >> /home/ec2-user/.bashrc",
     ]
   }
 

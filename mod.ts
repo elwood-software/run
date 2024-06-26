@@ -1,9 +1,10 @@
 export type * from "./src/types.ts";
-export * from "./src/schema/job.ts";
+export * from "./src/schema/workflow.ts";
 export * from "./src/schema/launch.ts";
 export * from "./src/launch.ts";
 export * from "./src/launch/serve.ts";
 export * from "./src/launch/execute.ts";
+export * from "./src/constants.ts";
 
 if (import.meta.main) {
   console.error("This module should not be executed directly.");
