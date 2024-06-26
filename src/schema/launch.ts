@@ -9,7 +9,7 @@ export const WorkerSchema = z.object({
     options: z.record(z.any()).default({}).optional(),
   }),
   selector: z.record(z.any()).default({}).optional(),
-  exitAfterRuns: z.number().nullable().default(null).optional(),
+  "exit-when": z.number().nullable().default(null).optional(),
 });
 
 // BOOTSTRAP
@@ -45,6 +45,7 @@ export const LaunchSchema = z.object({
     load: z.array(z.string()).default([]).optional(),
     passthrough: z.array(z.string()).default([]).optional(),
     required: z.array(z.string()).default([]).optional(),
+    remove: z.array(z.string()).default([]).optional(),
   }).default({}).optional(),
   execute: ExecuteSchema.optional(),
   worker: WorkerSchema.optional(),
