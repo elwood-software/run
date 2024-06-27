@@ -1,6 +1,6 @@
 {
   "deno.enable": true,
-  "deno.enablePaths": ["./"],
+  "deno.enablePaths": ["./src", "./actions", "./tests", "./schema"],
   "deno.lint": true,
   "eslint.workingDirectories": [
     {

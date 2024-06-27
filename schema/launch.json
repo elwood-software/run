@@ -71,6 +71,13 @@
                 "type": "string"
               },
               "default": []
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
             }
           },
           "additionalProperties": false,
@@ -417,7 +424,7 @@
         "worker": {
           "type": "object",
           "properties": {
-            "intervalSeconds": {
+            "interval-seconds": {
               "type": "number",
               "default": 60
             },
@@ -443,9 +450,9 @@
               "additionalProperties": {},
               "default": {}
             },
-            "exitAfterRuns": {
+            "exit-after": {
               "type": [
-                "number",
+                "string",
                 "null"
               ],
               "default": null
