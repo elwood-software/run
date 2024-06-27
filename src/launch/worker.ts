@@ -82,7 +82,9 @@ export async function launchWorker(
   let lock = false;
   let numberOfRuns = 0;
 
-  manager.logger.info(`Worker started with lock at ${lock}`);
+  manager.logger.info(
+    `Worker started with lock at ${lock} and tick interval at ${tickInterval} seconds`,
+  );
 
   const ticker = setInterval(async () => {
     if (lock) {
@@ -103,6 +105,8 @@ export async function launchWorker(
         manager.logger.info("No queued runs found");
         return;
       }
+
+      manager.logger.info(`Run data`, data);
 
       const { id, configuration, tracking_id } = data as RunData;
       let unverifiedConfiguration: JsonObject = {};
@@ -156,13 +160,13 @@ export async function launchWorker(
     } catch (err) {
       manager.logger.error(`Error ${asError(err).message} processing`);
     } finally {
-      if (
-        options.worker?.exitAfterRuns &&
-        numberOfRuns >= options.worker.exitAfterRuns
-      ) {
-        manager.logger.info("Exiting after processing all runs");
-        abortController.abort();
-      }
+      // if (
+      //   options.worker?.exitAfterRuns &&
+      //   numberOfRuns >= options.worker.exitAfterRuns
+      // ) {
+      //   manager.logger.info("Exiting after processing all runs");
+      //   abortController.abort();
+      // }
 
       lock = false;
     }
@@ -196,7 +200,7 @@ async function selectRun(
     .select("id,configuration,tracking_id")
     .eq(
       "status",
-      RunnerStatus.Queued,
+      RunnerStatus.Pending,
     );
 
   if (selector?.tracking_id) {
