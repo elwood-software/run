@@ -17,7 +17,13 @@ export class SupabaseReporter
 
   #lock = false;
   #changeQueueInterval: number | null = null;
-  #changeQueue: Array<{ type: string; data: ReporterChangeData }> = [];
+  #changeQueue: Array<
+    {
+      type: string;
+      tracking_id: string;
+      data: Omit<ReporterChangeData, "tracking_id">;
+    }
+  > = [];
   #lastStatus: Status = RunnerStatus.Pending;
 
   get client(): Client {
@@ -89,15 +95,18 @@ export class SupabaseReporter
   }
 
   async change(type: string, data: ReporterChangeData): Promise<void> {
-    this.#changeQueue.push({ type, data });
+    if (!data.tracking_id) {
+      console.error("No tracking_id in change data", data);
+      return;
+    }
+
+    // no need to double store the tracking_id
+    const { tracking_id, ...eventData } = data;
+
+    this.#changeQueue.push({ type, data: eventData, tracking_id });
 
     // always update status right away
     if (this.#lastStatus !== data.status) {
-      if (!data.tracking_id) {
-        console.error("No tracking_id in change data", data);
-        return;
-      }
-
       await this.client.from("run").upsert([
         {
           status: data.status,

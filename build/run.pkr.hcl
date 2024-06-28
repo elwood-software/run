@@ -34,7 +34,7 @@ variable "skip_ami" {
 
 variable "profile" {
   type    = string
-  default = null
+  default = "elwood"
 }
 
 variable "access_key" {
