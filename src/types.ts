@@ -18,12 +18,28 @@ import type * as scalar from "./schema/scalar.ts";
 export type Json = any;
 export type JsonObject = Record<string, Json>;
 
+/**
+ * Status of a run
+ *
+ * progression:
+ *  queued -> assigned -> pending -> running -> complete
+ */
 export type Status =
   | "pending"
   | "running"
   | "complete"
   | "queued"
   | "assigned";
+
+/**
+ * Result of a run
+ *
+ * none: has not completed
+ * success: completed successfully
+ * failure: completed with errors
+ * cancelled: was cancelled by action
+ * skipped: was skipped by action
+ */
 export type Result = "none" | "success" | "failure" | "cancelled" | "skipped";
 
 export interface RuntimeState {
