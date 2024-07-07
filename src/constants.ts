@@ -5,6 +5,7 @@ export const RunnerStatus = {
   Pending: "pending" as Status,
   Running: "running" as Status,
   Complete: "complete" as Status,
+  Unassigned: "unassigned" as Status,
 } as const;
 
 export const RunnerResult = {
