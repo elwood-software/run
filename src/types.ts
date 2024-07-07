@@ -23,7 +23,7 @@ export type Status =
   | "running"
   | "complete"
   | "queued"
-  | "unassigned";
+  | "assigned";
 export type Result = "none" | "success" | "failure" | "cancelled" | "skipped";
 
 export interface RuntimeState {
