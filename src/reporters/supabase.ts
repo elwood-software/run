@@ -50,7 +50,7 @@ export class SupabaseReporter
       },
       global: {
         headers: {
-          apikey: options.anon_key,
+          apikey: options.service_key,
           authorization: `Bearer ${options.service_key}`,
         },
       },
@@ -78,7 +78,7 @@ export class SupabaseReporter
   }
 
   async report(report: Workflow.Report): Promise<void> {
-    const result = await this.client.from("run").upsert([
+    const result = await this.client.from("elwood_run").upsert([
       {
         status: report.status,
         result: report.result,
@@ -107,7 +107,7 @@ export class SupabaseReporter
 
     // always update status right away
     if (this.#lastStatus !== data.status) {
-      await this.client.from("run").upsert([
+      await this.client.from("elwood_run").upsert([
         {
           status: data.status,
           tracking_id: data.tracking_id,
@@ -127,7 +127,7 @@ export class SupabaseReporter
     }
 
     try {
-      const result = await this.client.from("run_event").insert(
+      const result = await this.client.from("elwood_run_event").insert(
         this.#changeQueue,
       );
 

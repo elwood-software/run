@@ -57,6 +57,7 @@ export class Step extends State {
 
   getContext(): Record<string, unknown> {
     return {
+      vars: this.job.execution.getState(StateName.Variables, {}),
       name: this.name,
       outputs: this.getState(StateName.Outputs, {}),
       status: this.state.status,

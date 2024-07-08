@@ -200,7 +200,7 @@ export async function executeRun(
   manager.logger.info(`Verifying run ${id} ${tracking_id}`);
 
   try {
-    await client.from("run").update({
+    await client.from("elwood_run").update({
       status: RunnerStatus.Running,
       started_at: new Date(),
     }).eq("id", id);
@@ -213,9 +213,10 @@ export async function executeRun(
       },
     );
 
-    await client.from("run").update({
+    await client.from("elwood_run").update({
       status: execution.status,
       result: execution.result,
+      report: execution.getReport(),
       ended_at: new Date(),
     }).eq("id", id);
 
@@ -223,7 +224,7 @@ export async function executeRun(
   } catch (err) {
     manager.logger.error(`Error ${asError(err).message} processing`);
 
-    await client.from("run").update({
+    await client.from("elwood_run").update({
       status: RunnerStatus.Complete,
       result: RunnerResult.Failure,
       ended_at: new Date(),
@@ -250,7 +251,7 @@ async function selectRunForSelector(
   client: supabase.SupabaseClient,
   selector: LaunchWorkerOptions["selector"],
 ): Promise<RunData | undefined> {
-  const q = client.from("run")
+  const q = client.from("elwood_run")
     .select("id,configuration,tracking_id")
     .eq(
       "status",
