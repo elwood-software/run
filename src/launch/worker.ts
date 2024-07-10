@@ -252,7 +252,7 @@ async function selectRunForSelector(
   selector: LaunchWorkerOptions["selector"],
 ): Promise<RunData | undefined> {
   const q = client.from("elwood_run")
-    .select("id,configuration,tracking_id")
+    .select("id,configuration,tracking_id,variables")
     .eq(
       "status",
       RunnerStatus.Pending,
