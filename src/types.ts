@@ -78,14 +78,19 @@ export namespace Workflow {
     };
   };
 
+  export type ReportStdOut = {
+    timestamp: string;
+    text: string;
+  };
+
   export type ReportStep = ReportState & {
     outputs: Record<string, Json>;
-    stdout: string[];
-    stderr: string[];
+    stdout: ReportStdOut[];
+    stderr: ReportStdOut[];
   };
 
   export type ReportJob = ReportState & {
-    steps: Record<string, ReportStep>;
+    steps: ReportStep[];
   };
 
   export type Report = ReportState & {

@@ -127,14 +127,17 @@ export class Step extends State {
         "",
       );
 
-      const stdout_: string[] = [];
-      const stderr_: string[] = [];
+      const stdout_: Workflow.ReportStdOut[] = [];
+      const stderr_: Workflow.ReportStdOut[] = [];
 
       const stdout = new WritableStream({
         write: (chunk) => {
-          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
-          this.logger.info(`  > [stdout] ${txt}`);
-          stdout_.push(txt);
+          const text = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.info(`  > [stdout] ${text}`);
+          stdout_.push({
+            timestamp: new Date().toISOString(),
+            text,
+          });
 
           this.job.execution.manager.reportUpdate("stdout", {
             at: Date.now(),
@@ -144,16 +147,16 @@ export class Step extends State {
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
-            text: txt,
+            text,
           }).then();
         },
       });
 
       const stderr = new WritableStream({
         write: (chunk) => {
-          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
-          this.logger.error(`  > [stderr] ${txt}`);
-          stderr_.push(txt);
+          const text = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.error(`  > [stderr] ${text}`);
+          stderr_.push({ text, timestamp: new Date().toISOString() });
 
           this.job.execution.manager.reportUpdate("stderr", {
             at: Date.now(),
@@ -163,7 +166,7 @@ export class Step extends State {
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
             step_id: this.id,
-            text: txt,
+            text,
           }).then();
         },
       });

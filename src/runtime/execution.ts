@@ -230,22 +230,19 @@ export class Execution extends State {
             status: job.status,
             result: job.result,
             timing: job.getState(StateName.Timing),
-            steps: job.steps.reduce((acc, step) => {
+            steps: job.steps.map((step) => {
               return {
-                ...acc,
-                [step.name]: {
-                  id: step.id,
-                  name: step.name,
-                  status: step.status,
-                  result: step.result,
-                  reason: step.state.reason,
-                  timing: step.getState(StateName.Timing),
-                  outputs: step.getState(StateName.Outputs, {}),
-                  stdout: step.getState(StateName.Stdout, []),
-                  stderr: step.getState(StateName.Stderr, []),
-                },
+                id: step.id,
+                name: step.name,
+                status: step.status,
+                result: step.result,
+                reason: step.state.reason,
+                timing: step.getState(StateName.Timing),
+                outputs: step.getState(StateName.Outputs, {}),
+                stdout: step.getState(StateName.Stdout, []),
+                stderr: step.getState(StateName.Stderr, []),
               };
-            }, {}) as Record<string, Workflow.ReportStep>,
+            }),
           },
         };
       }, {}) as Record<string, Workflow.ReportJob>,
