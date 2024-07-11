@@ -7,7 +7,7 @@ import type {
   Status,
 } from "../types.ts";
 import { longId, shortId } from "../libs/short-id.ts";
-import { EventEmitter } from "../deps.ts";
+import { EventEmitter } from "../libs/events.ts";
 
 type Listener = (type: string, data: ReporterChangeData) => void;
 

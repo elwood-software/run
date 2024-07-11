@@ -169,7 +169,7 @@ export class Manager {
 
     // send initial report to all reports
     for (const reporter of this.reporters) {
-      await reporter.report(execution.getReport());
+      await reporter.report(execution.getReport(), execution.def);
     }
 
     // continue with execution if the state is pending

@@ -19,9 +19,12 @@ export abstract class AbstractReporter<
   }
 
   async reportFromExecution(execution: Execution): Promise<void> {
-    return await this.report(execution.getReport());
+    return await this.report(execution.getReport(), execution.def);
   }
 
-  abstract report(report: Workflow.Report): Promise<void>;
+  abstract report(
+    report: Workflow.Report,
+    configuration: Workflow.Configuration,
+  ): Promise<void>;
   abstract change(type: string, options: ReporterChangeData): Promise<void>;
 }

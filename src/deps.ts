@@ -13,25 +13,22 @@ export { isAbsolute } from "jsr:@std/path@^0.225.2/is-absolute";
 export { extname } from "jsr:@std/path@^0.225.2/extname";
 
 // logs
-export * as logger from "jsr:@std/log";
+export * as logger from "jsr:@std/log@0.224.3";
 
 // zod
-export { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
+export { z } from "npm:zod@3.23.8";
 
 // yaml
-export { parse as parseYaml } from "jsr:@std/yaml/parse";
+export { parse as parseYaml } from "jsr:@std/yaml@0.224.3/parse";
 
 // fmt
-export { stripAnsiCode } from "jsr:@std/fmt/colors";
+export { stripAnsiCode } from "jsr:@std/fmt@0.225.4/colors";
 
 // DOTENV
-export * as dotenv from "jsr:@std/dotenv/parse";
-
-// Event emitter
-export { default as EventEmitter } from "https://deno.land/x/events@v1.0.0/mod.ts";
+export * as dotenv from "jsr:@std/dotenv@0.224.1/parse";
 
 // supabase
-export * as supabase from "https://esm.sh/@supabase/supabase-js@2.43.5";
+export * as supabase from "npm:@supabase/supabase-js@2.43.5";
 
 // cli
-export { parseArgs } from "jsr:@std/cli/parse-args";
+export { parseArgs } from "jsr:@std/cli@0.224.7/parse-args";

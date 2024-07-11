@@ -1,0 +1,16 @@
+{
+  "name": "@elwood/run",
+  "version": "0.1.0",
+  "exports": {
+    ".":"./mod.ts",
+    "./types": "./src/types.ts"
+  },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "mod.ts",
+      "src/**/*.ts"
+    ]
+  }
+}

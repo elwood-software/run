@@ -1,5 +1,11 @@
 import { AbstractReporter } from "./abstract.ts";
-import type { Json, ReporterChangeData, Status, Workflow } from "../types.ts";
+import type {
+  Json,
+  JsonObject,
+  ReporterChangeData,
+  Status,
+  Workflow,
+} from "../types.ts";
 import { assert, supabase } from "../deps.ts";
 import { RunnerStatus } from "../constants.ts";
 
@@ -77,14 +83,26 @@ export class SupabaseReporter
     this.#changeQueueInterval && clearInterval(this.#changeQueueInterval);
   }
 
-  async report(report: Workflow.Report): Promise<void> {
+  async execute() {
+  }
+
+  async report(
+    report: Workflow.Report,
+    configuration?: Workflow.Configuration,
+  ): Promise<void> {
+    const payload: JsonObject = {
+      status: report.status,
+      result: report.result,
+      tracking_id: report.tracking_id,
+      report: report,
+    };
+
+    if (configuration) {
+      payload.configuration = configuration;
+    }
+
     const result = await this.client.from("elwood_run").upsert([
-      {
-        status: report.status,
-        result: report.result,
-        tracking_id: report.tracking_id,
-        report: report,
-      },
+      payload,
     ], {
       onConflict: "tracking_id",
       ignoreDuplicates: false,

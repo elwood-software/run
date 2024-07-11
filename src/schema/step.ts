@@ -1,14 +1,20 @@
 import { z } from "../deps.ts";
 
-import { Environment, Input, Permissions } from "./scalar.ts";
+import {
+  Description,
+  Environment,
+  Input,
+  Label,
+  Name,
+  Permissions,
+  When,
+} from "./scalar.ts";
 
 export const StepSchemaBase = z.object({
-  name: z.string().min(2).regex(/^[a-zA-Z]/, {
-    message: "Must start with a letter",
-  }).optional(),
-  label: z.string().optional(),
-  description: z.string().optional(),
-  when: z.string().default("*").optional(),
+  name: Name.optional(),
+  label: Label.optional(),
+  description: Description.optional(),
+  when: When.default("*").optional(),
   input: Input.optional(),
   env: Environment.optional(),
   permissions: Permissions.optional(),

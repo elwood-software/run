@@ -1,6 +1,13 @@
 import { z } from "../deps.ts";
 import { JobSchema } from "./job.ts";
-import { Description, Name, Permissions, Variable, When } from "./scalar.ts";
+import {
+  Description,
+  Label,
+  Name,
+  Permissions,
+  Variable,
+  When,
+} from "./scalar.ts";
 
 /**
  * Workflow Schema
@@ -30,6 +37,11 @@ export const WorkflowSchema = z.object({
   description: Description.describe(
     "Description of the workflow. Not passed to report",
   ).optional(),
+
+  /**
+   * Label of the workflow.
+   */
+  label: Label.describe("Label of the workflow").optional(),
 
   /**
    * When to run the workflow.

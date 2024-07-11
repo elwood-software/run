@@ -128,7 +128,10 @@ export type ReporterChangeData = {
 export interface Reporter<Options extends JsonObject = JsonObject> {
   destroy(): Promise<void>;
   setOptions(options: Options): void;
-  report(report: Workflow.Report): Promise<void>;
+  report(
+    report: Workflow.Report,
+    configuration?: Workflow.Configuration,
+  ): Promise<void>;
   change(type: string, data: ReporterChangeData): Promise<void>;
 }
 
