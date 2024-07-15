@@ -31,7 +31,8 @@
       "npm:@supabase/supabase-js@2.43.5": "npm:@supabase/supabase-js@2.43.5",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:zod": "npm:zod@3.23.8",
-      "npm:zod-to-json-schema": "npm:zod-to-json-schema@3.23.0_zod@3.23.8"
+      "npm:zod-to-json-schema": "npm:zod-to-json-schema@3.23.0_zod@3.23.8",
+      "npm:zod@3.23.8": "npm:zod@3.23.8"
     },
     "jsr": {
       "@std/archive@0.224.1": {
