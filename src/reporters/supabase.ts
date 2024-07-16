@@ -88,7 +88,7 @@ export class SupabaseReporter
 
   async report(
     report: Workflow.Report,
-    configuration?: Workflow.Configuration,
+    _configuration?: Workflow.Configuration,
   ): Promise<void> {
     const payload: JsonObject = {
       status: report.status,
@@ -97,16 +97,10 @@ export class SupabaseReporter
       report: report,
     };
 
-    if (configuration) {
-      payload.configuration = configuration;
-    }
-
-    const result = await this.client.from("elwood_run").upsert([
-      payload,
-    ], {
-      onConflict: "tracking_id",
-      ignoreDuplicates: false,
-    }).eq("tracking_id", report.tracking_id);
+    const result = await this.client
+      .from("elwood_run")
+      .update(payload)
+      .eq("tracking_id", report.tracking_id);
 
     result.error &&
       console.log("Error reporting", result.error);
@@ -125,15 +119,12 @@ export class SupabaseReporter
 
     // always update status right away
     if (this.#lastStatus !== data.status) {
-      await this.client.from("elwood_run").upsert([
+      await this.client.from("elwood_run").update(
         {
           status: data.status,
           tracking_id: data.tracking_id,
         },
-      ], {
-        onConflict: "tracking_id",
-        ignoreDuplicates: false,
-      }).eq("tracking_id", data.tracking_id);
+      ).eq("tracking_id", data.tracking_id);
 
       this.#lastStatus = data.status;
     }
