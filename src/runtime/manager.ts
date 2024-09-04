@@ -20,6 +20,7 @@ export type ManagerOptions = {
   loadEnv?: string[];
   env?: Record<string, string>;
   requiredEnv?: string[];
+  denoBinPath?: string;
 };
 
 export class Manager {
@@ -29,6 +30,7 @@ export class Manager {
     const workspaceDir = Deno.env.get("ELWOOD_RUNNER_WORKSPACE_DIR");
     const executionUid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_UID");
     const executionGid = Deno.env.get("ELWOOD_RUNNER_EXECUTION_GID");
+    const denoBinPath = Deno.env.get("ELWOOD_RUNNER_DENO_BIN_PATH");
     const stdActionsPrefix = Deno.env.get(EnvName.StdActionPrefix) ??
       "https://x.elwood.run/a";
 
@@ -45,6 +47,7 @@ export class Manager {
         ...options,
         workspaceDir,
         stdActionsPrefix,
+        denoBinPath,
         executionGid: Number(executionGid),
         executionUid: Number(executionUid),
       }),

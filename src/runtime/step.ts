@@ -1,11 +1,11 @@
-import { Job } from "./job.ts";
+import type { Job } from "./job.ts";
 import type { ReporterChangeData, Workflow } from "../types.ts";
 import {
   resolveActionUrlForDenoCommand,
   resolveActionUrlFromDefinition,
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
-import { Folder } from "./folder.ts";
+import type { Folder } from "./folder.ts";
 import {
   evaluateAndNormalizeExpression,
   normalizeExpressionResult,
@@ -15,7 +15,7 @@ import {
   replaceVariablePlaceholdersInVariables,
 } from "../libs/variables.ts";
 import { assert, stripAnsiCode } from "../deps.ts";
-import { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
+import type { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
 import { StateName } from "../constants.ts";
 import { denoMergePermissions } from "../libs/deno/permissions.ts";
