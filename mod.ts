@@ -2,6 +2,7 @@ export type * from "./src/types.ts";
 export * from "./src/launch.ts";
 export * from "./src/launch/serve.ts";
 export * from "./src/launch/execute.ts";
+export { Manager as ElwoodRunManager } from "./src/runtime/manager.ts";
 export * from "./src/constants.ts";
 
 if (import.meta.main) {
