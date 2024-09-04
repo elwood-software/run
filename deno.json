@@ -1,4 +1,18 @@
 {
+  "name": "@elwood/run",
+  "version": "0.2.0",
+  "exports": {
+    ".":"./mod.ts",
+    "./types": "./src/types.ts"
+  },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "mod.ts",
+      "src/**/*.ts"
+    ]
+  }, 
   "tasks": {
     "up": "docker compose -f .dev/docker-compose.yml up",
     "down": "docker compose -f .dev/docker-compose.yml down",
