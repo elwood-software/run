@@ -90,7 +90,7 @@ Deno.test("evaluateExpress()", async function () {
 
   assertEquals(
     await evaluateAndNormalizeExpression(
-      '${{ dirname("/this/is/a/path.json") }}',
+      '${{ path.dirname("/this/is/a/path.json") }}',
       {},
     ),
     "/this/is/a",
