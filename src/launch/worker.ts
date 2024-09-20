@@ -110,6 +110,7 @@ export async function launchWorker(
       );
 
       if (!data) {
+        lock = false;
         manager.logger.info("No queued runs found");
         return;
       }
