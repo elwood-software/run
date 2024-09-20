@@ -14,6 +14,7 @@ export async function executeDenoRun(
   return await executeDenoCommand({
     args: [
       "run",
+      "--unstable-worker-options",
       ...denoPermissionObjectToFlags(permissions ?? {}),
       ...args,
       file,
