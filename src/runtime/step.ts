@@ -199,7 +199,6 @@ export class Step extends State {
           "-q",
           "--no-config",
           "--no-prompt",
-          "--cached-only",
           "--lock",
           this.job.execution.cacheDir.join("deno.lock"),
         ],
