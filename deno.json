@@ -20,7 +20,7 @@
     "compile": "deno compile -A --unstable-worker-options --include ./src/libs/expression/worker.ts -o ./dist/elwood-run ./src/launch.ts",
     "build-image": "packer build build/run.pkr.hcl",
     "generate-schemas": "deno run --allow-read --allow-write ./schema/generate.ts",
-    "cli": "deno run -A ./cli.ts"
+    "cli": "deno run -A --unstable-worker-options ./cli.ts"
   },
   "compilerOptions": {
     "strict": true,

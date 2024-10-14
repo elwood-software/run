@@ -11,6 +11,14 @@ export enum ExpressionTokens {
   Postfix = "}}",
 }
 
+/**
+ * Evaluate the given expression and return the result. Use
+ * the given state to
+ *
+ * @param expression
+ * @param state
+ * @returns
+ */
 export async function evaluateExpression<T = Json>(
   expression: T,
   state: JsonObject = {},

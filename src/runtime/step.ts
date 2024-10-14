@@ -293,8 +293,11 @@ export class Step extends State {
       env.INPUT_BIN = this.def.input?.bin ?? "deno";
       env.INPUT_SCRIPT = this.def.run;
 
+      runtimePermissions.env.push("INPUT_BIN", "INPUT_SCRIPT");
+
       if (env.INPUT_BIN == "deno") {
         env.INPUT_ARGS = normalizeExpressionResult(["-q", "run", "-"]);
+        runtimePermissions.env.push("INPUT_ARGS");
       }
 
       runtimePermissions.run!.push(env.INPUT_BIN);

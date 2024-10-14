@@ -2,14 +2,25 @@ import { parseArgs } from "jsr:@std/cli/parse-args";
 
 import { main } from "./src/cli/main.ts";
 
-const { _, cwd } = parseArgs(Deno.args, {
-  alias: {
-    d: "workspace-dir",
+const { _, cwd, ["workspace-dir"]: workspaceDir, verbose, report } = parseArgs(
+  Deno.args,
+  {
+    string: ["workspace-dir", "cwd", "report"],
+    alias: {
+      d: "workspace-dir",
+      r: "report",
+      c: "cwd",
+    },
+    boolean: ["verbose"],
   },
-});
+);
 
 await main({
+  _,
+  raw: Deno.args,
   workflowFile: String(_[0]),
   cwd,
-  workspaceDir: Deno.cwd(),
+  workspaceDir,
+  verbose,
+  reportFile: report,
 });

@@ -138,3 +138,14 @@ export interface Reporter<Options extends JsonObject = JsonObject> {
 export interface ReporterConstructor {
   new (): Reporter;
 }
+
+export type CliArgs = {
+  raw: string[];
+  _: string[];
+  workflowFile: string;
+  cwd?: string;
+  workspaceDir?: string;
+  cleanup?: "before" | "after";
+  verbose?: boolean;
+  reportFile?: string;
+};

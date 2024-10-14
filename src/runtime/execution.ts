@@ -1,4 +1,4 @@
-import { assert } from "../deps.ts";
+import { assert, dirname } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
 import type { JsonObject, ReporterChangeData, Workflow } from "../types.ts";
@@ -193,6 +193,11 @@ export class Execution extends State {
       this.manager.logger.error(` > execution failed: ${error_.message}`);
       await this.fail(error_.message);
     } finally {
+      await this.workingDir.writeText(
+        "report.json",
+        JSON.stringify(this.getReport(), null, 2),
+      );
+
       this.stop();
     }
   }
@@ -278,6 +283,8 @@ export class Execution extends State {
         ELWOOD_BIN: this.binDir.path,
         ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,
         PATH: [
+          this.manager.options.denoBinPath &&
+          dirname(this.manager.options.denoBinPath),
           "/elwood/run/runner/bin",
           this.binDir.path,
           "/usr/local/sbin",
@@ -287,7 +294,7 @@ export class Execution extends State {
           "/sbin",
           "/bin",
           this.workingDir.join(".local", "bin"),
-        ].join(":"),
+        ].filter(Boolean).join(":"),
       },
       permissions,
       denoBinPath: this.manager.options.denoBinPath,
