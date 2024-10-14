@@ -1,4 +1,4 @@
-import { assert, extname, parseYaml } from "../deps.ts";
+import { assert, extname, fromFileUrl, parseYaml } from "../deps.ts";
 import type { JsonObject, Workflow } from "../types.ts";
 import { WorkflowSchema } from "../schema/workflow.ts";
 
@@ -10,7 +10,7 @@ export async function loadWorkflowFile(
 
   switch (url.protocol) {
     case "file:": {
-      content = await Deno.readTextFile(file);
+      content = await Deno.readTextFile(fromFileUrl(file));
       break;
     }
     case "http:":

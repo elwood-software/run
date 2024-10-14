@@ -14,6 +14,7 @@ export async function executeDenoRun(
   return await executeDenoCommand({
     args: [
       "run",
+      "--unstable-worker-options",
       ...denoPermissionObjectToFlags(permissions ?? {}),
       ...args,
       file,
@@ -26,6 +27,7 @@ export type ExecuteDenoCommand = Deno.CommandOptions & {
   stdoutStream?: WritableStream<Uint8Array>;
   stderrStream?: WritableStream<Uint8Array>;
   retry?: boolean;
+  denoBinPath?: string;
 };
 
 export async function executeDenoCommand(
@@ -37,10 +39,11 @@ export async function executeDenoCommand(
     stdout = "inherit",
     stderr = "inherit",
     retry = false,
+    denoBinPath = "/elwood/run/runner/bin/deno",
     ...opts
   } = options;
 
-  const cmd = new Deno.Command("/elwood/run/runner/bin/deno", {
+  const cmd = new Deno.Command(denoBinPath, {
     stdout: stdoutStream ? "piped" : stdout,
     stderr: stderrStream ? "piped" : stderr,
     ...opts,

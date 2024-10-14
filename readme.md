@@ -5,7 +5,7 @@ We are actively developing the code and things will change quickly. If you have 
 
 ## Documentation
 
-Read the full documentation at [elwood.run/docs](https://elwood.run/docs)
+Read the full documentation at [./docs/readme.md](./docs/readme.md)
 
 ## 🚀 Actions
 

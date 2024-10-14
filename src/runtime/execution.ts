@@ -137,6 +137,7 @@ export class Execution extends State {
           ],
           env: this.getDenoEnv(),
           retry: true,
+          denoBinPath: this.manager.options.denoBinPath,
         });
       }),
     );
@@ -289,6 +290,7 @@ export class Execution extends State {
         ].join(":"),
       },
       permissions,
+      denoBinPath: this.manager.options.denoBinPath,
     };
   }
 

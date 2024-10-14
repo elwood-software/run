@@ -24,7 +24,7 @@ export async function evaluateExpression<T = Json>(
       value_.push(await evaluateExpression<T>(value, state));
     }
 
-    return await evaluateExpression<T>(value_ as T, state.env);
+    return value_ as T;
   }
 
   if (typeof expression === "object") {
