@@ -2,10 +2,17 @@ import { parseArgs } from "jsr:@std/cli/parse-args";
 
 import { main } from "./src/cli/main.ts";
 
-const { _, cwd, ["workspace-dir"]: workspaceDir, verbose, report } = parseArgs(
+const {
+  _,
+  cwd,
+  ["workspace-dir"]: workspaceDir,
+  ["remote-url"]: remoteUrl,
+  verbose,
+  report,
+} = parseArgs(
   Deno.args,
   {
-    string: ["workspace-dir", "cwd", "report"],
+    string: ["workspace-dir", "cwd", "report", "remove-url"],
     alias: {
       d: "workspace-dir",
       r: "report",
@@ -23,4 +30,5 @@ await main({
   workspaceDir,
   verbose,
   reportFile: report,
+  remoteUrl,
 });

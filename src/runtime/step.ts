@@ -171,10 +171,16 @@ export class Step extends State {
         },
       });
 
+      // if they can run in stage
+      // lets do that
+      const cwd = this.def["run-in-stage"] === true
+        ? this.job.execution.stageDir.path
+        : this.contextDir.path;
+
       const runFile = resolveActionUrlForDenoCommand(this.actionUrl);
       const runOptions = this.job.execution.getDenoRunOptions({
         file: runFile,
-        cwd: this.contextDir.path,
+        cwd,
         ...(await this._getDenoRunOptions({
           env: {
             ELWOOD_OUTPUT: outputFilePath,
@@ -257,6 +263,7 @@ export class Step extends State {
     }
 
     const env: Record<string, string> = {
+      ...(this.def.env ?? {}),
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
@@ -293,11 +300,11 @@ export class Step extends State {
       env.INPUT_BIN = this.def.input?.bin ?? "deno";
       env.INPUT_SCRIPT = this.def.run;
 
-      runtimePermissions.env.push("INPUT_BIN", "INPUT_SCRIPT");
+      runtimePermissions.env?.push("INPUT_BIN", "INPUT_SCRIPT");
 
       if (env.INPUT_BIN == "deno") {
         env.INPUT_ARGS = normalizeExpressionResult(["-q", "run", "-"]);
-        runtimePermissions.env.push("INPUT_ARGS");
+        runtimePermissions.env?.push("INPUT_ARGS");
       }
 
       runtimePermissions.run!.push(env.INPUT_BIN);

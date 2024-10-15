@@ -148,4 +148,5 @@ export type CliArgs = {
   cleanup?: "before" | "after";
   verbose?: boolean;
   reportFile?: string;
+  remoteUrl?: string;
 };

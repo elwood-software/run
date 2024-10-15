@@ -2,7 +2,6 @@
 
 ## 🚀 Quick Start
 
-
 ## Run your first workflow
 ```bash
 deno task cli ./workflows/hello-world.yml

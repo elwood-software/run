@@ -6,7 +6,6 @@ export function denoPermissionObjectToFlags(
   const defaults = {
     env: false,
     sys: false,
-    hrtime: false,
     net: false,
     ffi: false,
     read: false,
@@ -67,7 +66,6 @@ export function denoMergePermissions(
   const defaults: Deno.PermissionOptionsObject = {
     env: "inherit",
     sys: "inherit",
-    hrtime: "inherit",
     net: "inherit",
     ffi: "inherit",
     read: "inherit",
@@ -83,7 +81,6 @@ export function denoMergePermissions(
     return {
       env: true,
       sys: true,
-      hrtime: true,
       net: true,
       ffi: true,
       read: true,
@@ -99,7 +96,6 @@ export function denoMergePermissions(
     return {
       env: false,
       sys: false,
-      hrtime: false,
       net: false,
       ffi: false,
       read: false,

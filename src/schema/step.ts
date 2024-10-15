@@ -18,6 +18,7 @@ export const StepSchemaBase = z.object({
   input: Input.optional(),
   env: Environment.optional(),
   permissions: Permissions.optional(),
+  "run-in-stage": z.boolean().optional().default(false),
 });
 
 export const StepSchemaWithRun = StepSchemaBase.merge(
