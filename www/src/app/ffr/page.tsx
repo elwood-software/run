@@ -18,11 +18,11 @@ export default function Page() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div className="container md:grid md:grid-cols-[2fr_3fr] gap-24 items-center">
-        <div className="flex flex-col">
-          <div className="mb-8">
-            <h1 className="font-mono text-2xl border rounded-xl py-2 px-4 text-green-500 bg-green-950/10 inline">
+    <div className="h-full min-h-screen flex flex-col items-center justify-center">
+      <div className="container flex flex-col md:grid md:grid-cols-[2fr_3fr] md:gap-24 items-center justify-center">
+        <div className="flex flex-col justify-center md:items-start items-center py-12 px-6 md:p-0">
+          <div className="mb-8 text-center md:text-left">
+            <h1 className="font-mono text-2xl border border-green-500 rounded-lg py-2 px-4 text-green-500 bg-green-500/10 dark:bg-green-950/80 inline">
               /ffr
             </h1>
           </div>
@@ -32,7 +32,7 @@ export default function Page() {
           <h2 className="text-xl max-w-2xl mb-1 font-bold">
             Run FFmpeg on dedicated GPU powered instances
           </h2>
-          <h2 className="text-xl max-w-2xl text-foreground/75 mb-3">
+          <h2 className="text-xl max-w-2xl text-foreground/75 mb-3 text-center md:text-left">
             Transform your videos faster than ever with our cloud-based FFmpeg
             service. Harness the power of GPUs for lightning-fast encoding,
             transcoding, and more.
@@ -51,7 +51,7 @@ export default function Page() {
 
           <div className="mb-6 space-x-3">
             <Button variant="secondary" asChild className="font-bold">
-              <a href="https://github.com/elwood-software/run/docs">
+              <a href="https://github.com/elwood-software/run/tree/main/docs/ffr/readme.md">
                 Read the docs
               </a>
             </Button>
@@ -61,8 +61,8 @@ export default function Page() {
             </Button>
           </div>
         </div>
-        <div>
-          <div className="bg-black rounded-lg p-6 border border-border/50 font-mono flex flex-col">
+        <div className='hidden md:block'>
+          <div className="bg-secondary dark:bg-black rounded-lg p-6 border border-border/50 font-mono flex flex-col shadow-lg">
             <span className="text-muted-foreground"># install ffr</span>
 
             <span className="mb-3 flex flex-row items-center space-x-6">
