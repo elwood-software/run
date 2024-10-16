@@ -81,7 +81,7 @@ export default function Page() {
               # replace ffmpeg with ffr
             </span>
             <span className="mb-6">
-              ffr -i "test.mov" -vcode h264 -b:v 20971520 "test.mp4"
+              {`ffr -i "test.mov" -vcode h264 -b:v 20971520 "test.mp4"`}
             </span>
 
             <span className="text-slate-500 flex flex-col text-sm mb-6">

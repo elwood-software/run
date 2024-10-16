@@ -14,8 +14,6 @@ import {createClient} from '@/lib/supabase/server';
 import {login} from './actions';
 import {redirect} from 'next/navigation';
 
-export const description =
-  "A simple login form with email and password. The submit button says 'Sign in'.";
 
 export type Props = {
   searchParams: {
