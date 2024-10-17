@@ -2,12 +2,12 @@ import { S3Client, type S3ClientConfig } from "npm:@aws-sdk/client-s3@3.662.0";
 import { Upload } from "npm:@aws-sdk/lib-storage@3.662.0";
 import { createReadStream } from "node:fs";
 
-import type { CliArgs, JsonObject } from "../types.ts";
-import { toAbsolute } from "../libs/utils.ts";
-import { assert, confirm } from "../deps.ts";
-import { state } from "./state.ts";
+import type { FFrArgs } from "../../types.ts";
+import { toAbsolute } from "../../libs/utils.ts";
+import { assert, confirm } from "../../deps.ts";
+import { state } from "../state.ts";
 
-export async function ffmpeg(args: CliArgs): Promise<void> {
+export default async function main(args: FFrArgs) {
   const { cwd = Deno.cwd(), remoteUrl = "https://api.elwood.run" } = args;
   let token = await state.getToken();
 
@@ -19,9 +19,6 @@ export async function ffmpeg(args: CliArgs): Promise<void> {
 
   // we must have a token by now or we stop
   assert(token, "missing authorization token");
-
-  // make it easier to make API calls
-  const remoteFetch = remoteFetchProvider(remoteUrl, token.access_token);
 
   // we need to clean out any of our own arguments
   // we do this by only pushing anything after ffmpeg
@@ -92,7 +89,7 @@ export async function ffmpeg(args: CliArgs): Promise<void> {
   // that is tied to this user's storage bucket
   // we'll also let them know what files are
   // going to be uploaded
-  const response = await remoteFetch<
+  const response = await args.api<
     {
       config: S3ClientConfig;
       bucket: string;
@@ -127,7 +124,7 @@ export async function ffmpeg(args: CliArgs): Promise<void> {
     const _result = await upload.done();
   }
 
-  const jobResponse = await remoteFetch(`/run/ffmpeg`, {
+  const jobResponse = await args.api(`/run/ffr`, {
     method: "POST",
     body: JSON.stringify({
       tracking_id: response.tracking_id,
@@ -138,38 +135,7 @@ export async function ffmpeg(args: CliArgs): Promise<void> {
 
   assert(jobResponse.ok, "Run post was not ok");
 
-  console.log("Run Submitted!!");
-  console.log(`Tracking ID: ${response.tracking_id}`);
-  console.log(`View Logs: elwood-run watch ${response.tracking_id}`);
-}
-
-export function remoteFetchProvider(
-  remoteUrl: string,
-  token: string,
-): <T = JsonObject>(url: string, init?: RequestInit) => Promise<T> {
-  return async function _fetch<T = JsonObject>(
-    url: string,
-    init: RequestInit = {},
-  ) {
-    const response = await fetch(`${remoteUrl}${url}`, {
-      ...init,
-      headers: {
-        "content-type": "application/json",
-        ...(init?.headers ?? {}),
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        await state.removeToken();
-      }
-
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`,
-      );
-    }
-
-    return await response.json() as T;
-  };
+  console.log("Run Queued!! Tracking ID: ${response.tracking_id}");
+  console.log(`Download Output: ffr get ${response.tracking_id}`);
+  console.log(`View Logs: ffr watch ${response.tracking_id}`);
 }

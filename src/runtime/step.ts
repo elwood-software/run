@@ -96,7 +96,9 @@ export class Step extends State {
         execution_id: this.job.execution.id,
         tracking_id: this.job.execution.tracking_id,
         job_id: this.job.id,
+        job_name: this.job.name,
         step_id: this.id,
+        step_name: this.name,
       });
     });
 
@@ -146,7 +148,9 @@ export class Step extends State {
             execution_id: this.job.execution.id,
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
+            job_name: this.job.name,
             step_id: this.id,
+            step_name: this.name,
             text,
           }).then();
         },
@@ -165,7 +169,9 @@ export class Step extends State {
             execution_id: this.job.execution.id,
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
+            job_name: this.job.name,
             step_id: this.id,
+            step_name: this.name,
             text,
           }).then();
         },

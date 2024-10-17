@@ -7,13 +7,11 @@ export async function GET(request: NextRequest) {
 
   if (!session) {
     return NextResponse.redirect(
-      new URL('/oauth/cli/login?error=no_session', request.nextUrl.href),
+      new URL('/login?error=no_session', request.nextUrl.href),
     );
   }
 
   store.set('cli-session', session, {httpOnly: true, path: '/'});
 
-  return NextResponse.redirect(
-    new URL('/oauth/cli/login', request.nextUrl.href),
-  );
+  return NextResponse.redirect(new URL('/login', request.nextUrl.href));
 }

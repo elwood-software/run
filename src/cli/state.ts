@@ -6,6 +6,7 @@ import type { JsonObject } from "../types.ts";
 class State {
   configDir: string;
   credentialsFile: string;
+  ffrFile: string;
 
   constructor() {
     const homeDir = Deno.build.os == "windows"
@@ -13,6 +14,7 @@ class State {
       : Deno.env.get("HOME")!;
     this.configDir = join(homeDir, ".elwood", "run");
     this.credentialsFile = join(this.configDir, "credentials.json");
+    this.ffrFile = join(this.configDir, "ffr.json");
   }
 
   async getToken(): Promise<JsonObject | null> {
@@ -54,6 +56,27 @@ class State {
       { mode: 0o600 },
     );
     return Promise.resolve();
+  }
+
+  async getFfr(): Promise<JsonObject> {
+    try {
+      return JSON.parse(await Deno.readTextFile(this.credentialsFile)) ?? {};
+    } catch {
+      return {};
+    }
+  }
+
+  async saveFFr(value: JsonObject): Promise<JsonObject> {
+    const currentValue = await this.getFfr();
+    const nextValue = { ...currentValue, ...value };
+    await Deno.mkdir(this.configDir, { recursive: true });
+    await Deno.writeTextFile(
+      this.credentialsFile,
+      JSON.stringify(nextValue, null, 2),
+      { mode: 0o600 },
+    );
+
+    return nextValue;
   }
 
   async provisionToken(remoteUrl: string) {
@@ -103,6 +126,49 @@ class State {
         tokenOrError.token,
       );
     }
+  }
+
+  apiProvider(
+    remoteUrl: string,
+  ): <T = JsonObject>(url: string, init?: RequestInit) => Promise<T> {
+    return async <T = JsonObject>(
+      url: string,
+      init: RequestInit = {},
+    ) => {
+      let accessToken = (await this.getToken())?.access_token;
+
+      if (!accessToken) {
+        await this.provisionToken(remoteUrl);
+        const token_ = await this.getToken();
+
+        if (!token_) {
+          throw new Error("Unable to get access token");
+        }
+
+        accessToken = token_.access_token;
+      }
+
+      const response = await fetch(`${remoteUrl}${url}`, {
+        ...init,
+        headers: {
+          "content-type": "application/json",
+          ...(init?.headers ?? {}),
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          await state.removeToken();
+        }
+
+        throw new Error(
+          `Failed to fetch: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      return await response.json() as T;
+    };
   }
 }
 

@@ -14,7 +14,6 @@ import {createClient} from '@/lib/supabase/server';
 import {login} from './actions';
 import {redirect} from 'next/navigation';
 
-
 export type Props = {
   searchParams: {
     error?: string | undefined;
@@ -26,7 +25,7 @@ export default async function Page(props: Props) {
   const {data} = await client.auth.getSession();
 
   if (data.session?.user && !props.searchParams.error) {
-    return redirect('/oauth/cli/login/complete');
+    return redirect('/login/complete');
   }
 
   return (

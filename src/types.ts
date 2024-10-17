@@ -117,7 +117,9 @@ export type ReporterChangeData = {
   execution_id: string;
   tracking_id: string;
   job_id?: string;
+  job_name?: string;
   step_id?: string;
+  step_name?: string;
   status: Status;
   result: Result;
   reason?: string | null;
@@ -141,7 +143,7 @@ export interface ReporterConstructor {
 
 export type CliArgs = {
   raw: string[];
-  _: string[];
+  _: Array<string | number>;
   workflowFile: string;
   cwd?: string;
   workspaceDir?: string;
@@ -150,3 +152,15 @@ export type CliArgs = {
   reportFile?: string;
   remoteUrl?: string;
 };
+
+export type FFrArgs =
+  & Omit<
+    CliArgs,
+    "reportFile" | "workspaceDir" | "workflowFile"
+  >
+  & {
+    api<T = JsonObject>(url: string, init?: RequestInit): Promise<T>;
+    state: {
+      lastId?: string;
+    };
+  };

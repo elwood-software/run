@@ -12,7 +12,7 @@ const {
 } = parseArgs(
   Deno.args,
   {
-    string: ["workspace-dir", "cwd", "report", "remove-url"],
+    string: ["workspace-dir", "cwd", "report", "remote-url"],
     alias: {
       d: "workspace-dir",
       r: "report",
