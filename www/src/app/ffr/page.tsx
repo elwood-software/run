@@ -1,12 +1,13 @@
 'use client';
 
 import {useState} from 'react';
-import {ClipboardIcon, CheckIcon} from '@radix-ui/react-icons';
+import {ClipboardIcon, CheckIcon, GitHubLogoIcon} from '@radix-ui/react-icons';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import {Button} from '@/components/ui/button';
 
 import {FFrLogo} from '@/components/ffr-logo';
+import Link from 'next/link';
 
 export default function Page() {
   const [isCopied, setIsCopied] = useState(false);
@@ -34,38 +35,34 @@ export default function Page() {
           <h2 className="text-xl max-w-2xl mb-1 font-bold">
             Run FFmpeg on dedicated GPU powered instances
           </h2>
-          <h2 className="text-xl max-w-2xl text-foreground/75 mb-3 text-center md:text-left">
+          <h2 className="text-xl max-w-2xl text-foreground/75 mb-6 text-center md:text-left">
             Transform your videos faster than ever with our cloud-based FFmpeg
             service. Harness the power of GPUs for lightning-fast encoding,
             transcoding, and more.
           </h2>
 
-          <p className="mb-6">
-            $.01
-            <span className="text-muted-foreground text-xs ml-1">
-              /minute
-            </span>{' '}
-            + $0.09
-            <span className="text-muted-foreground text-xs ml-1">
-              /GB transfer
-            </span>{' '}
-            <span className="text-muted-foreground text-xs">+ Stripe fees</span>
-          </p>
-
-          <div className="mb-6 space-x-3">
+          <div className="mb-6 space-x-2 flex flex-row items-center">
             <Button variant="secondary" asChild className="font-bold">
-              <a href="https://github.com/elwood-software/run/tree/main/docs/ffr/readme.md">
-                Read the docs
-              </a>
+              <Link href="/docs/ffr/start">Getting Started</Link>
             </Button>
 
-            <Button variant="outline" asChild className="font-bold">
-              <a href="https://github.com/elwood-software/run">Github</a>
+            <Button variant="outline" asChild>
+              <Link href="/docs/ffr">Docs</Link>
+            </Button>
+
+            <Button variant="outline" asChild>
+              <Link href="/docs/ffr/pricing">Pricing</Link>
+            </Button>
+
+            <Button variant="outline" asChild>
+              <a href="https://github.com/elwood-software/run" target="_blank">
+                <GitHubLogoIcon className="size-4" />
+              </a>
             </Button>
           </div>
         </div>
         <div className="hidden md:block">
-          <div className="bg-secondary dark:bg-black rounded-lg p-6 border border-border/50 font-mono flex flex-col shadow-lg">
+          <div className="bg-card rounded-lg p-6 border border-border font-mono flex flex-col shadow-lg">
             <span className="text-muted-foreground"># install ffr</span>
 
             <span className="mb-3 flex flex-row items-center space-x-6">
