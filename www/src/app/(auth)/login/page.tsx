@@ -62,7 +62,7 @@ export default async function Page(props: Props) {
             </Button>
 
             <div className="mt-4 text-center text-sm">
-              Don't have an account?{' '}
+              Need an account?{' '}
               <Link href="/signup" className="text-center text-sm underline">
                 Sign Up
               </Link>

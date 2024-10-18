@@ -11,7 +11,7 @@ export type Props = {
 };
 
 export default function CompletePage(props: Props) {
-  const {isLoading, data} = useQuery({
+  const {data} = useQuery({
     queryKey: ['setup-stripe', props.searchParams.session_id],
     enabled: Boolean(props.searchParams.session_id),
     refetchInterval: 1000 * 15,
