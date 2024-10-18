@@ -1,3 +1,6 @@
+import {redirect} from 'next/navigation';
+import Link from 'next/link';
+
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -12,7 +15,6 @@ import {Label} from '@/components/ui/label';
 import {createClient} from '@/lib/supabase/server';
 
 import {login} from './actions';
-import {redirect} from 'next/navigation';
 
 export type Props = {
   searchParams: {
@@ -54,10 +56,17 @@ export default async function Page(props: Props) {
               <Input id="password" type="password" name="password" required />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col items-center">
             <Button formAction={login} className="w-full">
               Sign in
             </Button>
+
+            <div className="mt-4 text-center text-sm">
+              Don't have an account?{' '}
+              <Link href="/signup" className="text-center text-sm underline">
+                Sign Up
+              </Link>
+            </div>
           </CardFooter>
         </Card>
       </form>

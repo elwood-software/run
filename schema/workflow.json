@@ -222,6 +222,10 @@
                         "permissions": {
                           "$ref": "#/definitions/workflow/properties/defaults/properties/permissions"
                         },
+                        "run-in-stage": {
+                          "type": "boolean",
+                          "default": false
+                        },
                         "run": {
                           "type": "string"
                         }
@@ -254,6 +258,9 @@
                         },
                         "permissions": {
                           "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions"
+                        },
+                        "run-in-stage": {
+                          "$ref": "#/definitions/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/run-in-stage"
                         },
                         "action": {
                           "type": "string"

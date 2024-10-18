@@ -1,4 +1,4 @@
-import type { FFrArgs } from "../../types.ts";
+import type { CliArgs, FFrArgs } from "../../types.ts";
 import { isAbsolute, join } from "../../deps.ts";
 
 import { state } from "../state.ts";
@@ -26,15 +26,7 @@ export async function main(args: FFrArgs) {
     Deno.exit(0);
   }
 
-  const cwd_ = args.cwd ?? Deno.cwd();
-  const cwd = isAbsolute(cwd_) ? cwd_ : join(Deno.cwd(), cwd_);
-
-  const args_ = {
-    ...args,
-    cwd,
-    state: await state.getFfr(),
-    api: state.apiProvider(args.remoteUrl ?? "https://api.elwood.run"),
-  };
+  const args_ = await createArgs(args);
 
   switch (args._[0]) {
     case "get":
@@ -49,4 +41,16 @@ export async function main(args: FFrArgs) {
     default:
       return await execute(args_);
   }
+}
+
+export async function createArgs(args: CliArgs | FFrArgs): Promise<FFrArgs> {
+  const cwd_ = args.cwd ?? Deno.cwd();
+  const cwd = isAbsolute(cwd_) ? cwd_ : join(Deno.cwd(), cwd_);
+
+  return {
+    ...args,
+    cwd,
+    state: await state.getFfr(),
+    api: state.apiProvider(args.remoteUrl ?? "https://api.elwood.run"),
+  };
 }

@@ -13,7 +13,6 @@ Deno.test("permissionObjectToFlags()", function () {
     [
       "--allow-env",
       "--deny-sys",
-      "--deny-hrtime",
       "--deny-net",
       "--deny-ffi",
       "--deny-read",
@@ -29,7 +28,6 @@ Deno.test("permissionObjectToFlags()", function () {
     [
       "--allow-env=a,b",
       "--deny-sys",
-      "--deny-hrtime",
       "--deny-net",
       "--deny-ffi",
       "--deny-read",
@@ -45,7 +43,6 @@ Deno.test("permissionObjectToFlags()", function () {
     [
       "--deny-env",
       "--deny-sys",
-      "--deny-hrtime",
       "--deny-net",
       "--deny-ffi",
       "--deny-read",
@@ -61,7 +58,6 @@ Deno.test("permissionObjectToFlags()", function () {
     [
       "--deny-env",
       "--deny-sys",
-      "--deny-hrtime",
       "--deny-net",
       "--deny-ffi",
       "--deny-read",
@@ -78,7 +74,6 @@ Deno.test("permissionObjectToFlags()", function () {
     [
       "--allow-env",
       "--deny-sys",
-      "--deny-hrtime",
       "--deny-net",
       "--allow-ffi=https://elwood.dev/",
       "--deny-read",
@@ -92,7 +87,6 @@ Deno.test("denoMergePermissions()", async (t) => {
   const _defaults = {
     env: false,
     sys: false,
-    hrtime: false,
     net: false,
     ffi: false,
     read: false,

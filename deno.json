@@ -23,6 +23,9 @@
     "cli": "deno run -A --unstable-worker-options ./bin/cli.ts",
     "ffr": "deno run -A --unstable-worker-options ./bin/ffr.ts"
   },
+  "exclude": [
+    "./www"
+  ],
   "compilerOptions": {
     "strict": true,
     "useUnknownInCatchVariables": true,

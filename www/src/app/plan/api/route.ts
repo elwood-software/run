@@ -23,7 +23,5 @@ export async function GET(req: NextRequest) {
     throw new Error("no data");
   }
 
-  const { redirect_url } = data;
-
-  return NextResponse.redirect(redirect_url);
+  return NextResponse.json(data);
 }
