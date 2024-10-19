@@ -2,12 +2,13 @@ import { S3Client, type S3ClientConfig } from "npm:@aws-sdk/client-s3@3.662.0";
 import { Upload } from "npm:@aws-sdk/lib-storage@3.662.0";
 import { createReadStream } from "node:fs";
 
-import type { FFrArgs } from "../../types.ts";
+import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";
 import { assert, confirm } from "../../deps.ts";
 import { state } from "../state.ts";
 
-export default async function main(args: FFrArgs) {
+export default async function main(ctx: FFrCliContext) {
+  const { args } = ctx;
   const { cwd = Deno.cwd(), remoteUrl = "https://api.elwood.run" } = args;
   let token = await state.getToken();
 
@@ -89,7 +90,7 @@ export default async function main(args: FFrArgs) {
   // that is tied to this user's storage bucket
   // we'll also let them know what files are
   // going to be uploaded
-  const response = await args.api<
+  const response = await ctx.api<
     {
       config: S3ClientConfig;
       bucket: string;
@@ -124,7 +125,7 @@ export default async function main(args: FFrArgs) {
     const _result = await upload.done();
   }
 
-  const jobResponse = await args.api(`/run/ffr`, {
+  const jobResponse = await ctx.api(`/run/ffr`, {
     method: "POST",
     body: JSON.stringify({
       tracking_id: response.tracking_id,

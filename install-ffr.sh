@@ -49,7 +49,7 @@ for arg in "$@"; do
 done
 
 if [ -z "$ffr_version" ]; then
-	ffr_version="$(curl -s https://elwood.run/ffr/release-latest.txt)"
+	ffr_version="$(curl -s https://elwood.run/ffr/release/latest.txt)"
 fi
 
 ffr_uri="https://elwood.run/ffr/release/${ffr_version}.zip"

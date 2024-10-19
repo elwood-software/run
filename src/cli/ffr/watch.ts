@@ -1,7 +1,8 @@
-import type { FFrArgs } from "../../types.ts";
+import type { FFrCliContext } from "../../types.ts";
 
-export default async function main(args: FFrArgs) {
-  const id = args._[1] ?? args.state.lastId;
+export default async function main(ctx: FFrCliContext) {
+  const { args, state } = ctx;
+  const id = args._[1] ?? state.lastId;
 
   if (!id) {
     console.error("No ID provided and not run ids in state.");
@@ -9,7 +10,7 @@ export default async function main(args: FFrArgs) {
     Deno.exit(1);
   }
 
-  const { events, status } = await args.api(`/run/${id}/events`);
+  const { events, status } = await ctx.api(`/run/${id}/events`);
 
   if (status === "queued") {
     console.log("Run is still in the queue. Check back in a few seconds");

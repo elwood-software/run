@@ -1,10 +1,11 @@
 import * as zip from "jsr:@zip-js/zip-js";
 
 import { assert, dirname, join } from "../../deps.ts";
-import type { FFrArgs } from "../../types.ts";
+import type { FFrCliContext } from "../../types.ts";
 
-export default async function main(args: FFrArgs) {
-  const id = args._[1] ?? args.state.lastId;
+export default async function main(ctx: FFrCliContext) {
+  const { args, state } = ctx;
+  const id = args._[1] ?? state.lastId;
   const cwd = args.cwd ?? Deno.cwd();
 
   if (!id) {
@@ -13,7 +14,7 @@ export default async function main(args: FFrArgs) {
     Deno.exit(1);
   }
 
-  const { downloadUrl } = await args.api<{ downloadUrl: string }>(
+  const { downloadUrl } = await ctx.api<{ downloadUrl: string }>(
     `/run/${id}/output`,
   );
 

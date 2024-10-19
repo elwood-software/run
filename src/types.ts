@@ -153,14 +153,15 @@ export type CliArgs = {
   remoteUrl?: string;
 };
 
-export type FFrArgs =
-  & Omit<
-    CliArgs,
-    "reportFile" | "workspaceDir" | "workflowFile"
-  >
-  & {
-    api<T = JsonObject>(url: string, init?: RequestInit): Promise<T>;
-    state: {
-      lastId?: string;
-    };
+export type FFrArgs = Omit<
+  CliArgs,
+  "reportFile" | "workspaceDir" | "workflowFile"
+>;
+
+export type FFrCliContext = {
+  args: FFrArgs;
+  api<T = JsonObject>(url: string, init?: RequestInit): Promise<T>;
+  state: {
+    lastId?: string;
   };
+};

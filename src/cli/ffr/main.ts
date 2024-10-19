@@ -1,4 +1,4 @@
-import type { CliArgs, FFrArgs } from "../../types.ts";
+import type { CliArgs, FFrArgs, FFrCliContext } from "../../types.ts";
 import { isAbsolute, join } from "../../deps.ts";
 
 import { state } from "../state.ts";
@@ -26,30 +26,34 @@ export async function main(args: FFrArgs) {
     Deno.exit(0);
   }
 
-  const args_ = await createArgs(args);
+  const context = await createContext(args);
 
   switch (args._[0]) {
     case "get":
     case "g":
-      return await get(args_);
+      return await get(context);
     case "watch":
     case "w":
-      return await watch(args_);
+      return await watch(context);
     case "status":
     case "s":
-      return await status(args_);
+      return await status(context);
     default:
-      return await execute(args_);
+      return await execute(context);
   }
 }
 
-export async function createArgs(args: CliArgs | FFrArgs): Promise<FFrArgs> {
+export async function createContext(
+  args: FFrArgs | CliArgs,
+): Promise<FFrCliContext> {
   const cwd_ = args.cwd ?? Deno.cwd();
   const cwd = isAbsolute(cwd_) ? cwd_ : join(Deno.cwd(), cwd_);
 
   return {
-    ...args,
-    cwd,
+    args: {
+      ...args,
+      cwd,
+    },
     state: await state.getFfr(),
     api: state.apiProvider(args.remoteUrl ?? "https://api.elwood.run"),
   };
