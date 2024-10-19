@@ -1,36 +1,14 @@
 'use client';
 
-import {PropsWithChildren, useState} from 'react';
+import {PropsWithChildren} from 'react';
 
-import {
-  Check,
-  ChevronRight,
-  ChevronsUpDown,
-  GalleryVerticalEnd,
-  Search,
-} from 'lucide-react';
+import {ChevronRight} from 'lucide-react';
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Label} from '@/components/ui/label';
-import {Separator} from '@/components/ui/separator';
 import {
   Sidebar,
   SidebarContent,
@@ -38,26 +16,22 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarInput,
-  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarRail,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import {FFrLogo} from '@/components/ffr-logo';
 import Link from 'next/link';
 
 export default function Layout(props: PropsWithChildren) {
-  const [selectedVersion, setSelectedVersion] = useState(data.versions[0]);
-
   return (
     <div className="h-screen w-full grid grid-cols-[300px_5fr]">
       <div className="">
         <SidebarProvider
           style={{
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             '--sidebar-width': '300px',
           }}>
           <Sidebar>
@@ -127,6 +101,7 @@ const data = {
         {
           title: 'Installation',
           url: '/docs/ffr/start#installation',
+          isActive: true,
         },
         {
           title: 'Start a Job',
