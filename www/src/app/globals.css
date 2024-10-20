@@ -97,12 +97,6 @@ body {
 
 @layer components {
   .mdx-content {
-    h1 {
-      @apply font-extrabold text-3xl mb-6;
-    }
-    h2 {
-      @apply font-bold text-2xl mb-6;
-    }
     section {
       @apply my-12;
     }

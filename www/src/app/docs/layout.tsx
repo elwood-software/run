@@ -1,7 +1,7 @@
 'use client';
 
 import {PropsWithChildren} from 'react';
-
+import Link from 'next/link';
 import {ChevronRight} from 'lucide-react';
 
 import {
@@ -22,7 +22,6 @@ import {
   SidebarProvider,
 } from '@/components/ui/sidebar';
 import {FFrLogo} from '@/components/ffr-logo';
-import Link from 'next/link';
 
 export default function Layout(props: PropsWithChildren) {
   return (
@@ -48,33 +47,37 @@ export default function Layout(props: PropsWithChildren) {
                 <Collapsible
                   key={item.title}
                   title={item.title}
-                  defaultOpen
                   className="group/collapsible">
                   <SidebarGroup>
                     <SidebarGroupLabel
                       asChild
                       className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                      <CollapsibleTrigger>
-                        {item.title}{' '}
-                        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      </CollapsibleTrigger>
+                      {item.items && item.items?.length > 0 ? (
+                        <CollapsibleTrigger>
+                          {item.title}{' '}
+                          <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        </CollapsibleTrigger>
+                      ) : (
+                        <Link href={item.url}>{item.title}</Link>
+                      )}
                     </SidebarGroupLabel>
-                    <CollapsibleContent>
-                      <SidebarGroupContent>
-                        <SidebarMenu className="border-l ml-2 pt-1">
-                          {item.items.map(item => (
-                            <SidebarMenuItem key={item.title}>
-                              <SidebarMenuButton
-                                className="ml-2 text-muted-foreground"
-                                asChild
-                                isActive={item.isActive}>
-                                <a href={item.url}>{item.title}</a>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          ))}
-                        </SidebarMenu>
-                      </SidebarGroupContent>
-                    </CollapsibleContent>
+                    {item.items && item.items?.length > 0 && (
+                      <CollapsibleContent>
+                        <SidebarGroupContent>
+                          <SidebarMenu className="border-l ml-2 pt-1">
+                            {item.items?.map(item => (
+                              <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                  className="ml-2 text-muted-foreground"
+                                  asChild>
+                                  <Link href={item.url}>{item.title}</Link>
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            ))}
+                          </SidebarMenu>
+                        </SidebarGroupContent>
+                      </CollapsibleContent>
+                    )}
                   </SidebarGroup>
                 </Collapsible>
               ))}
@@ -92,7 +95,6 @@ export default function Layout(props: PropsWithChildren) {
 }
 
 const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
   navMain: [
     {
       title: 'Getting Started',
@@ -121,6 +123,15 @@ const data = {
         },
       ],
     },
+    {
+      title: 'Pricing',
+      url: '/docs/ffr/pricing',
+    },
+    {
+      title: 'Support',
+      url: '/docs/ffr/support',
+    },
+
     // {
     //   title: 'Building Your Application',
     //   url: '#',
