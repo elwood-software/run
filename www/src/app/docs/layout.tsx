@@ -86,9 +86,7 @@ export default function Layout(props: PropsWithChildren) {
         </SidebarProvider>
       </div>
       <div className="grow">
-        <div className="mx-auto max-w-6xl px-6 py-12 mdx-content">
-          {props.children}
-        </div>
+        <div className="mx-auto max-w-6xl px-6 py-12">{props.children}</div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from 'remark-gfm'
 import { default as mdx } from "@next/mdx";
 
@@ -9,6 +10,6 @@ const nextConfig = {
 export default mdx({
   options: {
     remarkPlugins: [remarkGfm],
-    rehypePlugins: [],
+    rehypePlugins: [rehypePrettyCode],
   },
 })(nextConfig);

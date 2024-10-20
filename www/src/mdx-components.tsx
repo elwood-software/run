@@ -32,5 +32,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     tbody({children}) {
       return <tbody className="divide-y divide-border">{children}</tbody>;
     },
+    pre({children}) {
+      return (
+        <pre className="block text-card-foreground p-3 rounded bg-card border mb-6">
+          {children}
+        </pre>
+      );
+    },
+    section: ({children}) => <section className="mb-6">{children}</section>,
   };
 }

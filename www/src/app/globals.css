@@ -94,23 +94,3 @@ body {
     @apply bg-background text-foreground w-screen min-h-screen;
   }
 }
-
-@layer components {
-  .mdx-content {
-    section {
-      @apply my-12;
-    }
-
-    p {
-      @apply mb-6;
-    }
-
-    code {
-      @apply block text-card-foreground p-3 rounded bg-card border mb-6;
-    }
-
-    a {
-      @apply hover:text-primary underline;
-    }
-  }
-}
