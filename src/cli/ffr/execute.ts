@@ -1,6 +1,7 @@
 import { S3Client, type S3ClientConfig } from "npm:@aws-sdk/client-s3@3.662.0";
 import { Upload } from "npm:@aws-sdk/lib-storage@3.662.0";
 import { createReadStream } from "node:fs";
+import { parseArgs } from "jsr:@std/cli/parse-args";
 
 import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";
@@ -10,6 +11,12 @@ import { state } from "../state.ts";
 export default async function main(ctx: FFrCliContext) {
   const { args } = ctx;
   const { cwd = Deno.cwd(), remoteUrl = "https://api.elwood.run" } = args;
+  let { _: ffmpegArgs, size = "sm" } = parseArgs(args.raw);
+
+  if (!args.raw.includes("--")) {
+    ffmpegArgs = args.raw;
+  }
+
   let token = await state.getToken();
 
   // if there's no token lets try to get one
@@ -23,37 +30,19 @@ export default async function main(ctx: FFrCliContext) {
 
   // we need to clean out any of our own arguments
   // we do this by only pushing anything after ffmpeg
-  const { ffmpegArgs, input } = args.raw.reduce(
+  const { input } = args.raw.reduce(
     (acc, item, index) => {
-      if (item === "ffmpeg") {
-        return {
-          hit: true,
-          ffmpegArgs: [],
-          input: [],
-        };
-      }
-
-      // if we've already hit ffmpeg, push these
-      // to the args
-      if (acc.hit) {
-        acc.ffmpegArgs.push(item);
-
-        // if we have an input file, push it on to
-        // the array stack
-        if (item === "-i") {
-          acc.input.push(args.raw[index + 1]!);
-        }
+      // if we have an input file, push it on to
+      // the array stack
+      if (item === "-i") {
+        acc.input.push(args.raw[index + 1]!);
       }
 
       return {
-        hit: acc.hit,
-        ffmpegArgs: acc.ffmpegArgs,
         input: acc.input,
       };
     },
-    { hit: false, ffmpegArgs: [], input: [] } as {
-      hit: boolean;
-      ffmpegArgs: string[];
+    { input: [] } as {
       input: string[];
     },
   );
@@ -128,6 +117,7 @@ export default async function main(ctx: FFrCliContext) {
   const jobResponse = await ctx.api(`/run/ffr`, {
     method: "POST",
     body: JSON.stringify({
+      instance_type: size,
       tracking_id: response.tracking_id,
       args: ffmpegArgs,
       download: response.download,

@@ -17,7 +17,7 @@ export async function main(args: FFrArgs) {
       " ffr get <id>",
       " ffr watch <id>",
       " ffr status <id>",
-      " ffr <...ffmpeg-args>",
+      " ffr --size=<size> <...ffmpeg-args>",
       "",
       "Read the docs at https://elwood.run/ffr/docs",
       "Join us on discord: https://discord.gg/mkhKk5db",

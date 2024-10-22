@@ -96,28 +96,28 @@ const data = {
   navMain: [
     {
       title: 'Getting Started',
-      url: '/docs/ffr/start',
+      url: '/docs/ffremote/start',
       items: [
         {
           title: 'Installation',
-          url: '/docs/ffr/start#installation',
+          url: '/docs/ffremote/start#installation',
           isActive: true,
         },
         {
           title: 'Start a Job',
-          url: '/docs/ffr/start#start-a-job',
+          url: '/docs/ffremote/start#start-a-job',
         },
         {
           title: 'Check the Status',
-          url: '/docs/ffr/start#check-the-status',
+          url: '/docs/ffremote/start#check-the-status',
         },
         {
           title: 'Watch the Logs',
-          url: '/docs/ffr/start#watch-the-logs',
+          url: '/docs/ffremote/start#watch-the-logs',
         },
         {
           title: 'Download the Results',
-          url: '/docs/ffr/start#download-the-results',
+          url: '/docs/ffremote/start#download-the-results',
         },
       ],
     },

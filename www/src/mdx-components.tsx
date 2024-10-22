@@ -7,7 +7,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       return <h1 className="font-extrabold text-3xl mb-6">{children}</h1>;
     },
     h2({children}) {
-      return <h2 className="font-bold text-2xl mb-6">{children}</h2>;
+      return <h2 className="font-bold text-2xl mt-12 mb-6">{children}</h2>;
     },
     h3({children}) {
       return <h3 className="font-bold text-xl mb-6">{children}</h3>;

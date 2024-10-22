@@ -43,15 +43,15 @@ export default function Page() {
 
           <div className="mb-6 space-x-2 flex flex-row items-center">
             <Button variant="secondary" asChild className="font-bold">
-              <Link href="/docs/ffr/start">Getting Started</Link>
+              <Link href="/docs/ffremote/start">Getting Started</Link>
             </Button>
 
             <Button variant="outline" asChild>
-              <Link href="/docs/ffr">Docs</Link>
+              <Link href="/docs/ffremote">Docs</Link>
             </Button>
 
             <Button variant="outline" asChild>
-              <Link href="/docs/ffr/pricing">Pricing</Link>
+              <Link href="/docs/ffremote/pricing">Pricing</Link>
             </Button>
 
             <Button variant="outline" asChild>
@@ -63,12 +63,12 @@ export default function Page() {
         </div>
         <div className="hidden md:block">
           <div className="bg-card rounded-lg p-6 border border-border font-mono flex flex-col shadow-lg">
-            <span className="text-muted-foreground"># install ffr</span>
+            <span className="text-muted-foreground"># install ffremote</span>
 
             <span className="mb-3 flex flex-row items-center space-x-6">
-              <span>curl -fsSL https://elwood.run/ffr/install.sh | sh</span>
+              <span>curl -fsSL https://elwood.run/rremote/install.sh | sh</span>
               <CopyToClipboard
-                text="curl -fsSL https://elwood.run/ffr/install.sh | sh"
+                text="curl -fsSL https://elwood.run/rremote/install.sh | sh"
                 onCopy={onCopied}>
                 {isCopied ? (
                   <CheckIcon className="size-4" />

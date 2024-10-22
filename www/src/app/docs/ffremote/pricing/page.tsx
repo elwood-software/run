@@ -66,11 +66,21 @@ export default async function Page() {
                             GB
                           </span>
                         </c.td>
+
                         <c.td>
-                          {item.gpu} / {item.gpu_memory}{' '}
-                          <span className="text-muted-foreground text-xs">
-                            GB
-                          </span>
+                          {item.gpu > 0 && (
+                            <>
+                              {item.gpu} / {item.gpu_memory}{' '}
+                              <span className="text-muted-foreground text-xs">
+                                GB
+                              </span>
+                            </>
+                          )}
+                          {item.gpu === 0 && (
+                            <span className="text-muted-foreground text-xs">
+                              none
+                            </span>
+                          )}
                         </c.td>
                         <c.td>
                           {item.storage_count > 1
