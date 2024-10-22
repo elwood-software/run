@@ -33,8 +33,6 @@ export async function request(
     });
 
     if (!response.ok) {
-      console.log(await response.json());
-
       throw new Error("Response not ok");
     }
 

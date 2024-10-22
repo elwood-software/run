@@ -20,7 +20,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     th({children}) {
       return (
         <th className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
-          <span className="pl-4">{children}</span>
+          <span className="pl-4 text-muted-foreground">{children}</span>
         </th>
       );
     },
