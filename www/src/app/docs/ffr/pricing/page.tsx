@@ -4,9 +4,25 @@ import {useMDXComponents} from '../../../../mdx-components';
 import Content from './content.mdx';
 
 export default async function Page() {
-  const apiUrl = process.env.API_URL!;
-  const response = await fetch(`${apiUrl}/billing/prices`);
-  const {instance_groups, instance_types} = await response.json();
+  const apiUrl = process.env.API_URL ?? 'https://api.elwood.run';
+  const response = await fetch(`${apiUrl}/billing/prices`, {
+    next: {revalidate: 60},
+  });
+  const {instance_groups, instance_types} = (await response.json()) as {
+    instance_groups: {id: string; label: string}[];
+    instance_types: {
+      id: string;
+      group: string;
+      type: string[];
+      cpu: number;
+      memory: number;
+      gpu: number;
+      gpu_memory: number;
+      storage: number;
+      storage_count: number;
+      region_price_per_hour: Record<string, number>;
+    }[];
+  };
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const c = useMDXComponents({}) as {
