@@ -14,14 +14,20 @@ import watch from "./watch.ts";
 import auth from "./auth.ts";
 import { printError } from "../lib.ts";
 
-export async function main(args: FFrArgs) {
+export async function main(compiledVersion: string, args: FFrArgs) {
+  if (args.version) {
+    console.log(`ffremote ${compiledVersion}`);
+    Deno.exit(0);
+  }
+
   if (args.raw.length === 0) {
     [
       "",
-      "./ffr - FFremote: The Remote FFmpeg Runner",
+      `ffremote (${compiledVersion}) - FFremote: The Remote FFmpeg Runner`,
       "",
       "Usage:",
-      " ffr --size=<size> <...ffmpeg-args>",
+      " ffr <...ffmpeg-args>",
+      " ffr --size=<size> --include=<file> -- <...ffmpeg-args>",
       " ffr get <id>",
       " ffr watch <id>",
       " ffr status <id>",

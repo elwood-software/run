@@ -16,6 +16,26 @@ const nextConfig = {
         source: '/ffr/:slug',
         destination: '/ffremote/:slug',
         permanent: true
+      },
+      {
+        source: '/ffr/docs/:slug',
+        destination: '/docs/ffremote/:slug',
+        permanent: true
+      },
+      {
+        source: '/ffr/docs',
+        destination: '/docs/ffremote',
+        permanent: true
+      },
+      {
+        source: '/ffremote/docs/:slug',
+        destination: '/docs/ffremote/:slug',
+        permanent: true
+      },
+      {
+        source: '/ffremote/docs',
+        destination: '/docs/ffremote',
+        permanent: true
       }
     ]
   }

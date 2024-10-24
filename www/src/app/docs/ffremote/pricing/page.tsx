@@ -4,7 +4,7 @@ import {useMDXComponents} from '../../../../mdx-components';
 import Content from './content.mdx';
 
 export default async function Page() {
-  const apiUrl = process.env.API_URL ?? 'https://api.elwood.run';
+  const apiUrl = 'https://api.elwood.run';
   const response = await fetch(`${apiUrl}/billing/prices`, {
     next: {revalidate: 60},
   });

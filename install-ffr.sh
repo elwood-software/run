@@ -6,7 +6,7 @@
 set -e
 
 if ! command -v unzip >/dev/null && ! command -v 7z >/dev/null; then
-	echo "Error: either unzip or 7z is required to install FFr (see: https://github.com/denoland/ffr_install#either-unzip-or-7z-is-required )." 1>&2
+	echo "Error: either unzip or 7z is required to install FFremote." 1>&2
 	exit 1
 fi
 
@@ -39,7 +39,7 @@ for arg in "$@"; do
 	"--help")
 		print_help_and_exit
 		;;
-	"-"*) ;;
+	"-"*) ;;w
 	*)
 		if [ -z "$ffr_version" ]; then
 			ffr_version="$arg"
@@ -49,10 +49,10 @@ for arg in "$@"; do
 done
 
 if [ -z "$ffr_version" ]; then
-	ffr_version="$(curl -s https://elwood.run/ffr/release/latest.txt)"
+	ffr_version="$(curl -s https://elwood.run/ffremote/release/latest.txt)"
 fi
 
-ffr_uri="https://elwood.run/ffr/release/${ffr_version}.zip"
+ffr_uri="https://elwood.run/ffremote/release/${target}@${ffr_version}.zip"
 ffr_install="${FFR_INSTALL:-$HOME/.elwood/run}"
 bin_dir="$ffr_install/bin"
 exe="$bin_dir/ffr"
