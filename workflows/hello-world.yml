@@ -2,33 +2,36 @@
 
 name: hello-world
 description: ":wave: Hello, World! in so many ways"
+
 jobs:
   # A bunch of ways to say hello!
   echo:
     steps:
       # simple example uses bash to echo "hello world" to
       # standard output using bash
-      - run: echo "Hello, World!"
+      - run: echo "Hello, World! (bash)"
+        input:
+          bin: "bash"
 
       # We can also use deno instead of bash
-      - run: "Deno.stdout.write(new TextEncoder().encode('Hello, World!'));"
-        input:
-          bin: "deno"
+      - run: "Deno.stdout.write(new TextEncoder().encode('Hello, World! (deno)'));"
 
       # We can do the same thing with the "echo" action
       # You an check out the echo action in ../actions/echo.ts
       - action: "echo"
         input:
-          content: "Hello, World!"
+          content: "Hello, World! (echo)"
 
   # Use outputs to say the same thing
   outputs:
     steps:
       # first we use $ELWOOD_OUTPUT to write to the output file
       - name: say_what
-        run: echo "say=Hello World" >> $ELWOOD_OUTPUT
+        run: echo "say=Hello World (output)" >> $ELWOOD_OUTPUT
+        input:
+          bin: "bash"
 
       # then we say hello
-      - run: echo
+      - action: echo
         input:
           content: ${{ steps.say_what.outputs.say }}

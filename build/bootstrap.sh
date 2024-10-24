@@ -8,6 +8,14 @@ rm -rf /var/cache/yum
 ln -sf /usr/bin/pip3 /usr/bin/pip
 ln -sf /usr/bin/python3 /usr/bin/python
 
+mkdir ./ffmpeg
+cd ../ffmpeg
+wget https://www.johnvansickle.com/ffmpeg/old-releases/ffmpeg-4.2.1-amd64-static.tar.xz
+tar xvf ffmpeg-4.2.1-amd64-static.tar.xz
+mv ffmpeg-4.2.1-amd64-static/ffmpeg /usr/local/bin
+ln -s /usr/local/bin/ffmpeg/ffmpeg /usr/bin/ffmpeg
+cd ..
+
 # add our runner user
 groupadd -g 3982 -o elwood_runner 
 useradd -m -u 3982 -g 3982 -o -s /bin/bash elwood_runner

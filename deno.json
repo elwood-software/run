@@ -1,10 +1,32 @@
 {
+  "name": "@elwood/run",
+  "version": "0.7.0",
+  "exports": {
+    ".":"./mod.ts",
+    "./types": "./src/types.ts"
+  },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "mod.ts",
+      "src/**/*.ts"
+    ]
+  }, 
   "tasks": {
     "up": "docker compose -f .dev/docker-compose.yml up",
     "down": "docker compose -f .dev/docker-compose.yml down",
     "test": "deno test -A --unstable-worker-options ./**/*.test.ts",
-    "compile": "deno compile -A --unstable-worker-options --include ./src/libs/expression/worker.ts -o ./dist/elwood-run ./src/launch.ts"
+    "compile": "deno compile -A --unstable-worker-options --include ./src/libs/expression/worker.ts -o ./dist/elwood-run ./src/launch.ts",
+    "build-image": "packer build build/run.pkr.hcl",
+    "build-cli": "deno run -A ./build/bin.ts",
+    "generate-schemas": "deno run --allow-read --allow-write ./schema/generate.ts",
+    "cli": "deno run -A --unstable-worker-options ./bin/cli.ts",
+    "ffr": "deno run -A --unstable-worker-options ./bin/ffr.ts"
   },
+  "exclude": [
+    "./www"
+  ],
   "compilerOptions": {
     "strict": true,
     "useUnknownInCatchVariables": true,

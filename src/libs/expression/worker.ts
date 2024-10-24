@@ -1,4 +1,4 @@
-import { Json } from "../../types.ts";
+import type { Json } from "../../types.ts";
 
 export const CHAR_FORWARD_SLASH = 47; /* / */
 export const CHAR_DOT = 46; /* . */

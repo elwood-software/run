@@ -62,7 +62,7 @@ Deno.test("e2e", async function (t) {
     );
 
     assertEquals(
-      resp.report.jobs.default?.steps.result?.outputs.hello,
+      resp.report.jobs.default?.steps?.[0]?.outputs.hello,
       "world",
     );
   });
@@ -102,7 +102,7 @@ Deno.test("e2e", async function (t) {
     );
 
     assertEquals(
-      resp.report.jobs.default?.steps.result?.outputs.hello,
+      resp.report.jobs.default?.steps?.[0]?.outputs.hello,
       "world",
     );
   });

@@ -16,8 +16,12 @@ export const Name = z.string()
   })
   .regex(/^[a-zA-Z]/, {
     message: "Must start with a letter",
-  })
-  .optional();
+  });
+
+export const Label = z.string()
+  .max(254, {
+    message: "Must be at most 254 characters",
+  });
 
 /**
  * Description scalar

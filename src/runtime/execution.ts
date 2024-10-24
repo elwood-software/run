@@ -1,4 +1,4 @@
-import { assert } from "../deps.ts";
+import { assert, dirname } from "../deps.ts";
 
 import { Manager } from "./manager.ts";
 import type { JsonObject, ReporterChangeData, Workflow } from "../types.ts";
@@ -137,6 +137,7 @@ export class Execution extends State {
           ],
           env: this.getDenoEnv(),
           retry: true,
+          denoBinPath: this.manager.options.denoBinPath,
         });
       }),
     );
@@ -192,6 +193,11 @@ export class Execution extends State {
       this.manager.logger.error(` > execution failed: ${error_.message}`);
       await this.fail(error_.message);
     } finally {
+      await this.workingDir.writeText(
+        "report.json",
+        JSON.stringify(this.getReport(), null, 2),
+      );
+
       this.stop();
     }
   }
@@ -230,22 +236,19 @@ export class Execution extends State {
             status: job.status,
             result: job.result,
             timing: job.getState(StateName.Timing),
-            steps: job.steps.reduce((acc, step) => {
+            steps: job.steps.map((step) => {
               return {
-                ...acc,
-                [step.name]: {
-                  id: step.id,
-                  name: step.name,
-                  status: step.status,
-                  result: step.result,
-                  reason: step.state.reason,
-                  timing: step.getState(StateName.Timing),
-                  outputs: step.getState(StateName.Outputs, {}),
-                  stdout: step.getState(StateName.Stdout, []),
-                  stderr: step.getState(StateName.Stderr, []),
-                },
+                id: step.id,
+                name: step.name,
+                status: step.status,
+                result: step.result,
+                reason: step.state.reason,
+                timing: step.getState(StateName.Timing),
+                outputs: step.getState(StateName.Outputs, {}),
+                stdout: step.getState(StateName.Stdout, []),
+                stderr: step.getState(StateName.Stderr, []),
               };
-            }, {}) as Record<string, Workflow.ReportStep>,
+            }),
           },
         };
       }, {}) as Record<string, Workflow.ReportJob>,
@@ -280,6 +283,8 @@ export class Execution extends State {
         ELWOOD_BIN: this.binDir.path,
         ELWOOD_TOOL_CACHE: this.manager.toolCacheDir.path,
         PATH: [
+          this.manager.options.denoBinPath &&
+          dirname(this.manager.options.denoBinPath),
           "/elwood/run/runner/bin",
           this.binDir.path,
           "/usr/local/sbin",
@@ -289,9 +294,10 @@ export class Execution extends State {
           "/sbin",
           "/bin",
           this.workingDir.join(".local", "bin"),
-        ].join(":"),
+        ].filter(Boolean).join(":"),
       },
       permissions,
+      denoBinPath: this.manager.options.denoBinPath,
     };
   }
 

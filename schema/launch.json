@@ -71,6 +71,13 @@
                 "type": "string"
               },
               "default": []
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
             }
           },
           "additionalProperties": false,
@@ -129,6 +136,11 @@
                       "type": "string",
                       "maxLength": 1024,
                       "description": "Description of the workflow. Not passed to report"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 254,
+                      "description": "Label of the workflow"
                     },
                     "when": {
                       "anyOf": [
@@ -259,10 +271,25 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/name"
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 246,
+                            "allOf": [
+                              {
+                                "pattern": "[a-zA-Z0-9_]"
+                              },
+                              {
+                                "pattern": "^[a-zA-Z]"
+                              }
+                            ]
+                          },
+                          "label": {
+                            "type": "string",
+                            "maxLength": 254
                           },
                           "description": {
-                            "type": "string"
+                            "type": "string",
+                            "maxLength": 1024
                           },
                           "when": {
                             "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/when"
@@ -275,18 +302,16 @@
                                   "type": "object",
                                   "properties": {
                                     "name": {
-                                      "type": "string",
-                                      "minLength": 2,
-                                      "pattern": "^[a-zA-Z]"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/name"
                                     },
                                     "label": {
-                                      "type": "string"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/label"
                                     },
                                     "description": {
-                                      "type": "string"
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/description"
                                     },
                                     "when": {
-                                      "type": "string",
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/when",
                                       "default": "*"
                                     },
                                     "input": {
@@ -305,6 +330,10 @@
                                     },
                                     "permissions": {
                                       "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/defaults/properties/permissions"
+                                    },
+                                    "run-in-stage": {
+                                      "type": "boolean",
+                                      "default": false
                                     },
                                     "run": {
                                       "type": "string"
@@ -338,6 +367,9 @@
                                     },
                                     "permissions": {
                                       "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/permissions"
+                                    },
+                                    "run-in-stage": {
+                                      "$ref": "#/definitions/launch/properties/execute/anyOf/1/properties/workflow/properties/jobs/additionalProperties/properties/steps/items/anyOf/0/properties/run-in-stage"
                                     },
                                     "action": {
                                       "type": "string"
@@ -402,6 +434,7 @@
                     }
                   },
                   "required": [
+                    "name",
                     "jobs"
                   ],
                   "additionalProperties": false
@@ -417,7 +450,7 @@
         "worker": {
           "type": "object",
           "properties": {
-            "intervalSeconds": {
+            "interval-seconds": {
               "type": "number",
               "default": 60
             },
@@ -443,9 +476,9 @@
               "additionalProperties": {},
               "default": {}
             },
-            "exitAfterRuns": {
+            "exit-after": {
               "type": [
-                "number",
+                "string",
                 "null"
               ],
               "default": null

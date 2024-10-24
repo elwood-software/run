@@ -18,7 +18,28 @@ import type * as scalar from "./schema/scalar.ts";
 export type Json = any;
 export type JsonObject = Record<string, Json>;
 
-export type Status = "pending" | "running" | "complete" | "queued";
+/**
+ * Status of a run
+ *
+ * progression:
+ *  queued -> assigned -> pending -> running -> complete
+ */
+export type Status =
+  | "pending"
+  | "running"
+  | "complete"
+  | "queued"
+  | "assigned";
+
+/**
+ * Result of a run
+ *
+ * none: has not completed
+ * success: completed successfully
+ * failure: completed with errors
+ * cancelled: was cancelled by action
+ * skipped: was skipped by action
+ */
 export type Result = "none" | "success" | "failure" | "cancelled" | "skipped";
 
 export interface RuntimeState {
@@ -57,14 +78,19 @@ export namespace Workflow {
     };
   };
 
+  export type ReportStdOut = {
+    timestamp: string;
+    text: string;
+  };
+
   export type ReportStep = ReportState & {
     outputs: Record<string, Json>;
-    stdout: string[];
-    stderr: string[];
+    stdout: ReportStdOut[];
+    stderr: ReportStdOut[];
   };
 
   export type ReportJob = ReportState & {
-    steps: Record<string, ReportStep>;
+    steps: ReportStep[];
   };
 
   export type Report = ReportState & {
@@ -91,7 +117,9 @@ export type ReporterChangeData = {
   execution_id: string;
   tracking_id: string;
   job_id?: string;
+  job_name?: string;
   step_id?: string;
+  step_name?: string;
   status: Status;
   result: Result;
   reason?: string | null;
@@ -102,10 +130,40 @@ export type ReporterChangeData = {
 export interface Reporter<Options extends JsonObject = JsonObject> {
   destroy(): Promise<void>;
   setOptions(options: Options): void;
-  report(report: Workflow.Report): Promise<void>;
+  report(
+    report: Workflow.Report,
+    configuration?: Workflow.Configuration,
+  ): Promise<void>;
   change(type: string, data: ReporterChangeData): Promise<void>;
 }
 
 export interface ReporterConstructor {
   new (): Reporter;
 }
+
+export type CliArgs = {
+  raw: string[];
+  _: Array<string | number>;
+  workflowFile: string;
+  cwd?: string;
+  workspaceDir?: string;
+  cleanup?: "before" | "after";
+  verbose?: boolean;
+  reportFile?: string;
+  remoteUrl?: string;
+};
+
+export type FFrArgs = Omit<
+  CliArgs,
+  "reportFile" | "workspaceDir" | "workflowFile"
+>;
+
+export type FFrCliContext = {
+  args: FFrArgs;
+  remoteUrl: string;
+  cwd: string;
+  api<T = JsonObject>(url: string, init?: RequestInit): Promise<T>;
+  storage: {
+    lastId?: string;
+  };
+};

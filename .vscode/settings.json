@@ -1,6 +1,6 @@
 {
   "deno.enable": true,
-  "deno.enablePaths": ["./"],
+  "deno.enablePaths": ["./src", "./actions", "./tests", "./schema", "./cli.ts","./mod.ts", "./bin", "./deno.json", "./build"],
   "deno.lint": true,
   "eslint.workingDirectories": [
     {
@@ -17,9 +17,15 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
   "editor.tabSize": 2,
   "cSpell.words": [
     "deno",
+    "ffremote",
     "supabase"
   ]
 }

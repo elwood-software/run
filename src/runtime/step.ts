@@ -1,11 +1,11 @@
-import { Job } from "./job.ts";
+import type { Job } from "./job.ts";
 import type { ReporterChangeData, Workflow } from "../types.ts";
 import {
   resolveActionUrlForDenoCommand,
   resolveActionUrlFromDefinition,
 } from "../libs/resolve-action-url.ts";
 import { State } from "./state.ts";
-import { Folder } from "./folder.ts";
+import type { Folder } from "./folder.ts";
 import {
   evaluateAndNormalizeExpression,
   normalizeExpressionResult,
@@ -15,7 +15,7 @@ import {
   replaceVariablePlaceholdersInVariables,
 } from "../libs/variables.ts";
 import { assert, stripAnsiCode } from "../deps.ts";
-import { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
+import type { ExecuteDenoRunOptions } from "../libs/deno/execute.ts";
 import { stepHasRun } from "../libs/config-helpers.ts";
 import { StateName } from "../constants.ts";
 import { denoMergePermissions } from "../libs/deno/permissions.ts";
@@ -57,6 +57,7 @@ export class Step extends State {
 
   getContext(): Record<string, unknown> {
     return {
+      vars: this.job.execution.getState(StateName.Variables, {}),
       name: this.name,
       outputs: this.getState(StateName.Outputs, {}),
       status: this.state.status,
@@ -95,7 +96,9 @@ export class Step extends State {
         execution_id: this.job.execution.id,
         tracking_id: this.job.execution.tracking_id,
         job_id: this.job.id,
+        job_name: this.job.name,
         step_id: this.id,
+        step_name: this.name,
       });
     });
 
@@ -126,14 +129,17 @@ export class Step extends State {
         "",
       );
 
-      const stdout_: string[] = [];
-      const stderr_: string[] = [];
+      const stdout_: Workflow.ReportStdOut[] = [];
+      const stderr_: Workflow.ReportStdOut[] = [];
 
       const stdout = new WritableStream({
         write: (chunk) => {
-          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
-          this.logger.info(`  > [stdout] ${txt}`);
-          stdout_.push(txt);
+          const text = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.info(`  > [stdout] ${text}`);
+          stdout_.push({
+            timestamp: new Date().toISOString(),
+            text,
+          });
 
           this.job.execution.manager.reportUpdate("stdout", {
             at: Date.now(),
@@ -142,17 +148,19 @@ export class Step extends State {
             execution_id: this.job.execution.id,
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
+            job_name: this.job.name,
             step_id: this.id,
-            text: txt,
+            step_name: this.name,
+            text,
           }).then();
         },
       });
 
       const stderr = new WritableStream({
         write: (chunk) => {
-          const txt = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
-          this.logger.error(`  > [stderr] ${txt}`);
-          stderr_.push(txt);
+          const text = stripAnsiCode(new TextDecoder().decode(chunk)).trim();
+          this.logger.error(`  > [stderr] ${text}`);
+          stderr_.push({ text, timestamp: new Date().toISOString() });
 
           this.job.execution.manager.reportUpdate("stderr", {
             at: Date.now(),
@@ -161,16 +169,24 @@ export class Step extends State {
             execution_id: this.job.execution.id,
             tracking_id: this.job.execution.tracking_id,
             job_id: this.job.id,
+            job_name: this.job.name,
             step_id: this.id,
-            text: txt,
+            step_name: this.name,
+            text,
           }).then();
         },
       });
 
+      // if they can run in stage
+      // lets do that
+      const cwd = this.def["run-in-stage"] === true
+        ? this.job.execution.stageDir.path
+        : this.contextDir.path;
+
       const runFile = resolveActionUrlForDenoCommand(this.actionUrl);
       const runOptions = this.job.execution.getDenoRunOptions({
         file: runFile,
-        cwd: this.contextDir.path,
+        cwd,
         ...(await this._getDenoRunOptions({
           env: {
             ELWOOD_OUTPUT: outputFilePath,
@@ -195,7 +211,6 @@ export class Step extends State {
           "-q",
           "--no-config",
           "--no-prompt",
-          "--cached-only",
           "--lock",
           this.job.execution.cacheDir.join("deno.lock"),
         ],
@@ -254,6 +269,7 @@ export class Step extends State {
     }
 
     const env: Record<string, string> = {
+      ...(this.def.env ?? {}),
       ...(init.env ?? {}),
       ...argsFromActionUrl,
       ...commandInputEnv,
@@ -290,8 +306,11 @@ export class Step extends State {
       env.INPUT_BIN = this.def.input?.bin ?? "deno";
       env.INPUT_SCRIPT = this.def.run;
 
+      runtimePermissions.env?.push("INPUT_BIN", "INPUT_SCRIPT");
+
       if (env.INPUT_BIN == "deno") {
         env.INPUT_ARGS = normalizeExpressionResult(["-q", "run", "-"]);
+        runtimePermissions.env?.push("INPUT_ARGS");
       }
 
       runtimePermissions.run!.push(env.INPUT_BIN);

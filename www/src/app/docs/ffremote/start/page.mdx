@@ -1,0 +1,77 @@
+# Getting Started
+
+<section>
+## 1. Installation
+
+```bash
+curl -fsSL https://elwood.run/ffr/install.sh | sh
+```
+
+<p>
+  The install script will not add ffr to your PATH so you'll need to do that
+  yourself
+</p>
+
+```bash
+ echo 'export PATH=$PATH:$HOME/.elwood/run/bin/ffr' >> ~/.bashrc
+ echo 'export PATH=$PATH:$HOME/.elwood/run/bin/ffr' >> ~/.zprofile
+```
+
+</section>
+<section>
+## 2. Start a Job
+
+```bash
+ffr -i input.mp4 -c:v libx264 -c:a aac output.mp4
+```
+
+<p>
+  Before the job is submitted, you'll be prompted to open a browser to
+  authenticate on <a href="">elwood.run</a>. You'll also need to setup a payment
+  method. Note: You will not be charged until the job is complete.
+</p>
+<p>
+  Once you've authenticated, <strong>ffr</strong> will upload any of the '-i'
+  input files and submit your job. You'll receive a tracking ID that you can use
+  to check the status of your job.
+</p>
+
+```bash
+Job Queued! Tracking ID: 6b5337db-3038-425f-acd8-26a16c564ff9
+Watch the process: ffr watch 6b5337db-3038-425f-acd8-26a16c564ff9
+Download the result: ffr get 6b5337db-3038-425f-acd8-26a16c564ff9
+```
+
+<p>
+  Jobs are queued as a remote server is created. Once the server is created,
+  your job .
+</p>
+
+</section>
+
+<section>
+
+## 3. Check Job Status
+
+```bash
+ffr status 6b5337db-3038-425f-acd8-26a16c564ff9
+```
+
+</section>
+
+<section>
+## 4. Watch the Logs
+
+```bash
+ffr watch 6b5337db-3038-425f-acd8-26a16c564ff9
+```
+
+</section>
+<section>
+## 5. Download the Results
+
+```bash
+ffr get 6b5337db-3038-425f-acd8-26a16c564ff9
+```
+
+</section>

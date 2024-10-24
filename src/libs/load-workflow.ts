@@ -1,16 +1,16 @@
-import { assert, extname, parseYaml } from "../deps.ts";
+import { assert, extname, fromFileUrl, parseYaml } from "../deps.ts";
 import type { JsonObject, Workflow } from "../types.ts";
 import { WorkflowSchema } from "../schema/workflow.ts";
 
 export async function loadWorkflowFile(
-  file: string,
+  file: string | URL,
 ): Promise<JsonObject> {
-  const url = new URL(file);
+  const url = file instanceof URL ? file : new URL(file);
   let content: string | null = null;
 
   switch (url.protocol) {
     case "file:": {
-      content = await Deno.readTextFile(file);
+      content = await Deno.readTextFile(fromFileUrl(file));
       break;
     }
     case "http:":
@@ -23,7 +23,7 @@ export async function loadWorkflowFile(
 
   assert(content, `Failed to load workflow file: ${file}`);
 
-  switch (extname(file)) {
+  switch (extname(url.pathname)) {
     case ".yml":
     case ".yaml": {
       return parseYaml(content) as JsonObject;
@@ -33,7 +33,7 @@ export async function loadWorkflowFile(
       return JSON.parse(await Deno.readTextFile(file)) as JsonObject;
     }
     default: {
-      throw new Error(`Unsupported file extension: ${extname(file)}`);
+      throw new Error(`Unsupported file extension: ${extname(url.pathname)}`);
     }
   }
 }

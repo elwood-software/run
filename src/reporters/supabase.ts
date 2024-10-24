@@ -1,5 +1,11 @@
 import { AbstractReporter } from "./abstract.ts";
-import type { Json, ReporterChangeData, Status, Workflow } from "../types.ts";
+import type {
+  Json,
+  JsonObject,
+  ReporterChangeData,
+  Status,
+  Workflow,
+} from "../types.ts";
 import { assert, supabase } from "../deps.ts";
 import { RunnerStatus } from "../constants.ts";
 
@@ -17,7 +23,13 @@ export class SupabaseReporter
 
   #lock = false;
   #changeQueueInterval: number | null = null;
-  #changeQueue: Array<{ type: string; data: ReporterChangeData }> = [];
+  #changeQueue: Array<
+    {
+      type: string;
+      tracking_id: string;
+      data: Omit<ReporterChangeData, "tracking_id">;
+    }
+  > = [];
   #lastStatus: Status = RunnerStatus.Pending;
 
   get client(): Client {
@@ -44,7 +56,7 @@ export class SupabaseReporter
       },
       global: {
         headers: {
-          apikey: options.anon_key,
+          apikey: options.service_key,
           authorization: `Bearer ${options.service_key}`,
         },
       },
@@ -71,42 +83,48 @@ export class SupabaseReporter
     this.#changeQueueInterval && clearInterval(this.#changeQueueInterval);
   }
 
-  async report(report: Workflow.Report): Promise<void> {
-    const result = await this.client.from("run").upsert([
-      {
-        status: report.status,
-        result: report.result,
-        tracking_id: report.tracking_id,
-        report: report,
-      },
-    ], {
-      onConflict: "tracking_id",
-      ignoreDuplicates: false,
-    }).eq("tracking_id", report.tracking_id);
+  async execute() {
+  }
+
+  async report(
+    report: Workflow.Report,
+    _configuration?: Workflow.Configuration,
+  ): Promise<void> {
+    const payload: JsonObject = {
+      status: report.status,
+      result: report.result,
+      tracking_id: report.tracking_id,
+      report: report,
+    };
+
+    const result = await this.client
+      .from("elwood_run")
+      .update(payload)
+      .eq("tracking_id", report.tracking_id);
 
     result.error &&
       console.log("Error reporting", result.error);
   }
 
   async change(type: string, data: ReporterChangeData): Promise<void> {
-    this.#changeQueue.push({ type, data });
+    if (!data.tracking_id) {
+      console.error("No tracking_id in change data", data);
+      return;
+    }
+
+    // no need to double store the tracking_id
+    const { tracking_id, ...eventData } = data;
+
+    this.#changeQueue.push({ type, data: eventData, tracking_id });
 
     // always update status right away
     if (this.#lastStatus !== data.status) {
-      if (!data.tracking_id) {
-        console.error("No tracking_id in change data", data);
-        return;
-      }
-
-      await this.client.from("run").upsert([
+      await this.client.from("elwood_run").update(
         {
           status: data.status,
           tracking_id: data.tracking_id,
         },
-      ], {
-        onConflict: "tracking_id",
-        ignoreDuplicates: false,
-      }).eq("tracking_id", data.tracking_id);
+      ).eq("tracking_id", data.tracking_id);
 
       this.#lastStatus = data.status;
     }
@@ -118,7 +136,7 @@ export class SupabaseReporter
     }
 
     try {
-      const result = await this.client.from("run_event").insert(
+      const result = await this.client.from("elwood_run_event").insert(
         this.#changeQueue,
       );
 

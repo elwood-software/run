@@ -1,8 +1,8 @@
 // ASSERT
-export { assert } from "jsr:@std/assert/assert";
-export { assertEquals } from "jsr:@std/assert/assert-equals";
-export { assertRejects } from "jsr:@std/assert/assert-rejects";
-export { assertThrows } from "jsr:@std/assert/assert-throws";
+export { assert } from "jsr:@std/assert@1.0.0";
+export { assertEquals } from "jsr:@std/assert@1.0.0/equals";
+export { assertRejects } from "jsr:@std/assert@1.0.0/rejects";
+export { assertThrows } from "jsr:@std/assert@1.0.0/throws";
 
 // PATH
 export { basename } from "jsr:@std/path/basename";
