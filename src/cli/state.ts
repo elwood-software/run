@@ -2,7 +2,7 @@ import { join } from "../deps.ts";
 import { base64url, sha256 } from "../libs/utils.ts";
 import type { JsonObject } from "../types.ts";
 import { ServerError } from "./lib.ts";
-import { Spinner } from "jsr:@std/cli";
+import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 
 // inspired by https://github.com/denoland/deployctl/blob/main/src/utils/token_storage/fs.ts
 class State {

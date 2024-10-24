@@ -2,7 +2,7 @@ import { S3Client, type S3ClientConfig } from "npm:@aws-sdk/client-s3@3.662.0";
 import { Upload } from "npm:@aws-sdk/lib-storage@3.662.0";
 import { createReadStream } from "node:fs";
 import { parseArgs } from "jsr:@std/cli/parse-args";
-import { Spinner } from "jsr:@std/cli";
+import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 
 import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";

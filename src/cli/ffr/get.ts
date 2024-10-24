@@ -4,8 +4,8 @@ import { assert, dirname, join } from "../../deps.ts";
 import type { FFrCliContext } from "../../types.ts";
 
 export default async function main(ctx: FFrCliContext) {
-  const { args, state } = ctx;
-  const id = args._[1] ?? state.lastId;
+  const { args, storage } = ctx;
+  const id = args._[1] ?? storage.lastId;
   const cwd = args.cwd ?? Deno.cwd();
 
   if (!id) {
