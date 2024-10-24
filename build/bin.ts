@@ -1,5 +1,6 @@
 import { basename, join } from "node:path";
 import * as zip from "jsr:@zip-js/zip-js";
+import { increment, parse } from "jsr:@std/semver";
 
 const __dirname = new URL(".", import.meta.url).pathname;
 
@@ -62,3 +63,9 @@ await Promise.all([
     join(dest, "ffr"),
   ),
 ]);
+
+const currentVersion =
+  await (await fetch("https://elwood.run/ffremote/release/latest.txt")).text();
+const nextVersion = increment(parse(currentVersion), "patch");
+
+console.log(`new_version=${nextVersion}`);

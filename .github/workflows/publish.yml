@@ -89,9 +89,13 @@ jobs:
           deno-version: v2.x
 
       - run: deno check src/**/*.ts actions/**/*.ts
+      - name: build
+        run: deno task build-cli >> $GITHUB_OUTPUT
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          prerelease: true
+          prerelease: false
+          make_latest: true
           files: ./dist/*
+          tag_name: v${{ steps.build.outputs.new_version }}
