@@ -1,5 +1,4 @@
 import { basename, join } from "node:path";
-import * as zip from "jsr:@zip-js/zip-js";
 import { format, increment, parse } from "jsr:@std/semver";
 
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -25,24 +24,43 @@ async function compile(src: string, dest: string) {
 
   const result = await cmd.output();
 
-  console.log(` > Exit Code: ${result.code}`);
+  console.log(` > Compile Exit Code: ${result.code}`);
 
   if (result.code !== 0) {
     return;
   }
 
-  // output
-  const output = await Deno.open(`${dest}.zip`, {
-    create: true,
-    write: true,
-    read: true,
+  const zip = new Deno.Command(Deno.execPath(), {
+    cwd: join(__dirname, "../dist"),
+    args: [
+      "zip",
+      `${basename(dest)}.zip`,
+      basename(dest),
+    ],
+    stderr: "inherit",
+    stdout: "inherit",
   });
 
-  const source = await Deno.open(dest, { read: true });
+  const zipResult = await cmd.output();
 
-  const zipWriter = new zip.ZipWriter(output.writable);
-  await zipWriter.add(basename(dest), source.readable);
-  await zipWriter.close();
+  console.log(` > Zip Exit Code: ${zipResult.code}`);
+
+  if (zipResult.code !== 0) {
+    return;
+  }
+
+  // // output
+  // const output = await Deno.open(`${dest}.zip`, {
+  //   create: true,
+  //   write: true,
+  //   read: true,
+  // });
+
+  // const source = await Deno.open(dest, { read: true });
+
+  // const zipWriter = new zip.ZipWriter(output.writable);
+  // await zipWriter.add(basename(dest), source.readable);
+  // await zipWriter.close();
 
   await Deno.remove(dest);
 }
