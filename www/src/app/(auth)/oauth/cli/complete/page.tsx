@@ -44,7 +44,7 @@ export default async function Page() {
   const {requireStripeSetup} = await response.json();
 
   if (requireStripeSetup) {
-    return redirect('/setup-stripe');
+    return redirect('/plan');
   }
 
   return (

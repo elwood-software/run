@@ -2,15 +2,16 @@ import { S3Client, type S3ClientConfig } from "npm:@aws-sdk/client-s3@3.662.0";
 import { Upload } from "npm:@aws-sdk/lib-storage@3.662.0";
 import { createReadStream } from "node:fs";
 import { parseArgs } from "jsr:@std/cli/parse-args";
+import { Spinner } from "jsr:@std/cli";
 
 import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";
 import { assert, confirm } from "../../deps.ts";
 import { state } from "../state.ts";
+import { printError } from "../lib.ts";
 
 export default async function main(ctx: FFrCliContext) {
-  const { args } = ctx;
-  const { cwd = Deno.cwd(), remoteUrl = "https://api.elwood.run" } = args;
+  const { args, remoteUrl, cwd } = ctx;
   let { _: ffmpegArgs, size = "sm" } = parseArgs(args.raw);
 
   if (!args.raw.includes("--")) {
@@ -47,7 +48,7 @@ export default async function main(ctx: FFrCliContext) {
     },
   );
 
-  const foundFiles: string[] = [];
+  const foundFiles: Array<{ name: string; size: number }> = [];
 
   // make sure all of the files exist
   // if there are any missing files, push
@@ -61,17 +62,23 @@ export default async function main(ctx: FFrCliContext) {
         throw new Error();
       }
 
-      foundFiles.push(inputPath);
+      foundFiles.push({
+        name: inputPath,
+        size: f.size,
+      });
     } catch (_) {
       const value = await confirm(
         `Unable to open file "${inputPath}" (${p}). Would you like to ignore this file?`,
+        {
+          default: true,
+        },
       );
 
       if (value === false) {
         console.log("Ok. Exiting!");
         Deno.exit(1);
       }
-      foundFiles.push(inputPath);
+      foundFiles.push({ name: inputPath, size: 0 });
     }
   }
 
@@ -96,37 +103,55 @@ export default async function main(ctx: FFrCliContext) {
 
   assert(response.config, "Missing response config");
 
-  // create our sts client
-  const client = new S3Client(response.config);
-
-  // upload all the files to the dest key, which is different
-  // from the fileName
-  for (const [fileName, destKey] of response.upload) {
-    const upload = new Upload({
-      client,
-      params: {
-        Bucket: response.bucket,
-        Key: destKey,
-        Body: createReadStream(toAbsolute(fileName, cwd)),
-      },
-    });
-
-    const _result = await upload.done();
-  }
-
-  const jobResponse = await ctx.api(`/run/ffr`, {
-    method: "POST",
-    body: JSON.stringify({
-      instance_type: size,
-      tracking_id: response.tracking_id,
-      args: ffmpegArgs,
-      download: response.download,
-    }),
+  const spin = new Spinner({
+    message: "Preparing to upload files...",
   });
 
-  assert(jobResponse.ok, "Run post was not ok");
+  spin.start();
 
-  console.log("Run Queued!! Tracking ID: ${response.tracking_id}");
-  console.log(`Download Output: ffr get ${response.tracking_id}`);
-  console.log(`View Logs: ffr watch ${response.tracking_id}`);
+  try {
+    // create our sts client
+    const client = new S3Client(response.config);
+
+    // upload all the files to the dest key, which is different
+    // from the fileName
+    for (const [fileName, destKey] of response.upload) {
+      spin.message = `Uploading ${fileName}...`;
+
+      const upload = new Upload({
+        client,
+        params: {
+          Bucket: response.bucket,
+          Key: destKey,
+          Body: createReadStream(toAbsolute(fileName, cwd)),
+        },
+      });
+
+      const _result = await upload.done();
+    }
+
+    spin.message = "Files uploaded!";
+    spin.message = "Submitting job...";
+    spin.stop();
+
+    const jobResponse = await ctx.api(`/run/ffr`, {
+      method: "POST",
+      body: JSON.stringify({
+        instance_type: size,
+        tracking_id: response.tracking_id,
+        args: ffmpegArgs,
+        download: response.download,
+      }),
+    });
+
+    assert(jobResponse.ok, "Run post was not ok");
+
+    console.log(`Run Queued!! Tracking ID: ${response.tracking_id}`);
+    console.log(`Download Output: ffr get ${response.tracking_id}`);
+    console.log(`View Logs: ffr watch ${response.tracking_id}`);
+  } catch (err) {
+    printError(err);
+  } finally {
+    spin.stop();
+  }
 }

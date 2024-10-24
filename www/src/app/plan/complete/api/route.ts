@@ -7,6 +7,7 @@ export async function POST(req: NextRequest) {
   const {session_id} = await req.json();
   const client = createClient();
   const { data: user } = await client.auth.getUser();
+  const cliSession = req.cookies.get('cli-session');
 
   if (!user.user?.id) {
     return NextResponse.json({
@@ -14,17 +15,25 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  const { data, error } = await api.post<{ redirect_url: string }>(
+  const { data } = await api.post<{ complete:boolean }>(
     `/stripe/session/${session_id}/verify`,
   );
 
-  console.log(data, error);
 
-  if (!data) {
-    throw new Error("no data");
+  if (!data || data?.complete === false) {
+    return NextResponse.json({
+      complete:false
+    })
+  }
+
+
+  if (cliSession) {
+    return NextResponse.redirect(
+      new URL('/oauth/cli/complete', req.nextUrl.href),
+    );
   }
 
   return NextResponse.json({
-    redirect_url: ''
+    complete: true,
   });
 }

@@ -160,8 +160,10 @@ export type FFrArgs = Omit<
 
 export type FFrCliContext = {
   args: FFrArgs;
+  remoteUrl: string;
+  cwd: string;
   api<T = JsonObject>(url: string, init?: RequestInit): Promise<T>;
-  state: {
+  storage: {
     lastId?: string;
   };
 };

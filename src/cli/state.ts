@@ -1,6 +1,8 @@
 import { join } from "../deps.ts";
 import { base64url, sha256 } from "../libs/utils.ts";
 import type { JsonObject } from "../types.ts";
+import { ServerError } from "./lib.ts";
+import { Spinner } from "jsr:@std/cli";
 
 // inspired by https://github.com/denoland/deployctl/blob/main/src/utils/token_storage/fs.ts
 class State {
@@ -58,7 +60,7 @@ class State {
     return Promise.resolve();
   }
 
-  async getFfr(): Promise<JsonObject> {
+  async getFfrStorage(): Promise<JsonObject> {
     try {
       return JSON.parse(await Deno.readTextFile(this.credentialsFile)) ?? {};
     } catch {
@@ -66,8 +68,8 @@ class State {
     }
   }
 
-  async saveFFr(value: JsonObject): Promise<JsonObject> {
-    const currentValue = await this.getFfr();
+  async saveFFrStorage(value: JsonObject): Promise<JsonObject> {
+    const currentValue = await this.getFfrStorage();
     const nextValue = { ...currentValue, ...value };
     await Deno.mkdir(this.configDir, { recursive: true });
     await Deno.writeTextFile(
@@ -91,40 +93,67 @@ class State {
     const url =
       `${remoteUrl}/auth/cli/login?client_id=${clientId}&claim_challenge=${claimChallenge}`;
 
-    console.log(`Authorization URL: ${url}`);
-
-    const open = new Deno.Command("open", {
-      args: [url],
-      stderr: "piped",
-      stdout: "piped",
-    })
-      .spawn();
-
-    if (open === undefined) {
-      console.log(
-        "Cannot open the authorization URL automatically. Please navigate to it manually using your usual browser",
-      );
-    }
-
-    const tokenStream = await fetch(
-      `${remoteUrl}/auth/cli/access-token`,
-      {
-        method: "POST",
-        body: data,
-      },
+    console.log("");
+    console.log("%cAuthentication required", "color: green; font-weght: bold");
+    console.log('Please log in to authenticate the "ffr" CLI.');
+    console.log("");
+    console.log(
+      "%cWe will try to open the authentication URL in your default browser. ",
+      "color: gray",
     );
-    if (!tokenStream.ok) {
-      throw new Error(
-        `when requesting an access token: ${await tokenStream.statusText}`,
-      );
-    }
+    console.log(
+      "%cIf it fails, please copy the URL and open it manually.",
+      "color: gray",
+    );
 
-    const tokenOrError = await tokenStream.json();
+    console.log(`%cAuthorization URL: ${url}`, "color: gray");
+    console.log("");
 
-    if (tokenOrError.token) {
-      await this.setToken(
-        tokenOrError.token,
+    const spin = new Spinner({
+      message: "Waiting for authentication...",
+      color: "yellow",
+    });
+    spin.start();
+
+    try {
+      const open = new Deno.Command("open", {
+        args: [url],
+        stderr: "piped",
+        stdout: "piped",
+      })
+        .spawn();
+
+      if (open === undefined) {
+        console.log(
+          "%Cannot open the authorization URL automatically. Please navigate to it manually using your usual browser",
+          "color: red",
+        );
+      }
+
+      const tokenStream = await fetch(
+        `${remoteUrl}/auth/cli/access-token`,
+        {
+          method: "POST",
+          body: data,
+        },
       );
+      if (!tokenStream.ok) {
+        throw new Error(
+          `Error when requesting an access token: ${tokenStream.statusText}`,
+        );
+      }
+
+      const tokenOrError = await tokenStream.json();
+
+      if (tokenOrError.token) {
+        await this.setToken(
+          tokenOrError.token,
+        );
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+    } finally {
+      spin.stop();
     }
   }
 
@@ -162,8 +191,17 @@ class State {
           await state.removeToken();
         }
 
-        throw new Error(
-          `Failed to fetch: ${response.status} ${response.statusText}`,
+        const body = await response.json();
+
+        throw new ServerError(
+          body ?? {
+            success: false,
+            error: {
+              name: "FailedToFetch",
+              message:
+                `Failed to fetch: ${response.status} ${response.statusText}`,
+            },
+          },
         );
       }
 
