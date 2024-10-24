@@ -1,3 +1,5 @@
+console.log("poop");
+
 import { parseArgs } from "jsr:@std/cli/parse-args";
 
 import { main } from "../src/cli/ffr/main.ts";

@@ -1,6 +1,6 @@
 import { basename, join } from "node:path";
 import * as zip from "jsr:@zip-js/zip-js";
-import { increment, parse } from "jsr:@std/semver";
+import { format, increment, parse } from "jsr:@std/semver";
 
 const __dirname = new URL(".", import.meta.url).pathname;
 
@@ -8,6 +8,7 @@ async function compile(src: string, dest: string) {
   console.log(`Compiling ${src} to ${dest}`);
 
   const cmd = new Deno.Command(Deno.execPath(), {
+    cwd: join(__dirname, "../"),
     args: [
       "compile",
       "-A",
@@ -66,6 +67,6 @@ await Promise.all([
 
 const currentVersion =
   await (await fetch("https://elwood.run/ffremote/release/latest.txt")).text();
-const nextVersion = increment(parse(currentVersion), "patch");
+const nextVersion = format(increment(parse(currentVersion), "patch"));
 
 console.log(`new_version=${nextVersion}`);
