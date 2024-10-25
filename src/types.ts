@@ -152,6 +152,7 @@ export type CliArgs = {
   reportFile?: string;
   remoteUrl?: string;
   version?: boolean;
+  help?: boolean;
 };
 
 export type FFrArgs = Omit<

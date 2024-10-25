@@ -66,7 +66,7 @@ deno task up
 - [Community Forum](https://github.com/orgs/elwood-software/discussions): Good
   for developer discussion, help debugging, ask questions. **Not sure, start
   here**
-- [Discord](https://discord.gg/mkhKk5db): Join our Discord Server
+- [Discord](https://discord.gg/qnDD5Wc3): Join our Discord Server
 - [GitHub Issues](https://github.com/elwood-software/elwood/issues): Good for
   bugs and errors in running Elwood locally
 - [Email Support](mailto:support@elwood.software): Good for saying hi

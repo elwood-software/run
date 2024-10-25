@@ -3,14 +3,26 @@ import type {MDXComponents} from 'mdx/types';
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
-    h1({children}) {
-      return <h1 className="font-extrabold text-3xl mb-6">{children}</h1>;
+    h1({children, id}) {
+      return (
+        <h1 id={id} className="font-extrabold text-3xl mb-6">
+          {children}
+        </h1>
+      );
     },
-    h2({children}) {
-      return <h2 className="font-bold text-2xl mt-12 mb-6">{children}</h2>;
+    h2({children, id}) {
+      return (
+        <h2 id={id} className="font-bold text-2xl mt-12 mb-6">
+          {children}
+        </h2>
+      );
     },
-    h3({children}) {
-      return <h3 className="font-bold text-xl mb-6">{children}</h3>;
+    h3({children, id}) {
+      return (
+        <h3 id={id} className="font-bold text-xl mb-6">
+          {children}
+        </h3>
+      );
     },
     table({children}) {
       return (

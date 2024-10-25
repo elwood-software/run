@@ -20,7 +20,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
     Deno.exit(0);
   }
 
-  if (args.raw.length === 0) {
+  if (args.raw.length === 0 || args.help) {
     [
       "",
       `ffremote (${compiledVersion}) - FFremote: The Remote FFmpeg Runner`,
@@ -35,7 +35,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
       "Join us on discord: https://discord.gg/mkhKk5db",
-      "Send us questions: hello@elwood.technology",
+      "Send us questions: hello@elwood.software",
     ].map((ln) => console.log(ln));
     Deno.exit(0);
   }

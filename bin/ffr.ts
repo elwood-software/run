@@ -21,6 +21,7 @@ const {
   ["remote-url"]: remoteUrl,
   verbose,
   version,
+  help,
 } = parseArgs(
   Deno.args,
   {
@@ -28,8 +29,9 @@ const {
     alias: {
       r: "report",
       c: "cwd",
+      h: "help",
     },
-    boolean: ["verbose", "version"],
+    boolean: ["verbose", "version", "help"],
   },
 );
 
@@ -40,4 +42,5 @@ await main(VERSION, {
   verbose,
   version,
   remoteUrl,
+  help,
 });

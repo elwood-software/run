@@ -1,1 +1,49 @@
+import {
+  GitHubLogoIcon,
+  EnvelopeOpenIcon,
+  ChatBubbleIcon,
+  ExclamationTriangleIcon,
+} from '@radix-ui/react-icons';
+
 # Support
+
+<div className="grid grid-cols-2 gap-8">
+  <a
+    href="mailto:hello@elwood.company"
+    className="border p-6 rounded-lg flex items-center space-x-6 hover:bg-muted">
+    <EnvelopeOpenIcon className="size-10" />
+    <span className="flex flex-col">
+      <strong className="text-lg">Drop us an Email</strong>
+      <small className="text-muted-foreground">hello@elwood.company</small>
+    </span>
+  </a>
+  <a
+    href="https://github.com/orgs/elwood-software/discussions"
+    className="border p-6 rounded-lg flex items-center space-x-6 hover:bg-muted">
+    <GitHubLogoIcon className="size-10" />
+    <span className="flex flex-col">
+      <strong className="text-lg">Join the Discussion</strong>
+      <small className="text-muted-foreground">
+        github.com/elwood-software
+      </small>
+    </span>
+  </a>
+  <a
+    href="https://discord.gg/qnDD5Wc3"
+    className="border p-6 rounded-lg flex items-center space-x-6 hover:bg-muted">
+    <ChatBubbleIcon className="size-10" />
+    <span className="flex flex-col">
+      <strong className="text-lg">Join our Discord Server</strong>
+      <small className="text-muted-foreground">discord.elwood.company</small>
+    </span>
+  </a>
+  <a
+    href="https://github.com/elwood-software/elwood/issues"
+    className="border p-6 rounded-lg flex items-center space-x-6 hover:bg-muted">
+    <ExclamationTriangleIcon className="size-10" />
+    <span className="flex flex-col">
+      <strong className="text-lg">Open an Issue</strong>
+      <small className="text-muted-foreground">discord.elwood.company</small>
+    </span>
+  </a>
+</div>

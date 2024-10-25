@@ -39,7 +39,7 @@ for arg in "$@"; do
 	"--help")
 		print_help_and_exit
 		;;
-	"-"*) ;;w
+	"-"*) ;;
 	*)
 		if [ -z "$ffr_version" ]; then
 			ffr_version="$arg"
@@ -70,7 +70,7 @@ fi
 chmod +x "$exe"
 rm "$exe.zip"
 
-echo "FFr was installed successfully to $exe"
+echo "FFremote was installed successfully to $exe"
 
 
 if command -v ffr >/dev/null; then
@@ -79,4 +79,4 @@ else
 	echo "Run '$exe --help' to get started"
 fi
 echo
-echo "Stuck? Join our Discord https://discord.gg/mkhKk5db"
+echo "Stuck? Join our Discord https://discord.gg/qnDD5Wc3"

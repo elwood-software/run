@@ -14,12 +14,12 @@ variable "region" {
 
 variable "source_ami" {
   type    = string
-  default = "ami-0ca1f30768d0cf0e1"
+  default = "ami-0099019c93482f127"
 }
 
 variable "instance_type" {
   type    = string
-  default = "t2.micro"
+  default = "t4g.nano"
 }
 
 variable "ssh_username" {
