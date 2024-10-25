@@ -13,6 +13,7 @@ import { printError } from "../lib.ts";
 export default async function main(ctx: FFrCliContext) {
   const { args, remoteUrl, cwd } = ctx;
   let { _: ffmpegArgs, size = "sm" } = parseArgs(args.raw);
+  const includeFiles = Array.isArray(args.include) ? args.include : [];
 
   if (!args.raw.includes("--")) {
     ffmpegArgs = args.raw;
@@ -43,7 +44,7 @@ export default async function main(ctx: FFrCliContext) {
         input: acc.input,
       };
     },
-    { input: [] } as {
+    { input: includeFiles } as {
       input: string[];
     },
   );

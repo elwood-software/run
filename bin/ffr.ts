@@ -1,5 +1,6 @@
 import { parseArgs } from "jsr:@std/cli/parse-args";
 import { main } from "../src/cli/ffr/main.ts";
+import type { CliArgs } from "../src/types.ts";
 
 let VERSION = "0.0.0";
 
@@ -16,31 +17,24 @@ try {
 }
 
 const {
-  _,
-  cwd,
   ["remote-url"]: remoteUrl,
-  verbose,
-  version,
-  help,
+  ...args
 } = parseArgs(
   Deno.args,
   {
-    string: ["cwd", "remote-url"],
+    string: ["cwd", "remote-url", "size"],
     alias: {
       r: "report",
       c: "cwd",
       h: "help",
     },
     boolean: ["verbose", "version", "help"],
+    collect: ["include"],
   },
 );
 
 await main(VERSION, {
-  _,
-  raw: Deno.args,
-  cwd,
-  verbose,
-  version,
+  ...(args as CliArgs),
   remoteUrl,
-  help,
+  raw: Deno.args,
 });
