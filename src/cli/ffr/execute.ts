@@ -12,8 +12,9 @@ import { printError } from "../lib.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, remoteUrl, cwd } = ctx;
-  const { size } = parseArgs(args.raw, {
+  const { size, include = [] } = parseArgs(args.raw, {
     string: ["size"],
+    collect: ["include"],
   });
   let ffmpegArgs = args.raw;
 
@@ -62,7 +63,7 @@ export default async function main(ctx: FFrCliContext) {
         input: acc.input,
       };
     },
-    { input: [] } as {
+    { input: include } as {
       input: string[];
     },
   );

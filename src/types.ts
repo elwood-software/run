@@ -153,6 +153,7 @@ export type CliArgs = {
   remoteUrl?: string;
   version?: boolean;
   help?: boolean;
+  include: string[];
 };
 
 export type FFrArgs = Omit<
