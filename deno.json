@@ -18,7 +18,7 @@
     "down": "docker compose -f .dev/docker-compose.yml down",
     "test": "deno test -A --unstable-worker-options ./**/*.test.ts",
     "compile": "deno compile -A --unstable-worker-options --include ./src/libs/expression/worker.ts -o ./dist/elwood-run ./src/launch.ts",
-    "build-image": "packer build build/run.pkr.hcl",
+    "build-image": "deno run -A ./build/images.ts",
     "build-cli": "deno run --env-file=./.env -A ./build/bin.ts",
     "generate-schemas": "deno run --allow-read --allow-write ./schema/generate.ts",
     "cli": "deno run -A --unstable-worker-options ./bin/cli.ts",

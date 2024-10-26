@@ -12,10 +12,29 @@ import { printError } from "../lib.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, remoteUrl, cwd } = ctx;
-  let { _: ffmpegArgs, size = "sm" } = parseArgs(args.raw);
+  const { size } = parseArgs(args.raw, {
+    string: ["size"],
+  });
+  let ffmpegArgs = args.raw;
 
-  if (!args.raw.includes("--")) {
-    ffmpegArgs = args.raw;
+  if (args.raw.includes("--")) {
+    ffmpegArgs = args.raw.reduce((acc, item) => {
+      if (item === "--") {
+        return {
+          found: true,
+          args: [],
+        };
+      }
+
+      if (acc.found) {
+        acc.args.push(item);
+      }
+
+      return acc;
+    }, {
+      found: false,
+      args: [] as string[],
+    }).args;
   }
 
   let token = await state.getToken();
@@ -31,12 +50,12 @@ export default async function main(ctx: FFrCliContext) {
 
   // we need to clean out any of our own arguments
   // we do this by only pushing anything after ffmpeg
-  const { input } = args.raw.reduce(
+  const { input } = ffmpegArgs.reduce(
     (acc, item, index) => {
       // if we have an input file, push it on to
       // the array stack
       if (item === "-i") {
-        acc.input.push(args.raw[index + 1]!);
+        acc.input.push(ffmpegArgs[index + 1]!);
       }
 
       return {
@@ -116,7 +135,7 @@ export default async function main(ctx: FFrCliContext) {
     // upload all the files to the dest key, which is different
     // from the fileName
     for (const [fileName, destKey] of response.upload) {
-      spin.message = `Uploading ${fileName}...`;
+      spin.message = `Uploading ${fileName} (1%)...`;
 
       const upload = new Upload({
         client,
@@ -125,6 +144,13 @@ export default async function main(ctx: FFrCliContext) {
           Key: destKey,
           Body: createReadStream(toAbsolute(fileName, cwd)),
         },
+      });
+
+      upload.on("httpUploadProgress", (progress) => {
+        const p = Math.round(
+          ((progress.loaded ?? 1) / (progress.total ?? 1)) * 100,
+        );
+        spin.message = `Uploading ${fileName} (${p}%)...`;
       });
 
       const _result = await upload.done();

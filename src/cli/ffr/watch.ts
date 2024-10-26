@@ -22,6 +22,16 @@ export default async function main(ctx: FFrCliContext) {
     Deno.exit(0);
   }
 
+  if (status !== "running") {
+    for (const evt of events) {
+      if (!evt.data.text) {
+        continue;
+      }
+      console.log(evt.data.text);
+    }
+    return;
+  }
+
   if (status === "running") {
     while (status === "running") {
       await new Promise((r) => setTimeout(r, 1000));
@@ -37,15 +47,8 @@ export default async function main(ctx: FFrCliContext) {
           continue;
         }
 
-        events.push(evt);
+        console.log(evt.data.text);
       }
     }
-  }
-
-  for (const evt of events) {
-    if (!evt.data.text) {
-      continue;
-    }
-    console.log(evt.data.text);
   }
 }

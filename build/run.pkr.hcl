@@ -9,17 +9,14 @@ packer {
 
 variable "region" {
   type    = string
-  default = "us-west-1"
 }
 
 variable "source_ami" {
   type    = string
-  default = "ami-0099019c93482f127"
 }
 
 variable "instance_type" {
   type    = string
-  default = "t4g.nano"
 }
 
 variable "ssh_username" {
@@ -49,13 +46,17 @@ variable "secret_key" {
   sensitive = true
 }
 
+variable "arch" {
+  type    = string
+}
+
 source "amazon-ebs" "linux" {
   skip_create_ami = var.skip_ami
   region          = var.region
   source_ami      = var.source_ami
   instance_type   = var.instance_type
   ssh_username    = var.ssh_username
-  ami_name        = "elwood-run-{{timestamp}}" 
+  ami_name        = "elwood-run-${var.arch}-{{timestamp}}" 
   profile         = var.profile
   access_key      = var.access_key
   secret_key      = var.secret_key
@@ -87,11 +88,12 @@ build {
       "sudo mkdir -p /elwood/run-compiler",
       "sudo unzip /tmp/source.zip -d /elwood/run-compiler",
       "ls /elwood/run-compiler",
-      "sudo chmod +x /elwood/run-compiler/build/bootstrap.sh /elwood/run-compiler/build/compile.sh",
+      "sudo chmod +x /elwood/run-compiler/build/bootstrap.sh /elwood/run-compiler/build/compile.sh /elwood/run-compiler/build/install-ffmpeg-arm64.sh /elwood/run-compiler/build/install-ffmpeg-x64.sh",
       "sudo /elwood/run-compiler/build/compile.sh",
       "sudo mkdir -p /elwood/run/bin/",
       "sudo mv /elwood/run-compiler/runtime /elwood/run/bin/runtime",
       "sudo /elwood/run-compiler/build/bootstrap.sh",
+      "sudo /elwood/run-compiler/build/install-ffmpeg-${var.arch}.sh",
       "sudo rm -r /elwood/run-compiler",
       "echo \"export ELWOOD_RUNNER_ROOT=/elwood/run\" >> /home/ec2-user/.bashrc",
       "echo \"export ELWOOD_RUNNER_WORKSPACE_DIR=/elwood/run/runner/workspace\" >> /home/ec2-user/.bashrc",
