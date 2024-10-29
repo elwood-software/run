@@ -10,7 +10,7 @@ import {
   evaluateExpression,
   isExpressionResultTruthy,
 } from "../libs/expression/expression.ts";
-import { LaunchWorkerOptions } from "../types.ts";
+import type { LaunchWorkerOptions } from "../types.ts";
 
 type PossibleConfigurationFormat = {
   format: "yaml";

@@ -1,6 +1,7 @@
 // deno-lint-ignore-file require-await
 import { RunnerResult, RunnerStatus, StateName } from "../constants.ts";
 import type {
+  CombinedRuntimeState,
   ReporterChangeData,
   Result,
   RuntimeState,
@@ -64,7 +65,7 @@ export abstract class State implements RuntimeState {
     return this._data[name] ?? defaultValue;
   }
 
-  getCombinedState() {
+  getCombinedState(): CombinedRuntimeState {
     return {
       id: this.id,
       name: this.name,

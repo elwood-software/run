@@ -1,5 +1,9 @@
 import type { Job } from "./job.ts";
-import type { ReporterChangeData, Workflow } from "../types.ts";
+import type {
+  CombinedRuntimeState,
+  ReporterChangeData,
+  Workflow,
+} from "../types.ts";
 import {
   resolveActionUrlForDenoCommand,
   resolveActionUrlFromDefinition,
@@ -48,7 +52,7 @@ export class Step extends State {
     return this.job.logger;
   }
 
-  override getCombinedState() {
+  override getCombinedState(): CombinedRuntimeState {
     return {
       ...super.getCombinedState(),
       definition: this.def,

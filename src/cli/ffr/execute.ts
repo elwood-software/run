@@ -70,6 +70,12 @@ export default async function main(ctx: FFrCliContext) {
 
   const foundFiles: Array<{ name: string; size: number }> = [];
 
+  const spin = new Spinner({
+    message: "Building run manifest...",
+  });
+
+  spin.start();
+
   // make sure all of the files exist
   // if there are any missing files, push
   // them to the missing array so we can
@@ -87,6 +93,7 @@ export default async function main(ctx: FFrCliContext) {
         size: f.size,
       });
     } catch (_) {
+      spin.stop();
       const value = await confirm(
         `Unable to open file "${inputPath}" (${p}). Would you like to ignore this file?`,
         {
@@ -99,8 +106,12 @@ export default async function main(ctx: FFrCliContext) {
         Deno.exit(1);
       }
       foundFiles.push({ name: inputPath, size: 0 });
+    } finally {
+      spin.start();
     }
   }
+
+  spin.message = "Sending build manifest for compilation...";
 
   // we need to get sts federated token
   // that is tied to this user's storage bucket
@@ -123,11 +134,7 @@ export default async function main(ctx: FFrCliContext) {
 
   assert(response.config, "Missing response config");
 
-  const spin = new Spinner({
-    message: "Preparing to upload files...",
-  });
-
-  spin.start();
+  spin.message = "Preparing to upload files...";
 
   try {
     // create our sts client

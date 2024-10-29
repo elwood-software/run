@@ -4,6 +4,7 @@ import { ReporterName } from "../constants.ts";
 import { FileReporter } from "./file.ts";
 import { SupabaseReporter } from "./supabase.ts";
 import { ConsoleReporter } from "./console.ts";
+import { PingReporter } from "./ping.ts";
 
 export function createReporter(
   name: string,
@@ -17,6 +18,9 @@ export function createReporter(
 
     case ReporterName.Console:
       return new ConsoleReporter();
+
+    case ReporterName.Ping:
+      return new PingReporter();
 
     default: {
       throw new Error(`Unknown reporter: ${name}`);

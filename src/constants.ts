@@ -35,6 +35,7 @@ export enum ReporterName {
   Console = "console",
   File = "file",
   Supabase = "supabase",
+  Ping = "ping",
 }
 
 export enum LaunchMode {

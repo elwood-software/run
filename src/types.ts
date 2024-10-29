@@ -1,15 +1,15 @@
 // deno-lint-ignore-file no-namespace
 
-import { z } from "./deps.ts";
-import { type WorkflowSchema } from "./schema/workflow.ts";
-import { type JobSchema } from "./schema/job.ts";
-import {
-  type ExecuteSchema,
-  type ExecuteWithWorkflowFileSchema,
-  type ExecuteWithWorkflowSchema,
-  type LaunchSchema,
-  type ServerSchema,
-  type WorkerSchema,
+import type { z } from "./deps.ts";
+import type { WorkflowSchema } from "./schema/workflow.ts";
+import type { JobSchema } from "./schema/job.ts";
+import type {
+  ExecuteSchema,
+  ExecuteWithWorkflowFileSchema,
+  ExecuteWithWorkflowSchema,
+  LaunchSchema,
+  ServerSchema,
+  WorkerSchema,
 } from "./schema/launch.ts";
 import type * as step from "./schema/step.ts";
 import type * as scalar from "./schema/scalar.ts";
@@ -50,6 +50,11 @@ export interface RuntimeState {
     reason: string | null;
   };
 }
+
+export type CombinedRuntimeState = RuntimeState["state"] & {
+  id: string;
+  name: string;
+};
 
 export namespace Workflow {
   export type Configuration = z.infer<typeof WorkflowSchema>;

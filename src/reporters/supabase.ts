@@ -13,6 +13,7 @@ export interface SupabaseReporterOptions {
   url: string;
   anon_key: string;
   service_key: string;
+  interval?: number;
 }
 
 type Client = supabase.SupabaseClient<Json, "public">;
@@ -62,9 +63,7 @@ export class SupabaseReporter
       },
     });
 
-    this.#changeQueueInterval = setInterval(() => {
-      this._flush();
-    }, 1000 * 60 * 1);
+    this._startChangeQueue();
   }
 
   override async destroy() {
@@ -76,7 +75,7 @@ export class SupabaseReporter
     this._stopChangeQueue();
     this.#changeQueueInterval = setInterval(() => {
       this._flush();
-    }, 1000 * 60 * 1);
+    }, 1000 * (this.options.interval ?? 30));
   }
 
   _stopChangeQueue() {

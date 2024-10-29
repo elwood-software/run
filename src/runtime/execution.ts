@@ -1,6 +1,6 @@
 import { assert, dirname } from "../deps.ts";
 
-import { Manager } from "./manager.ts";
+import type { Manager } from "./manager.ts";
 import type { JsonObject, ReporterChangeData, Workflow } from "../types.ts";
 import { Job } from "./job.ts";
 import { executeDenoCommand } from "../libs/deno/execute.ts";
@@ -10,7 +10,7 @@ import {
   executeDenoRun,
   type ExecuteDenoRunOptions,
 } from "../libs/deno/execute.ts";
-import { Folder } from "./folder.ts";
+import type { Folder } from "./folder.ts";
 import { RunnerResult, StateName } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";
 import { asError } from "../libs/utils.ts";

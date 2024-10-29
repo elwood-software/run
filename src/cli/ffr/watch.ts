@@ -49,6 +49,8 @@ export default async function main(ctx: FFrCliContext) {
 
   let spin: Spinner | undefined;
 
+  console.log(status);
+
   if (status === "pending") {
     spin = new Spinner({
       message: "Waiting for worker initialization...",
