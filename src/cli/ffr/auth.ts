@@ -1,5 +1,5 @@
 import type { FFrCliContext } from "../../types.ts";
-import { state } from "../state.ts";
+import { state } from "../libs/state.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, remoteUrl } = ctx;
@@ -8,6 +8,19 @@ export default async function main(ctx: FFrCliContext) {
     await state.removeToken();
     console.log("You have been logged out.");
     Deno.exit(0);
+  }
+
+  if (args._[1] === "refresh") {
+    const worked = await state.tryToRefreshToken(remoteUrl);
+
+    if (worked) {
+      console.log("Token refreshed successfully.");
+      Deno.exit(0);
+    } else {
+      console.error("Unable to refresh token.");
+      console.error("Please check your credentials and try again.");
+      Deno.exit(1);
+    }
   }
 
   try {

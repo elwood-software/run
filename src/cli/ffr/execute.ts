@@ -7,8 +7,8 @@ import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";
 import { assert, confirm } from "../../deps.ts";
-import { state } from "../state.ts";
-import { printError } from "../lib.ts";
+import { state } from "../libs/state.ts";
+import { printError } from "../libs/error.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, remoteUrl, cwd } = ctx;

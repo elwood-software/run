@@ -2,6 +2,7 @@ import type { FFrCliContext } from "../../types.ts";
 
 type Response = {
   status: string;
+  result: string;
   events: Array<{ id: string; data: { text: string } }>;
 };
 
@@ -15,14 +16,20 @@ export default async function main(ctx: FFrCliContext) {
     Deno.exit(1);
   }
 
-  let { events, status } = await ctx.api<Response>(`/run/${id}/events`);
+  let { events, status, result } = await ctx.api<Response>(`/run/${id}/events`);
 
   if (status === "queued") {
     console.log("Run is still in the queue. Check back in a few seconds");
     Deno.exit(0);
   }
 
-  if (status !== "running") {
+  const shouldWatch = status === "running" || status === "pending";
+
+  if (!shouldWatch) {
+    if (result === "failed") {
+      console.error("%cRun failed", "color: red");
+    }
+
     for (const evt of events) {
       if (!evt.data.text) {
         continue;
@@ -32,8 +39,8 @@ export default async function main(ctx: FFrCliContext) {
     return;
   }
 
-  if (status === "running") {
-    while (status === "running") {
+  if (shouldWatch) {
+    while (status === "running" || status === "pending") {
       await new Promise((r) => setTimeout(r, 1000));
       const r = await ctx.api<Response>(`/run/${id}/events`);
       status = r.status;

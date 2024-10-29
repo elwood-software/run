@@ -6,13 +6,13 @@ import type {
 } from "../../types.ts";
 import { dotenv, isAbsolute, join } from "../../deps.ts";
 
-import { state } from "../state.ts";
+import { state } from "../libs/state.ts";
 import execute from "./execute.ts";
 import get from "./get.ts";
 import status from "./status.ts";
 import watch from "./watch.ts";
 import auth from "./auth.ts";
-import { printError } from "../lib.ts";
+import { printError } from "../libs/error.ts";
 
 export async function main(compiledVersion: string, args: FFrArgs) {
   if (args.version) {

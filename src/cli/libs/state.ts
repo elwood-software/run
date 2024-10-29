@@ -1,8 +1,14 @@
-import { join } from "../deps.ts";
-import { base64url, sha256 } from "../libs/utils.ts";
-import type { JsonObject } from "../types.ts";
-import { ServerError } from "./lib.ts";
 import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
+import { open as openUrl } from "https://deno.land/x/open@v0.0.6/index.ts";
+
+import { join } from "../../deps.ts";
+import { base64url, sha256 } from "../../libs/utils.ts";
+import type { JsonObject } from "../../types.ts";
+import { NotAuthenticatedError, ServerError } from "./error.ts";
+
+type ApiRequestOptions = {
+  shouldRetry?: boolean;
+};
 
 // inspired by https://github.com/denoland/deployctl/blob/main/src/utils/token_storage/fs.ts
 class State {
@@ -116,19 +122,7 @@ class State {
     spin.start();
 
     try {
-      const open = new Deno.Command("open", {
-        args: [url],
-        stderr: "piped",
-        stdout: "piped",
-      })
-        .spawn();
-
-      if (open === undefined) {
-        console.log(
-          "%Cannot open the authorization URL automatically. Please navigate to it manually using your usual browser",
-          "color: red",
-        );
-      }
+      await openUrl(url);
 
       const tokenStream = await fetch(
         `${remoteUrl}/auth/cli/access-token`,
@@ -157,12 +151,52 @@ class State {
     }
   }
 
+  async tryToRefreshToken(remoteUrl: string): Promise<boolean> {
+    const currentToken = await this.getToken();
+
+    try {
+      if (!currentToken) {
+        return false;
+      }
+
+      if (!currentToken.refresh_token) {
+        return false;
+      }
+
+      const response = await fetch(`${remoteUrl}/auth/cli/refresh`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(currentToken),
+      });
+
+      // if the response is ok
+      if (response.ok) {
+        const { token: nextToken } = await response.json();
+        await this.setToken(nextToken);
+        return true;
+      }
+    } catch (err) {
+      console.log(err);
+      // if there's an error, just ignore
+      // we'll let the user handle the token refresh manually
+    }
+
+    return false;
+  }
+
   apiProvider(
     remoteUrl: string,
-  ): <T = JsonObject>(url: string, init?: RequestInit) => Promise<T> {
+  ): <T = JsonObject>(
+    url: string,
+    init?: RequestInit,
+    options?: ApiRequestOptions,
+  ) => Promise<T> {
     return async <T = JsonObject>(
       url: string,
       init: RequestInit = {},
+      options: ApiRequestOptions = {},
     ) => {
       let accessToken = (await this.getToken())?.access_token;
 
@@ -177,6 +211,10 @@ class State {
         accessToken = token_.access_token;
       }
 
+      if (!accessToken) {
+        throw new NotAuthenticatedError();
+      }
+
       const response = await fetch(`${remoteUrl}${url}`, {
         ...init,
         headers: {
@@ -187,7 +225,17 @@ class State {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status === 401 && options.shouldRetry !== false) {
+          const nextToken = await state.tryToRefreshToken(remoteUrl);
+
+          // if we were able to get another token
+          // retry the request
+          if (nextToken) {
+            return await this.apiProvider(remoteUrl)(url, init, {
+              shouldRetry: false,
+            });
+          }
+
           await state.removeToken();
         }
 

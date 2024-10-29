@@ -13,6 +13,15 @@ export class ServerError extends Error {
   }
 }
 
+export class NotAuthenticatedError extends Error {
+  constructor() {
+    super(
+      ["Not authenticated", "use `./ffr auth` to complete authentication "]
+        .join("\n"),
+    );
+  }
+}
+
 export function printError(err: unknown) {
   if (err instanceof ServerError) {
     console.log("");

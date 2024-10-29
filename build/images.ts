@@ -6,12 +6,12 @@ type Image = {
 };
 
 const images: Image[] = [
-  // {
-  //   source_ami: "ami-06b21ccaeff8cd686",
-  //   arch: "x64",
-  //   instance_type: "t2.small",
-  //   region: "us-east-1",
-  // },
+  {
+    source_ami: "ami-06b21ccaeff8cd686",
+    arch: "x64",
+    instance_type: "t3.small",
+    region: "us-east-1",
+  },
   {
     source_ami: "ami-02801556a781a4499",
     arch: "arm64",

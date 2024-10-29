@@ -1,6 +1,6 @@
 import { parseArgs } from "jsr:@std/cli/parse-args";
 
-import { main } from "../src/cli/main.ts";
+import { main } from "../src/cli/run/main.ts";
 
 const {
   _,

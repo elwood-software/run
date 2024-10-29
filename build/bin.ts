@@ -31,7 +31,7 @@ try {
   // generate builds for `elwood-run` and `ffr`
   await Promise.all([
     compile(
-      join(__dirname, "../bin/cli.ts"),
+      join(__dirname, "../bin/run.ts"),
       join(dist, "elwood-run"),
     ),
     compile(

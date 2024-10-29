@@ -24,8 +24,6 @@ const {
   {
     string: ["cwd", "remote-url", "size"],
     alias: {
-      r: "report",
-      c: "cwd",
       h: "help",
     },
     boolean: ["verbose", "version", "help"],
