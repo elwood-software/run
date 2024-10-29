@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@nathanwhit/promptly@*": "0.1.2",
+    "jsr:@sauber/table@*": "0.1.0",
     "jsr:@std/archive@*": "0.224.1",
     "jsr:@std/assert@*": "0.226.0",
     "jsr:@std/assert@0.226": "0.226.0",
@@ -49,6 +50,9 @@
       "dependencies": [
         "jsr:@std/fmt@^1.0.2"
       ]
+    },
+    "@sauber/table@0.1.0": {
+      "integrity": "528a02e0023c9e4aa00e438bebd9224263e718fac35fe833bc80b937e3d5ae65"
     },
     "@std/archive@0.224.1": {
       "integrity": "ae55265ca7154a7d943422fbaf610666a2f20783f5397a50d7d0b3a6772f5ffe",

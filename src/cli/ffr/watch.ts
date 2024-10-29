@@ -1,3 +1,5 @@
+import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
+
 import type { FFrCliContext } from "../../types.ts";
 
 type Response = {
@@ -36,26 +38,47 @@ export default async function main(ctx: FFrCliContext) {
       }
       console.log(evt.data.text);
     }
+
+    console.log(
+      `%c${result === "success" ? "Run succeeded" : "Run failed"}`,
+      `color: ${result === "success" ? "green" : "red"}`,
+    );
+
     return;
   }
 
-  if (shouldWatch) {
-    while (status === "running" || status === "pending") {
-      await new Promise((r) => setTimeout(r, 1000));
-      const r = await ctx.api<Response>(`/run/${id}/events`);
-      status = r.status;
+  let spin: Spinner | undefined;
 
-      for (const evt of r.events) {
-        if (!evt.data.text) {
-          continue;
-        }
+  if (status === "pending") {
+    spin = new Spinner({
+      message: "Waiting for worker initialization...",
+    });
 
-        if (events.find((e) => e.id === evt.id)) {
-          continue;
-        }
+    spin.start();
+  }
 
-        console.log(evt.data.text);
+  if (status === "running" && spin) {
+    spin.stop();
+    spin = undefined;
+
+    console.log("Run is now running");
+  }
+
+  while (status === "running" || status === "pending") {
+    await new Promise((r) => setTimeout(r, 1000 * 10));
+    const r = await ctx.api<Response>(`/run/${id}/events`);
+    status = r.status;
+
+    for (const evt of r.events) {
+      if (!evt.data.text) {
+        continue;
       }
+
+      if (events.find((e) => e.id === evt.id)) {
+        continue;
+      }
+
+      console.log(evt.data.text);
     }
   }
 }

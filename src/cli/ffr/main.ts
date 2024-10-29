@@ -7,12 +7,14 @@ import type {
 import { dotenv, isAbsolute, join } from "../../deps.ts";
 
 import { state } from "../libs/state.ts";
+import { printError } from "../libs/error.ts";
+
 import execute from "./execute.ts";
 import get from "./get.ts";
 import status from "./status.ts";
 import watch from "./watch.ts";
 import auth from "./auth.ts";
-import { printError } from "../libs/error.ts";
+import list from "./list.ts";
 
 export async function main(compiledVersion: string, args: FFrArgs) {
   if (args.version) {
@@ -31,6 +33,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       " ffr get <id>",
       " ffr watch <id>",
       " ffr status <id>",
+      " ffr list",
       " ffr auth",
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
@@ -53,6 +56,9 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       case "status":
       case "s":
         return await status(context);
+      case "l":
+      case "list":
+        return await list(context);
       case "a":
       case "login":
       case "auth":
