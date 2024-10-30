@@ -1,13 +1,13 @@
 import {NextRequest, NextResponse} from 'next/server';
 
 export type Context = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(req: NextRequest, ctx: Context) {
-  const [target, version] = ctx.params.id.replace('.zip', '').split('@');
+  const [target, version] = (await ctx.params).id.replace('.zip', '').split('@');
   let data: unknown = {};
 
   if (version === 'latest') {

@@ -12,25 +12,25 @@ Visit the [Getting Started Guide](/docs/ffremote/getting-started#install) to lea
 
 ## Commands
 
-- [ffr execute](#execute) - Execute an FFmpeg on the remote server
-- [ffr list](#list) - List all executions
-- [ffr watch](#watch) - Watch the execution of a command
-- [ffr get](#get) - Download the output of a command
-- [ffr status](#status) - Get the status of a command
-- [ffr auth](#auth) - Authenticate with the remote server
+- [ffremote execute](#execute) - Execute an FFmpeg on the remote server
+- [ffremote list](#list) - List all executions
+- [ffremote watch](#watch) - Watch the execution of a command
+- [ffremote get](#get) - Download the output of a command
+- [ffremote status](#status) - Get the status of a command
+- [ffremote auth](#auth) - Authenticate with the remote server
 
 ### execute
 
 ```bash
 # Usage
-ffr execute [options] -- <ffmpeg-args>...
-ffr [options] -- <ffmpeg-args>...
-ffr <ffmpeg-args>...
+ffremote execute [options] -- <ffmpeg-args>...
+ffremote [options] -- <ffmpeg-args>...
+ffremote <ffmpeg-args>...
 
 # Examples
-ffr execute -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
-ffr --size=lg -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
-ffr -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote execute -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote --size=lg -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ```
 
 #### Options
@@ -43,50 +43,50 @@ Size of the remote instance to use. Possible values are `sm`, `md`, `lg`, `xl`.
 
 ```bash
 # Usage
-ffr list
+ffremote list
 ```
 
 ### watch
 
 ```bash
 # Usage
-ffr watch [id]
+ffremote watch [id]
 
 # Examples
-ffr watch 0bb4dce9-1751-4aaa-9b26-fadca6642680
-ffr watch # use last id or prompt
+ffremote watch 0bb4dce9-1751-4aaa-9b26-fadca6642680
+ffremote watch # use last id or prompt
 ```
 
 ### get
 
 ```bash
 # Usage
-ffr get [id]
+ffremote get [id]
 
 # Examples
-ffr get 0bb4dce9-1751-4aaa-9b26-fadca6642680
-ffr get # use last id or prompt
+ffremote get 0bb4dce9-1751-4aaa-9b26-fadca6642680
+ffremote get # use last id or prompt
 ```
 
 ### status
 
 ```bash
 # Usage
-ffr status [id]
+ffremote status [id]
 
 # Examples
-ffr status 0bb4dce9-1751-4aaa-9b26-fadca6642680
-ffr status # use last id or prompt
+ffremote status 0bb4dce9-1751-4aaa-9b26-fadca6642680
+ffremote status # use last id or prompt
 ```
 
 ### auth
 
 ```bash
 # Usage
-ffr auth [subcommand]
+ffremote auth [subcommand]
 
 # Examples
-ffr auth
-ffr auth logout
-ffr auth refresh
+ffremote auth
+ffremote auth logout
+ffremote auth refresh
 ```

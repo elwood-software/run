@@ -3,7 +3,7 @@ import {cookies} from 'next/headers';
 
 export async function GET(request: NextRequest) {
   const session = request.nextUrl.searchParams.get('session');
-  const store = cookies();
+  const store = await cookies();
 
   if (!session) {
     return NextResponse.redirect(

@@ -12,21 +12,23 @@ export default async function Page() {
   const response = await fetch(`${apiUrl}/platform/prices`, {
     next: {revalidate: 60},
   });
-  const {instance_groups, instance_types} = (await response.json()) as {
-    instance_groups: {id: string; label: string}[];
-    instance_types: {
-      id: string;
-      group: string;
-      type: string[];
-      cpu: number;
-      memory: number;
-      gpu: number;
-      gpu_memory: number;
-      storage: number;
-      storage_count: number;
-      region_price_per_hour: Record<string, number>;
-    }[];
-  };
+  const {default_region_id, instance_groups, instance_types} =
+    (await response.json()) as {
+      default_region_id: string;
+      instance_groups: {id: string; label: string}[];
+      instance_types: {
+        id: string;
+        group: string;
+        type: string[];
+        cpu: number;
+        memory: number;
+        gpu: number;
+        gpu_memory: number;
+        storage: number;
+        storage_count: number;
+        region_price_per_hour: Record<string, number>;
+      }[];
+    };
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const c = useMDXComponents({}) as {
@@ -97,9 +99,9 @@ export default async function Page() {
                         </c.td>
                         <c.td>
                           $
-                          {(item.region_price_per_hour['west-1'] / 60).toFixed(
-                            4,
-                          )}
+                          {(
+                            item.region_price_per_hour[default_region_id] / 60
+                          ).toFixed(4)}
                         </c.td>
                       </tr>
                     ))}

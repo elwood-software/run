@@ -10,13 +10,13 @@ import {FFrLogo} from '@/components/ffr-logo';
 import Link from 'next/link';
 
 export default function Page() {
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState('');
 
-  function onCopied() {
-    setIsCopied(true);
+  function onCopied(name: string) {
+    setIsCopied(name);
 
     setTimeout(() => {
-      setIsCopied(false);
+      setIsCopied('');
     }, 1000 * 3);
   }
 
@@ -69,8 +69,8 @@ export default function Page() {
               <span>curl -fsSL https://elwood.run/rremote/install.sh | sh</span>
               <CopyToClipboard
                 text="curl -fsSL https://elwood.run/rremote/install.sh | sh"
-                onCopy={onCopied}>
-                {isCopied ? (
+                onCopy={() => onCopied('i')}>
+                {isCopied === 'i' ? (
                   <CheckIcon className="size-4" />
                 ) : (
                   <ClipboardIcon className="size-4" />
@@ -80,8 +80,19 @@ export default function Page() {
             <span className="text-muted-foreground">
               # replace ffmpeg with ffr
             </span>
-            <span className="mb-6">
-              {`ffr -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
+            <span className="mb-3 flex flex-row items-center space-x-6">
+              <span>
+                {`ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
+              </span>
+              <CopyToClipboard
+                text={`ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
+                onCopy={() => onCopied('f')}>
+                {isCopied === 'f' ? (
+                  <CheckIcon className="size-4" />
+                ) : (
+                  <ClipboardIcon className="size-4" />
+                )}
+              </CopyToClipboard>
             </span>
 
             <span className="text-slate-500 flex flex-col text-sm mb-6">

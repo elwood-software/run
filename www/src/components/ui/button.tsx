@@ -57,6 +57,30 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
 
+    if (asChild) {
+      const {children: children_, ...rest} = (children as React.ReactElement)
+        .props;
+      const Root = (children as React.ReactElement).type;
+
+      return (
+        <Comp
+          className={cn('relative', buttonVariants({variant, size, className}))}
+          ref={ref}
+          {...props}>
+          <Root {...rest}>
+            <span>
+              {loading && (
+                <span className="absolute inset-0 flex justify-center items-center">
+                  <Loader2 className="size-[1em] animate-spin" />
+                </span>
+              )}
+              <span>{children_}</span>
+            </span>
+          </Root>
+        </Comp>
+      );
+    }
+
     return (
       <Comp
         className={cn('relative', buttonVariants({variant, size, className}))}

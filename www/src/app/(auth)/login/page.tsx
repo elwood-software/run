@@ -17,16 +17,16 @@ import {createClient} from '@/lib/supabase/server';
 import {login} from './actions';
 
 type Props = {
-  searchParams: {
+  searchParams: Promise<{
     error?: string | undefined;
-  };
+  }>;
 };
 
 export default async function Page(props: Props) {
   const client = createClient();
   const {data} = await client.auth.getSession();
 
-  if (data.session?.user && !props.searchParams.error) {
+  if (data.session?.user && !(await props.searchParams).error) {
     redirect('/login/complete');
   }
 

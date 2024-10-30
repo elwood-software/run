@@ -11,7 +11,7 @@ import Link from 'next/link';
 export default async function Page() {
   const client = createClient();
   const apiUrl = process.env.API_URL!;
-  const store = cookies();
+  const store = await cookies();
   const cliSession = store.get('cli-session')?.value;
 
   if (!cliSession) {
