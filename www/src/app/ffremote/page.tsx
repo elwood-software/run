@@ -66,11 +66,13 @@ export default function Page() {
             <span className="text-muted-foreground"># install ffremote</span>
 
             <span className="mb-3 flex flex-row items-center space-x-6">
-              <span>curl -fsSL https://elwood.run/rremote/install.sh | sh</span>
+              <span>
+                curl -fsSL https://elwood.run/ffremote/install.sh | sh
+              </span>
               <CopyToClipboard
-                text="curl -fsSL https://elwood.run/rremote/install.sh | sh"
-                onCopy={() => onCopied('i')}>
-                {isCopied === 'i' ? (
+                text="curl -fsSL https://elwood.run/ffremote/install.sh | sh"
+                onCopy={onCopied}>
+                {isCopied ? (
                   <CheckIcon className="size-4" />
                 ) : (
                   <ClipboardIcon className="size-4" />
