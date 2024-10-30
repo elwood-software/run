@@ -1,3 +1,7 @@
+export const metadata = {
+  title: 'Getting Started with FFremote',
+};
+
 # Getting Started
 
 ## 1. Installation
@@ -7,21 +11,24 @@ curl -fsSL https://elwood.run/ffr/install.sh | sh
 ```
 
 The install script will not add ffr to your PATH so you'll need to do that
-yourself
+yourself. Here's an example of how you might add ffr to your PATH:
 
 ```bash
+ # for bash
  echo 'export PATH=$PATH:$HOME/.elwood/run/bin/ffr' >> ~/.bashrc
+
+ # for zsh
  echo 'export PATH=$PATH:$HOME/.elwood/run/bin/ffr' >> ~/.zprofile
 ```
 
 ## 2. Start a Job
 
 ```bash
-ffr -i input.mp4 -c:v libx264 -c:a aac output.mp4
+ffr -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ```
 
 Before the job is submitted, you'll be prompted to open a browser to
-authenticate on <a href="">elwood.run</a>. You'll also need to setup a payment
+authenticate on <a href="https://elwood.run">elwood.run</a>. You'll also need to setup a payment
 method. Note: You will not be charged until the job is complete.
 
 Once you've authenticated, <strong>ffr</strong> will upload any of the '-i'

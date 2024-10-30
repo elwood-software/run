@@ -3,6 +3,10 @@ import {Fragment, PropsWithChildren} from 'react';
 import {useMDXComponents} from '../../../../mdx-components';
 import Content from './content.mdx';
 
+export const metadata = {
+  title: 'Quotas and Limits for FFremote',
+};
+
 export default async function Page() {
   const apiUrl = process.env.API_URL ?? 'https://api.elwood.run';
   const response = await fetch(`${apiUrl}/platform/limits`, {

@@ -32,7 +32,7 @@ export function DocsMenu() {
             </Link>
           </header>
         </SidebarHeader>
-        <SidebarContent className="gap-0 pl-3">
+        <SidebarContent className="gap-0 pl-3 pr-6">
           {/* We create a collapsible SidebarGroup for each parent. */}
           {data.navMain.map(item => (
             <SidebarGroup key={`group-${item.title}`}>
@@ -94,6 +94,16 @@ const data = {
         {
           title: 'Download the Results',
           url: '/docs/ffremote/start#5-download-the-results',
+        },
+      ],
+    },
+    {
+      title: 'Reference',
+      url: '/docs/ffremote/reference',
+      items: [
+        {
+          title: 'CLI',
+          url: '/docs/ffremote/reference/cli',
         },
       ],
     },

@@ -12,18 +12,19 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     },
     h2({children, id}) {
       return (
-        <h2 id={id} className="font-bold text-2xl mt-12 mb-6">
+        <h2 id={id} className="font-bold text-2xl mt-12 mb-3 border-b pb-1">
           {children}
         </h2>
       );
     },
     h3({children, id}) {
       return (
-        <h3 id={id} className="font-bold text-xl mb-6">
+        <h3 id={id} className="font-bold text-xl mb-3 border-b pb-1">
           {children}
         </h3>
       );
     },
+
     table({children}) {
       return (
         <table className="w-full divide-y divide-border">{children}</table>
@@ -46,7 +47,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     },
     pre({children}) {
       return (
-        <pre className="block text-card-foreground p-3 rounded bg-card border mb-6">
+        <pre className="block text-card-foreground p-3 rounded dark:bg-card border">
           {children}
         </pre>
       );

@@ -4,7 +4,7 @@ import type {Metadata} from 'next';
 import {DocsMenu} from './menu';
 
 export const metadata: Metadata = {
-  title: 'Documentation | Elwood Run',
+  title: {default: 'Documentation', template: '%s | Elwood Run'},
 };
 
 export default function Layout(props: PropsWithChildren) {
@@ -14,7 +14,9 @@ export default function Layout(props: PropsWithChildren) {
         <DocsMenu />
       </div>
       <div className="grow">
-        <div className="mx-auto max-w-6xl px-6 py-12">{props.children}</div>
+        <article className="prose dark:prose-invert lg:prose-base mx-auto max-w-6xl px-24 py-12">
+          {props.children}
+        </article>
       </div>
     </div>
   );
