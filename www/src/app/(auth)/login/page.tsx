@@ -16,7 +16,7 @@ import {createClient} from '@/lib/supabase/server';
 
 import {login} from './actions';
 
-export type Props = {
+type Props = {
   searchParams: {
     error?: string | undefined;
   };
@@ -27,7 +27,7 @@ export default async function Page(props: Props) {
   const {data} = await client.auth.getSession();
 
   if (data.session?.user && !props.searchParams.error) {
-    return redirect('/login/complete');
+    redirect('/login/complete');
   }
 
   return (
