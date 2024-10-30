@@ -1,9 +1,13 @@
 # Elwood Run
 
-<p> 🚨 Elwood Run is currently in public <strong>ALPHA</strong> and NOT ready for Production. 🚨 <br/>
-We are actively developing the code and things will change quickly. If you have any questions, please reach out to us at <a href="mailto:hello@elwood.software">hello@elwood.software</a> or on <a href="https://discord.gg/mkhKk5db">Discord</a></p>
+> [!NOTE]  
+> Elwood Run is currently in public BETA. We are actively developing the code and things will change quickly. If you have any questions, please reach out to us at <a href="mailto:hello@elwood.software">hello@elwood.software</a> or on <a href="https://discord.gg/mkhKk5db">Discord</a>
 
-## Documentation
+## 🎥 FFremote
+Run FFmpeg on dedicated GPU powered instances
+**[More about FFremote](https://elwood.run/ffremote)**
+
+## 📖 Documentation
 
 Read the full documentation at [./docs/readme.md](./docs/readme.md)
 
