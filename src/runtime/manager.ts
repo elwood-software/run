@@ -1,6 +1,6 @@
 import { Folder } from "./folder.ts";
 import { assert, dotenv, isAbsolute, join, logger } from "../deps.ts";
-import { Execution, ExecutionOptions } from "./execution.ts";
+import { Execution, type ExecutionOptions } from "./execution.ts";
 import { evaluateExpression } from "../libs/expression/expression.ts";
 import { EnvName } from "../constants.ts";
 import type {

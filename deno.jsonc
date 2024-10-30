@@ -32,11 +32,13 @@
     "useUnknownInCatchVariables": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true
-  },
+  },  
   "lint": {
+     "rules": {
+      "exclude": ["no-slow-types"]
+    },
     "include": [
-      "src/**/*.ts",
-      "!src/schema/*.ts"
+      "src/**/*.ts"      
     ],
     "exclude": [
       "tmp*"

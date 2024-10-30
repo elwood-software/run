@@ -1,8 +1,8 @@
 import { assert } from "../deps.ts";
-import { Execution } from "./execution.ts";
+import type { Execution } from "./execution.ts";
 import type { ReporterChangeData, Workflow } from "../types.ts";
 import { State } from "./state.ts";
-import { Folder } from "./folder.ts";
+import type { Folder } from "./folder.ts";
 import { Step } from "./step.ts";
 import { RunnerResult } from "../constants.ts";
 import { evaluateWhen } from "../libs/expression/when.ts";

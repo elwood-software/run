@@ -1,4 +1,4 @@
-import { Json } from "../types.ts";
+import type { Json } from "../types.ts";
 
 export async function replaceVariablePlaceholdersInVariables(
   vars: Record<string, string>,

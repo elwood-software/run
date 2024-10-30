@@ -1,5 +1,3 @@
-// deno-lint-ignore-file
-
 import { z } from "../deps.ts";
 import { JobSchema } from "./job.ts";
 import {

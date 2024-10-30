@@ -16,3 +16,4 @@ jobs:
           deno-version: v2.x
 
       - run: deno check src/**/*.ts actions/**/*.ts
+      - run: deno lint

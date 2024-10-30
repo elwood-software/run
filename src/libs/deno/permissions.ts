@@ -1,4 +1,4 @@
-import { Workflow } from "../../types.ts";
+import type { Workflow } from "../../types.ts";
 
 export function denoPermissionObjectToFlags(
   options: Deno.PermissionOptionsObject,

@@ -1,4 +1,4 @@
-import { Execution } from "../runtime/execution.ts";
+import type { Execution } from "../runtime/execution.ts";
 import type {
   JsonObject,
   Reporter,
