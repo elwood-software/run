@@ -22,7 +22,7 @@
     "build-cli": "deno run --env-file=./.env -A ./build/bin.ts",
     "generate-schemas": "deno run --allow-read --allow-write ./schema/generate.ts",
     "cli": "deno run -A --unstable-worker-options ./bin/cli.ts",
-    "ffr": "deno run -A --unstable-worker-options ./bin/ffr.ts"
+    "ffr": "deno run -A --unstable-worker-options ./bin/ffremote.ts"
   },
   "exclude": [
     "./www"    

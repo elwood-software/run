@@ -71,7 +71,7 @@ export default async function main(ctx: FFrCliContext) {
   const foundFiles: Array<{ name: string; size: number }> = [];
 
   const spin = new Spinner({
-    message: "Building run manifest...",
+    message: "Building execution manifest...",
   });
 
   spin.start();
@@ -178,11 +178,14 @@ export default async function main(ctx: FFrCliContext) {
       }),
     });
 
-    assert(jobResponse.ok, "Run post was not ok");
+    assert(jobResponse.ok, "Execution post was not ok");
 
-    console.log(`Run Queued!! Tracking ID: ${response.tracking_id}`);
-    console.log(`Download Output: ffr get ${response.tracking_id}`);
-    console.log(`View Logs: ffr watch ${response.tracking_id}`);
+    console.log("");
+    console.log(`Execution Queued!! Tracking ID: ${response.tracking_id}`);
+    console.log("");
+    console.log(`Download Output: ffremote get ${response.tracking_id}`);
+    console.log(`View Logs: ffremote watch ${response.tracking_id}`);
+    console.log("");
   } catch (err) {
     printError(err);
   } finally {

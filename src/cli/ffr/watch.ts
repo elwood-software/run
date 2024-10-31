@@ -13,15 +13,15 @@ export default async function main(ctx: FFrCliContext) {
   const id = args._[1] ?? storage.lastId;
 
   if (!id) {
-    console.error("No ID provided and not run ids in state.");
-    console.error("Please provide a run id");
+    console.error("No ID provided and no execution ids in state.");
+    console.error("Please provide an execution tracking id");
     Deno.exit(1);
   }
 
   let { events, status, result } = await ctx.api<Response>(`/run/${id}/events`);
 
   if (status === "queued") {
-    console.log("Run is still in the queue. Check back in a few seconds");
+    console.log("Execution is still in the queue. Check back in a few seconds");
     Deno.exit(0);
   }
 
@@ -29,7 +29,7 @@ export default async function main(ctx: FFrCliContext) {
 
   if (!shouldWatch) {
     if (result === "failed") {
-      console.error("%cRun failed", "color: red");
+      console.error("%Execution failed", "color: red");
     }
 
     for (const evt of events) {
@@ -40,33 +40,35 @@ export default async function main(ctx: FFrCliContext) {
     }
 
     console.log(
-      `%c${result === "success" ? "Run succeeded" : "Run failed"}`,
+      `%c${result === "success" ? "Execution succeeded" : "Execution failed"}`,
       `color: ${result === "success" ? "green" : "red"}`,
     );
 
     return;
   }
 
-  let spin: Spinner | undefined;
+  const spin = new Spinner({
+    message: "Waiting for execution worker initialization...",
+  });
+
+  if (status === "pending") {
+    spin.start();
+  }
+
+  let lastStatus = status;
 
   while (status === "running" || status === "pending") {
+    await new Promise((r) => setTimeout(r, 1000 * 10));
+
     const r = await ctx.api<Response>(`/run/${id}/events`);
 
+    lastStatus = status;
     status = r.status;
+    result = r.result;
 
-    if (status === "pending") {
-      spin = new Spinner({
-        message: "Waiting for worker initialization...",
-      });
-
-      spin.start();
-    }
-
-    if (status === "running" && spin) {
+    if (lastStatus === "pending" && status === "running") {
       spin.stop();
-      spin = undefined;
-
-      console.log("Run is now running");
+      console.log("Execution is now running...");
     }
 
     for (const evt of r.events) {
@@ -74,14 +76,12 @@ export default async function main(ctx: FFrCliContext) {
         continue;
       }
 
-      if (events.find((e) => e.id === evt.id)) {
+      if (events.find((e) => e.id === evt.id) !== undefined) {
         continue;
       }
 
       console.log(evt.data.text);
     }
-
-    await new Promise((r) => setTimeout(r, 1000 * 10));
   }
 
   if (spin) {
@@ -89,6 +89,10 @@ export default async function main(ctx: FFrCliContext) {
   }
 
   if (status === "complete") {
-    console.log("Run Complete");
+    console.log("Execution Complete");
+    console.log(
+      `%c${result === "success" ? "Execution succeeded" : "Execution failed"}`,
+      `color: ${result === "success" ? "green" : "red"}`,
+    );
   }
 }
