@@ -29,7 +29,9 @@ export function SignUpForm() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <FFrLogo />
+      <Link href="/ffremote">
+        <FFrLogo />
+      </Link>
       <form className="mt-12" action={formAction}>
         <Card className="w-full max-w-sm">
           <CardHeader className="border-b mb-6">

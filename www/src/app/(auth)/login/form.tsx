@@ -28,7 +28,7 @@ export function LoginForm() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <Link href="/">
+      <Link href="/ffremote">
         <FFrLogo />
       </Link>
       <form className="mt-12" action={formAction}>

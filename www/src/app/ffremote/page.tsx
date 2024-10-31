@@ -65,36 +65,40 @@ export default function Page() {
           <div className="bg-card rounded-lg p-6 border border-border font-mono flex flex-col shadow-lg">
             <span className="text-muted-foreground"># install ffremote</span>
 
-            <span className="mb-3 flex flex-row items-center space-x-6">
+            <span className="mb-3 flex flex-row items-center justify-between space-x-6">
               <span>
                 curl -fsSL https://elwood.run/ffremote/install.sh | sh
               </span>
-              <CopyToClipboard
-                text="curl -fsSL https://elwood.run/ffremote/install.sh | sh"
-                onCopy={onCopied}>
-                {isCopied ? (
-                  <CheckIcon className="size-4" />
-                ) : (
-                  <ClipboardIcon className="size-4" />
-                )}
-              </CopyToClipboard>
+              <span className="cursor-pointer">
+                <CopyToClipboard
+                  text="curl -fsSL https://elwood.run/ffremote/install.sh | sh"
+                  onCopy={() => onCopied('i')}>
+                  {isCopied === 'i' ? (
+                    <CheckIcon className="size-4" />
+                  ) : (
+                    <ClipboardIcon className="size-4" />
+                  )}
+                </CopyToClipboard>
+              </span>
             </span>
             <span className="text-muted-foreground">
               # replace ffmpeg with ffr
             </span>
-            <span className="mb-3 flex flex-row items-center space-x-6">
+            <span className="mb-3 flex flex-row items-center justify-between space-x-6">
               <span>
                 {`ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
               </span>
-              <CopyToClipboard
-                text={`ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
-                onCopy={() => onCopied('f')}>
-                {isCopied === 'f' ? (
-                  <CheckIcon className="size-4" />
-                ) : (
-                  <ClipboardIcon className="size-4" />
-                )}
-              </CopyToClipboard>
+              <span className="cursor-pointer">
+                <CopyToClipboard
+                  text={`ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"`}
+                  onCopy={() => onCopied('f')}>
+                  {isCopied === 'f' ? (
+                    <CheckIcon className="size-4" />
+                  ) : (
+                    <ClipboardIcon className="size-4" />
+                  )}
+                </CopyToClipboard>
+              </span>
             </span>
 
             <span className="text-slate-500 flex flex-col text-sm mb-6">
