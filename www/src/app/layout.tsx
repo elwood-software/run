@@ -17,7 +17,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Elwood Run',
+  title: {default: 'Elwood Run', template: '%s | Elwood Run'},
   description:
     'Automate your file management. Elwood Run lets you automate your file management tasks by responding to files as they move through your system.',
 };

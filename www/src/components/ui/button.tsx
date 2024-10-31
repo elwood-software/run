@@ -74,7 +74,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   <Loader2 className="size-[1em] animate-spin" />
                 </span>
               )}
-              <span>{children_}</span>
+              <span className={loading ? 'opacity-0' : ''}>{children_}</span>
             </span>
           </Root>
         </Comp>
@@ -92,12 +92,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               <Loader2 className="size-[1em] animate-spin" />
             </span>
           )}
-          <span>{children}</span>
+          <span className={loading ? 'opacity-0' : ''}>{children}</span>
         </span>
       </Comp>
     );
   },
 );
+
 Button.displayName = 'Button';
 
 export {Button, buttonVariants};

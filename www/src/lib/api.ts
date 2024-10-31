@@ -15,7 +15,7 @@ export async function request(
   init: RequestIntiWithJsonBody = {},
 ): Promise<ApiResponse> {
   try {
-    const client = createClient();
+    const client = await createClient();
     const apiUrl = process.env.API_URL!;
     const body = typeof init.body === "object"
       ? JSON.stringify(init.body)

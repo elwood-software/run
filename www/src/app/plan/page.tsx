@@ -8,7 +8,7 @@ import {redirect} from 'next/navigation';
 import {ContinueButton} from './button';
 
 export default async function Page() {
-  const client = createClient();
+  const client = await createClient();
   const {data} = await client.auth.getUser();
 
   if (!data.user?.id) {

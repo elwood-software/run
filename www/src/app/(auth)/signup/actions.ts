@@ -1,30 +1,53 @@
-'use server';
+"use server";
 
-import {revalidatePath} from 'next/cache';
-import {redirect} from 'next/navigation';
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import {createClient} from '@/lib/supabase/server';
+import { createClient } from "@/lib/supabase/server";
 
-export async function signup(formData: FormData) {
-  const supabase = createClient();
+export type SignupActionState = {
+  success: boolean | null;
+  email?: string;
+  password?: string;
+  first_name?: string;
+  last_name?: string;
+};
 
-  const {error} = await supabase.auth.signUp({
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+export async function signup(
+  _state: SignupActionState,
+  formData: FormData | undefined = undefined,
+) {
+  const supabase = await createClient();
+
+  const first_name = formData?.get("first_name") as string;
+  const last_name = formData?.get("last_name") as string;
+  const email = formData?.get("email") as string;
+  const password = formData?.get("password") as string;
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
     options: {
       data: {
-        first_name: formData.get('first_name') as string,
-        last_name: formData.get('last_name') as string,
+        first_name,
+        last_name,
       },
-      emailRedirectTo: 'http://localhost:3000/signup/confirm',
-    }
+      emailRedirectTo: "http://localhost:3000/signup/confirm",
+    },
   });
 
   if (error) {
-    console.log(error)
-    redirect('/signup?error=fail');
+    console.log(error);
+
+    return {
+      success: false,
+      first_name,
+      last_name,
+      email,
+      password,
+    };
   }
 
-  revalidatePath('/', 'layout');
-  redirect('/signup/complete');
+  revalidatePath("/", "layout");
+  redirect("/signup/complete");
 }
