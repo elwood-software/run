@@ -49,27 +49,25 @@ export default async function main(ctx: FFrCliContext) {
 
   let spin: Spinner | undefined;
 
-  console.log(status);
-
-  if (status === "pending") {
-    spin = new Spinner({
-      message: "Waiting for worker initialization...",
-    });
-
-    spin.start();
-  }
-
-  if (status === "running" && spin) {
-    spin.stop();
-    spin = undefined;
-
-    console.log("Run is now running");
-  }
-
   while (status === "running" || status === "pending") {
-    await new Promise((r) => setTimeout(r, 1000 * 10));
     const r = await ctx.api<Response>(`/run/${id}/events`);
+
     status = r.status;
+
+    if (status === "pending") {
+      spin = new Spinner({
+        message: "Waiting for worker initialization...",
+      });
+
+      spin.start();
+    }
+
+    if (status === "running" && spin) {
+      spin.stop();
+      spin = undefined;
+
+      console.log("Run is now running");
+    }
 
     for (const evt of r.events) {
       if (!evt.data.text) {
@@ -82,5 +80,15 @@ export default async function main(ctx: FFrCliContext) {
 
       console.log(evt.data.text);
     }
+
+    await new Promise((r) => setTimeout(r, 1000 * 10));
+  }
+
+  if (spin) {
+    spin.stop();
+  }
+
+  if (status === "complete") {
+    console.log("Run Complete");
   }
 }

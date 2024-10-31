@@ -1,4 +1,4 @@
-import {NextRequest, NextResponse} from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export type Context = {
   params: Promise<{
@@ -7,11 +7,13 @@ export type Context = {
 };
 
 export async function GET(req: NextRequest, ctx: Context) {
-  const [target, version] = (await ctx.params).id.replace('.zip', '').split('@');
+  const [target, version] = (await ctx.params).id.replace(".zip", "").split(
+    "@",
+  );
   let data: unknown = {};
 
-  if (version === 'latest') {
-     const response = await fetch(
+  if (version === "latest") {
+    const response = await fetch(
       `https://api.github.com/repos/elwood-software/run/releases/latest`,
       {
         headers: {
@@ -32,8 +34,6 @@ export async function GET(req: NextRequest, ctx: Context) {
     data = await response.json();
   }
 
-
-
   const body = data as {
     assets: Array<{
       name: string;
@@ -41,7 +41,9 @@ export async function GET(req: NextRequest, ctx: Context) {
     }>;
   };
 
-  const asset = body.assets.find(asset => asset.name === `ffr-${target}.zip`);
+  const asset = body.assets.find((asset) =>
+    asset.name === `ffremote-${target}.zip`
+  );
 
   if (!asset) {
     return NextResponse.error();

@@ -31,12 +31,12 @@ try {
   // generate builds for `elwood-run` and `ffr`
   await Promise.all([
     compile(
-      join(__dirname, "../bin/run.ts"),
+      join(__dirname, "../bin/elwood-run.ts"),
       join(dist, "elwood-run"),
     ),
     compile(
-      join(__dirname, "../bin/ffr.ts"),
-      join(dist, "ffr"),
+      join(__dirname, "../bin/ffremote.ts"),
+      join(dist, "ffremote"),
     ),
   ]);
 } catch (err) {

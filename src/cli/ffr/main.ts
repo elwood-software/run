@@ -29,7 +29,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       "",
       "Usage:",
       " ffr <...ffmpeg-args>",
-      " ffr --size=<size> --include=<file> -- <...ffmpeg-args>",
+      " ffr --size=<size> --include=<file>... -- <...ffmpeg-args>",
       " ffr get <id>",
       " ffr watch <id>",
       " ffr status <id>",
@@ -63,6 +63,8 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       case "login":
       case "auth":
         return await auth(context);
+
+      case "execute":
       default:
         return await execute(context);
     }

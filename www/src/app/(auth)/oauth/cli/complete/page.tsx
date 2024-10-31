@@ -1,12 +1,12 @@
-import {RocketIcon} from '@radix-ui/react-icons';
-import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {createClient} from '@/lib/supabase/server';
+import {RocketIcon, ExitIcon} from '@radix-ui/react-icons';
 import {redirect} from 'next/navigation';
 import {cookies} from 'next/headers';
 
-import {FFrLogo} from '@/components/ffr-logo';
-import {Logout} from './logout';
 import Link from 'next/link';
+
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {createClient} from '@/lib/supabase/server';
+import {FFrLogo} from '@/components/ffr-logo';
 
 export default async function Page() {
   const client = await createClient();
@@ -49,7 +49,12 @@ export default async function Page() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <Logout />
+      <Link
+        href="/logout"
+        className="fixed top-3 right-6 text-xs flex items-center space-x-2 border rounded px-3 py-1.5 cursor-pointer">
+        <ExitIcon className="size-3" />
+        <span className="font-bold">Logout</span>
+      </Link>
 
       <div className="mb-12">
         <Link href="/ffr">
@@ -57,8 +62,8 @@ export default async function Page() {
         </Link>
       </div>
 
-      <Alert className="max-w-lg p-6">
-        <RocketIcon className="size-6 mt-4" />
+      <Alert className="max-w-lg py-6 px-12">
+        <RocketIcon className="size-6 mt-4 ml-3" />
         <AlertTitle className="font-bold text-xl">Login Complete!</AlertTitle>
         <AlertDescription>
           <p>You have been authenticated.</p>
