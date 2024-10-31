@@ -9,9 +9,9 @@ import {Logout} from './logout';
 import Link from 'next/link';
 
 export default async function Page() {
-  const client = createClient();
+  const client = await createClient();
   const apiUrl = process.env.API_URL!;
-  const store = cookies();
+  const store = await cookies();
   const cliSession = store.get('cli-session')?.value;
 
   if (!cliSession) {

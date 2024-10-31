@@ -1,29 +1,30 @@
 'use client';
 
 import {useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
+import { useEffect, useState, use } from 'react';
 import {SymbolIcon} from '@radix-ui/react-icons';
 import {RocketIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 
 export type Props = {
-  searchParams: {
+  searchParams: Promise<{
     session_id: string;
-  };
+  }>;
 };
 
 export default function CompletePage(props: Props) {
-  const [enabled, setEnabled] = useState(!!props.searchParams.session_id);
+  const searchParams = use(props.searchParams);
+  const [enabled, setEnabled] = useState(!!searchParams.session_id);
 
   const {data} = useQuery({
-    queryKey: ['setup-stripe', props.searchParams.session_id],
+    queryKey: ['setup-stripe', searchParams.session_id],
     enabled,
     refetchInterval: 1000 * 15,
     async queryFn() {
       const response = await fetch('/plan/complete/api', {
         method: 'POST',
-        body: JSON.stringify({session_id: props.searchParams.session_id}),
+        body: JSON.stringify({session_id: searchParams.session_id}),
         headers: {
           'Content-Type': 'application/json',
         },

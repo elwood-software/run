@@ -55,7 +55,7 @@ fi
 ffr_uri="https://elwood.run/ffremote/release/${target}@${ffr_version}.zip"
 ffr_install="${FFR_INSTALL:-$HOME/.elwood/run}"
 bin_dir="$ffr_install/bin"
-exe="$bin_dir/ffr"
+exe="$bin_dir/ffremote"
 
 if [ ! -d "$bin_dir" ]; then
 	mkdir -p "$bin_dir"
@@ -65,13 +65,13 @@ curl --fail --location --progress-bar --output "$exe.zip" "$ffr_uri"
 if command -v unzip >/dev/null; then
 	unzip -d "$bin_dir" -o "$exe.zip"
 else
-	7z x -o"$bin_dir" -y "$exe.zip"
+	7z x -o "$bin_dir" -y "$exe.zip"
 fi
 chmod +x "$exe"
+ln -sf "$exe" "$bin_dir/ffr"
 rm "$exe.zip"
 
 echo "FFremote was installed successfully to $exe"
-
 
 if command -v ffr >/dev/null; then
 	echo "Run 'ffr --help' to get started"
