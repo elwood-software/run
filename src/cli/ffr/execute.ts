@@ -121,13 +121,15 @@ export default async function main(ctx: FFrCliContext) {
     {
       config: S3ClientConfig;
       bucket: string;
-      download: Array<[string, string]>;
       upload: Array<[string, string]>;
       tracking_id: string;
+      continue_token: string;
     }
-  >(`/run/s3-credentials`, {
+  >(`/run/ffr`, {
     method: "POST",
     body: JSON.stringify({
+      size,
+      args: ffmpegArgs,
       input: foundFiles,
     }),
   });
@@ -171,10 +173,8 @@ export default async function main(ctx: FFrCliContext) {
     const jobResponse = await ctx.api(`/run/ffr`, {
       method: "POST",
       body: JSON.stringify({
-        instance_type: size,
+        continue_token: response.continue_token,
         tracking_id: response.tracking_id,
-        args: ffmpegArgs,
-        download: response.download,
       }),
     });
 
