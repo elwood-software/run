@@ -1,8 +1,5 @@
 import {PropsWithChildren} from 'react';
 import type {Metadata} from 'next';
-import Link from 'next/link';
-
-import {FFrLogo} from '@/components/ffr-logo';
 import {DocsMenu} from './menu';
 
 export const metadata: Metadata = {
