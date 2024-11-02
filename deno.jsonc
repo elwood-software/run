@@ -11,7 +11,8 @@
       "LICENSE",
       "README.md",
       "mod.ts",
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "actions/**/*.ts"
     ]
   }, 
   "tasks": {

@@ -33,4 +33,4 @@ export * as supabase from "npm:@supabase/supabase-js@2.43.5";
 // cli
 export { parseArgs } from "jsr:@std/cli@0.224.7/parse-args";
 
-export { confirm } from "jsr:@nathanwhit/promptly";
+export { confirm } from "jsr:@nathanwhit/promptly@0.1.2";
