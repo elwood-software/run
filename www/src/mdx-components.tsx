@@ -47,7 +47,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     },
     pre({children}) {
       return (
-        <pre className="block text-card-foreground p-3 rounded dark:bg-card border">
+        <pre className="block text-card-foreground p-3 rounded dark:bg-card border overflow-auto">
           {children}
         </pre>
       );

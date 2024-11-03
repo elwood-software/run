@@ -35,11 +35,18 @@ export default function Page() {
           <h2 className="text-xl max-w-2xl mb-1 font-bold">
             Run FFmpeg on dedicated GPU powered instances
           </h2>
-          <h2 className="text-xl max-w-2xl text-foreground/75 mb-6 text-center md:text-left">
+          <h2 className="text-xl max-w-2xl text-foreground/75 mb-6 ">
             Transform your videos faster than ever with our cloud-based FFmpeg
             service. Harness the power of GPUs for lightning-fast encoding,
             transcoding, and more.
           </h2>
+
+          <div className="md:hidden mb-6">
+            <div className="bg-card rounded-lg p-3 border border-border font-mono flex flex-col shadow-lg text-xs">
+              <span className="text-muted-foreground"># install ffremote</span>
+              curl -fsSL https://elwood.run/ffr/install.sh | sh
+            </div>
+          </div>
 
           <div className="mb-6 space-x-2 flex flex-row items-center">
             <Button variant="secondary" asChild className="font-bold">

@@ -3,14 +3,16 @@
   "version": "0.0.12",
   "exports": {
     ".":"./mod.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./actions": "./actions/sdk.ts"
   },
   "publish": {
     "include": [
       "LICENSE",
       "README.md",
       "mod.ts",
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "actions/**/*.ts"
     ]
   }, 
   "tasks": {

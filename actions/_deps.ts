@@ -5,32 +5,32 @@ export { assertRejects } from "jsr:@std/assert@1.0.0/rejects";
 export { assertThrows } from "jsr:@std/assert@1.0.0/throws";
 
 // PATH
-export { basename } from "jsr:@std/path/basename";
-export { dirname } from "jsr:@std/path/dirname";
-export { extname } from "jsr:@std/path/extname";
-export { fromFileUrl } from "jsr:@std/path/from-file-url";
-export { toFileUrl } from "jsr:@std/path/to-file-url";
-export { join } from "jsr:@std/path/join";
-export { relative } from "jsr:@std/path/relative";
+export { basename } from "jsr:@std/path@1.0.8/basename";
+export { dirname } from "jsr:@std/path@1.0.8/dirname";
+export { extname } from "jsr:@std/path@1.0.8/extname";
+export { fromFileUrl } from "jsr:@std/path@1.0.8/from-file-url";
+export { toFileUrl } from "jsr:@std/path@1.0.8/to-file-url";
+export { join } from "jsr:@std/path@1.0.8/join";
+export { relative } from "jsr:@std/path@1.0.8/relative";
 
 // I/O
-export { toWritableStream } from "jsr:@std/io/to-writable-stream";
-export { copy } from "jsr:@std/io/copy";
-export { writeAll } from "jsr:@std/io/write-all";
+export { toWritableStream } from "jsr:@std/io@0.225.0/to-writable-stream";
+export { copy } from "jsr:@std/io@0.225.0/copy";
+export { writeAll } from "jsr:@std/io@0.225.0/write-all";
 
 // FS
-export { expandGlob } from "jsr:@std/fs/expand-glob";
-export { ensureFile } from "jsr:@std/fs/ensure-file";
-export { ensureDir } from "jsr:@std/fs/ensure-dir";
+export { expandGlob } from "jsr:@std/fs@1.0.5/expand-glob";
+export { ensureFile } from "jsr:@std/fs@1.0.5/ensure-file";
+export { ensureDir } from "jsr:@std/fs@1.0.5/ensure-dir";
 
 // ARCHIVE
-export { Untar } from "jsr:@std/archive/untar";
+export { Untar } from "jsr:@std/archive@0.225.4/untar";
 
 // decode
-export * as base64 from "jsr:@std/encoding/base64";
+export * as base64 from "jsr:@std/encoding@1.0.5/base64";
 
 // crypto
-export { encodeHex } from "jsr:@std/encoding/hex";
+export { encodeHex } from "jsr:@std/encoding@1.0.5/hex";
 
 // this file can't be directly executed. It's only
 // meant to be a short to the _core helper modules
