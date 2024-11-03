@@ -111,34 +111,34 @@ export default async function main(ctx: FFrCliContext) {
     }
   }
 
-  spin.message = "Sending build manifest for compilation...";
-
-  // we need to get sts federated token
-  // that is tied to this user's storage bucket
-  // we'll also let them know what files are
-  // going to be uploaded
-  const response = await ctx.api<
-    {
-      config: S3ClientConfig;
-      bucket: string;
-      upload: Array<[string, string]>;
-      tracking_id: string;
-      continue_token: string;
-    }
-  >(`/run/ffr`, {
-    method: "POST",
-    body: JSON.stringify({
-      size,
-      args: ffmpegArgs,
-      input: foundFiles,
-    }),
-  });
-
-  assert(response.config, "Missing response config");
-
-  spin.message = "Preparing to upload files...";
-
   try {
+    spin.message = "Sending build manifest for compilation...";
+
+    // we need to get sts federated token
+    // that is tied to this user's storage bucket
+    // we'll also let them know what files are
+    // going to be uploaded
+    const response = await ctx.api<
+      {
+        config: S3ClientConfig;
+        bucket: string;
+        upload: Array<[string, string]>;
+        tracking_id: string;
+        continue_token: string;
+      }
+    >(`/run/ffr`, {
+      method: "POST",
+      body: JSON.stringify({
+        size,
+        args: ffmpegArgs,
+        input: foundFiles,
+      }),
+    });
+
+    assert(response.config, "Missing response config");
+
+    spin.message = "Preparing to upload files...";
+
     // create our sts client
     const client = new S3Client(response.config);
 
@@ -187,8 +187,7 @@ export default async function main(ctx: FFrCliContext) {
     console.log(`View Logs: ffremote watch ${response.tracking_id}`);
     console.log("");
   } catch (err) {
-    printError(err);
-  } finally {
     spin.stop();
+    printError(err);
   }
 }

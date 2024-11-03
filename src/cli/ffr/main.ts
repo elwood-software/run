@@ -1,3 +1,4 @@
+import { open as openUrl } from "https://deno.land/x/open@v0.0.6/index.ts";
 import type {
   CliArgs,
   FFrArgs,
@@ -35,6 +36,8 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       " ffr status <id>",
       " ffr list",
       " ffr auth",
+      " ffr bug <message>",
+      " ffr chat",
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
       "Join us on discord: https://discord.gg/mkhKk5db",
@@ -63,6 +66,17 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       case "login":
       case "auth":
         return await auth(context);
+
+      case "bug":
+      case "issue":
+        return openBugReport(context);
+
+      case "discord":
+      case "chat":
+        return openUrl("https://discord.gg/mkhKk5db");
+
+      case "docs":
+        return openUrl("https://elwood.run/docs/ffremote/start");
 
       case "execute":
       default:
@@ -102,4 +116,14 @@ export async function createContext(
     storage: await state.getFfrStorage(),
     api: state.apiProvider(remoteUrl),
   };
+}
+
+export function openBugReport(context: FFrCliContext) {
+  openUrl(
+    `https://github.com/elwood-software/run/issues/new?${new URLSearchParams({
+      labels: "FFremote",
+      title: "[FFremote] ",
+      body: (context.args._ ?? []).slice(1).join(" "),
+    })}`,
+  );
 }
