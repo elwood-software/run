@@ -3,11 +3,12 @@
 import {useState} from 'react';
 import {ClipboardIcon, CheckIcon, GitHubLogoIcon} from '@radix-ui/react-icons';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Link from 'next/link';
 
 import {Button} from '@/components/ui/button';
-
 import {FFrLogo} from '@/components/ffr-logo';
-import Link from 'next/link';
+
+import {AccountButton} from './account';
 
 export default function Page() {
   const [isCopied, setIsCopied] = useState('');
@@ -22,6 +23,10 @@ export default function Page() {
 
   return (
     <div className="h-full min-h-screen flex flex-col items-center justify-center">
+      <div className="fixed top-3 right-3">
+        <AccountButton />
+      </div>
+
       <div className="container flex flex-col md:grid md:grid-cols-[2fr_3fr] md:gap-24 items-center justify-center">
         <div className="flex flex-col justify-center md:items-start items-center py-12 px-6 md:p-0">
           <div className="mb-8 text-center md:text-left">

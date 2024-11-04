@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.redirect(new URL("/", req.nextUrl.href));
+    return NextResponse.redirect(new URL("/account", req.nextUrl.href));
   } catch (err) {
     console.log(err);
     return NextResponse.redirect(

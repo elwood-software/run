@@ -4,7 +4,11 @@ import {useMutation} from '@tanstack/react-query';
 
 import {Button} from '@/components/ui/button';
 
-export function ContinueButton() {
+export type ContinueButtonProps = {
+  has: boolean;
+};
+
+export function ContinueButton(props: ContinueButtonProps) {
   const {isPending, mutate} = useMutation({
     async mutationFn() {
       const response = await fetch('/plan/api');
@@ -24,7 +28,7 @@ export function ContinueButton() {
       size="lg"
       className="font-bold w-full"
       loading={isPending}>
-      Continue
+      {props.has ? 'Selected' : 'Continue'}
     </Button>
   );
 }

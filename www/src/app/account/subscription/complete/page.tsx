@@ -1,7 +1,7 @@
 'use client';
 
 import {useQuery} from '@tanstack/react-query';
-import { useEffect, useState, use } from 'react';
+import {useEffect, useState, use} from 'react';
 import {SymbolIcon} from '@radix-ui/react-icons';
 import {RocketIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
@@ -22,7 +22,7 @@ export default function CompletePage(props: Props) {
     enabled,
     refetchInterval: 1000 * 15,
     async queryFn() {
-      const response = await fetch('/plan/complete/api', {
+      const response = await fetch('/account/subscription/complete/api', {
         method: 'POST',
         body: JSON.stringify({session_id: searchParams.session_id}),
         headers: {
@@ -34,12 +34,6 @@ export default function CompletePage(props: Props) {
   });
 
   useEffect(() => {
-    if (data?.redirect_url) {
-      window.location.href = data.redirect_url;
-    }
-  }, [data?.redirect_url]);
-
-  useEffect(() => {
     if (data?.complete === true) {
       setEnabled(false);
     }
@@ -47,31 +41,32 @@ export default function CompletePage(props: Props) {
 
   if (data?.complete === true) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center">
-        <div className="bg-secondary/20 max-w-2xl rounded border py-12 relative mt-12">
-          <header className="absolute -left-0 -top-14 flex items-center justify-center w-full">
-            <div className="bg-primary p-3 rounded-full">
-              <RocketIcon className="size-12" />
-            </div>
-          </header>
-          <div className="flex flex-col items-center px-8">
-            <h1 className="font-bold text-5xl mb-6 mt-3">Setup Complete</h1>
-            <p className="text-muted-foreground mb-3">
-              You are all set up and ready to go! You can now start running
-              jobs.
-            </p>
+      <div className="flex flex-col items-center px-8 m-6 py-12 mt-6 rounded bg-secondary">
+        <h1 className="font-bold text-5xl mb-3 text-primary flex items-center">
+          <RocketIcon className="size-10 mr-3" />
+          <span>Subscription Complete</span>
+        </h1>
+        <p className="text-muted-foreground mb-3">
+          You are all set up and ready to go! You can now start running jobs.
+        </p>
 
-            <Button asChild variant="secondary" size="lg" className="mt-6">
-              <Link href="/docs/ffremote/start">Getting Started</Link>
-            </Button>
-          </div>
-        </div>
+        {data?.redirect_url && (
+          <Button asChild size="lg" className="mt-6">
+            <Link href={data?.redirect_url}>Continue</Link>
+          </Button>
+        )}
+
+        {!data?.redirect_url && (
+          <Button asChild size="lg" className="mt-6">
+            <Link href="/docs/ffremote/start">Getting Started</Link>
+          </Button>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-6 pb-12">
       <SymbolIcon className="size-12 animate-spin" />
       <p className="text-sm text-muted-foreground mt-3">
         Verifying Subscription

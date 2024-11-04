@@ -26,9 +26,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (cliSession) {
-    return NextResponse.redirect(
-      new URL("/oauth/cli/complete", req.nextUrl.href),
-    );
+    return NextResponse.json({
+      complete: true,
+      redirect_url: new URL("/oauth/cli/complete", req.nextUrl.href),
+    });
   }
 
   return NextResponse.json({

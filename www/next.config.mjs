@@ -9,6 +9,16 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
+        source: "/plan",
+        destination: "/account/subscription",
+        permanent: true,
+      },
+      {
+        source: "/plan/:slug",
+        destination: "/account/subscription/:slug",
+        permanent: true,
+      },
+      {
         source: "/ffr",
         destination: "/ffremote",
         permanent: true,

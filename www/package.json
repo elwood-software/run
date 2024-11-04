@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.1",
+    "crypto": "^1.0.1",
     "lucide-react": "^0.454.0",
     "next": "15.0.2",
     "next-mdx-remote": "^5.0.0",
