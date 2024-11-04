@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import crypto from 'crypto';
+import Image from 'next/image';
 
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
@@ -53,7 +54,7 @@ export default async function Page(props: PropsWithChildren) {
           <Link
             href="/account"
             className="border-4 border-primary p-3 rounded-full overflow-hidden relative size-24">
-            <img
+            <Image
               src={`https://www.gravatar.com/avatar/${hash}?s=400x400&d=identicon`}
               alt={`profile image for ${trimmedEmail}`}
               className="absolute inset-0"

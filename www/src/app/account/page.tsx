@@ -1,11 +1,8 @@
 import Link from 'next/link';
-import crypto from 'crypto';
 
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
 import {redirect} from 'next/navigation';
-import {Button} from '@/components/ui/button';
-import {BookOpen, MailQuestion} from 'lucide-react';
 
 export default async function Page() {
   const client = await createClient();
