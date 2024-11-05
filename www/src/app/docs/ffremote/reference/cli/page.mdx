@@ -12,7 +12,7 @@ Visit the [Getting Started Guide](/docs/ffremote/start#install) to learn how to 
 
 ## Commands
 
-- [ffremote execute](#execute) - Execute an FFmpeg on the remote server
+- [ffremote execute](#execute) - Execute an FFmpeg command on the remote server
 - [ffremote list](#list) - List all executions
 - [ffremote watch](#watch) - Watch the execution of a command
 - [ffremote get](#get) - Download the output of a command
@@ -20,6 +20,8 @@ Visit the [Getting Started Guide](/docs/ffremote/start#install) to learn how to 
 - [ffremote auth](#auth) - Authenticate with the remote server
 
 ### execute
+
+Execute an FFmpeg command on the remote server
 
 ```bash
 # Usage
@@ -37,9 +39,15 @@ ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp
 
 ##### `--size=<size>`
 
-Size of the remote instance to use. Possible values are `sm`, `md`, `lg`, `xl`.
+Size of the remote instance to use. [View available values](/docs/ffremote/pricing)
+
+##### `--include=<include>`
+
+Files to upload to the remote server that aren't used as input (`-i`). You can specify multiple files by repeating the option.
 
 ### list
+
+List all executions
 
 ```bash
 # Usage
@@ -47,6 +55,8 @@ ffremote list
 ```
 
 ### watch
+
+Watch the execution of a command
 
 ```bash
 # Usage
@@ -59,6 +69,8 @@ ffremote watch # use last id or prompt
 
 ### get
 
+Download the output of a command
+
 ```bash
 # Usage
 ffremote get [id]
@@ -70,6 +82,8 @@ ffremote get # use last id or prompt
 
 ### status
 
+Get the status of a command
+
 ```bash
 # Usage
 ffremote status [id]
@@ -80,6 +94,8 @@ ffremote status # use last id or prompt
 ```
 
 ### auth
+
+Authenticate with the remote server
 
 ```bash
 # Usage
