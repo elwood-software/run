@@ -18,12 +18,15 @@ import auth from "./auth.ts";
 import list from "./list.ts";
 
 export async function main(compiledVersion: string, args: FFrArgs) {
-  if (args.version) {
+  if (args.version || args.raw[0] === "-v") {
     console.log(`ffremote ${compiledVersion}`);
     Deno.exit(0);
   }
 
-  if (args.raw.length === 0 || args.help) {
+  if (
+    args.raw.length === 0 || args.help || args.raw[0] === "help" ||
+    args.raw[0] === "-h"
+  ) {
     [
       "",
       `ffremote (${compiledVersion}) - FFremote: The Remote FFmpeg Runner`,
@@ -41,7 +44,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
       "Join us on discord: https://discord.gg/mkhKk5db",
-      "Send us questions: hello@elwood.software",
+      "Send us questions: hello@elwood.company",
     ].map((ln) => console.log(ln));
     Deno.exit(0);
   }
