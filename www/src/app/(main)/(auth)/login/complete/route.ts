@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  let url = "/";
+  let url = "/account";
   const cliSession = req.cookies.get("cli-session");
 
   if (cliSession) {

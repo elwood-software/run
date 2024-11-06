@@ -17,7 +17,7 @@ export default async function Page(props: Props) {
   const client = await createClient();
   const {data} = await client.auth.getSession();
 
-  if (data.session?.user && !(await props.searchParams).error) {
+  if (data.session?.user) {
     redirect('/account');
   }
 

@@ -43,17 +43,17 @@ export default async function Page() {
   const org = account.data?.orgs[0];
 
   return (
-    <div>
+    <div className="mt-12">
       <header className="mb-12 flex items-center flex-col">
-        <h1 className="text-5xl font-bold pb-1 text-center">Subscriptions</h1>
+        <h1 className="text-6xl font-bold pb-2 text-center">Subscription</h1>
         <p className="font-thin text-xl text-muted-foreground">
-          Nothing complicated... we charge based on usage.
+          Nothing complicated... we charge based on usage.{' '}
+          <Link
+            className="underline text-muted-foreground"
+            href="/ffr/docs/pricing">
+            Learn more
+          </Link>
         </p>
-        <Link
-          className="underline text-muted-foreground"
-          href="/ffr/docs/pricing">
-          Learn more
-        </Link>
       </header>
       <div className="grid grid-cols-3 gap-x-3 mx-6 mb-6">
         <div className="p-6 bg-secondary rounded-t">

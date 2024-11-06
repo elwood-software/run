@@ -145,6 +145,7 @@ class State {
         );
       }
     } catch (error) {
+      spin.stop();
       console.error((error as Error).message);
     } finally {
       spin.stop();

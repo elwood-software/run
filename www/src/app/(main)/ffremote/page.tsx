@@ -22,7 +22,7 @@ export default function Page() {
   }
 
   return (
-    <div className="h-full min-h-screen flex flex-col items-center justify-center">
+    <div className="w-full flex flex-col items-center justify-center">
       <div className="fixed top-3 right-3">
         <AccountButton />
       </div>

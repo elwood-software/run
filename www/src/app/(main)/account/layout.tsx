@@ -40,7 +40,7 @@ export default async function Page(props: PropsWithChildren) {
   const org = account.data?.orgs[0];
 
   if (!org) {
-    return redirect('/error?error=account_not_found');
+    return redirect('/signup/complete?src=account_not_found');
   }
 
   const {first_name, last_name} = data.user.user_metadata ?? {};
@@ -48,13 +48,15 @@ export default async function Page(props: PropsWithChildren) {
   const hash = crypto.createHash('sha256').update(trimmedEmail).digest('hex');
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
+    <div className="w-full flex flex-col items-center justify-center">
       <div className="bg-secondary/20 max-w-4xl w-full rounded border relative mt-12">
         <header className="absolute -left-0 -top-14 flex items-center justify-center w-full">
           <Link
             href="/account"
             className="border-4 border-primary p-3 rounded-full overflow-hidden relative size-24">
             <Image
+              width={400}
+              height={400}
               src={`https://www.gravatar.com/avatar/${hash}?s=400x400&d=identicon`}
               alt={`profile image for ${trimmedEmail}`}
               className="absolute inset-0"
@@ -85,10 +87,10 @@ export default async function Page(props: PropsWithChildren) {
           </Link>
         </Button>
         <Button asChild={true} variant="outline">
-          <Link href="mailto:help@elwood.company">
+          <Link href="mailto:hello@elwood.company">
             <span className="flex items-center justify-center font-semibold text-xs text-muted-foreground">
               <MailQuestion className="mr-2 size-3" />
-              help@elwood.company
+              hello@elwood.company
             </span>
           </Link>
         </Button>

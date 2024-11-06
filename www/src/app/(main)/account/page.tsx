@@ -32,12 +32,7 @@ export default async function Page() {
       usage: Record<string, number>;
     }>;
   }>('/account');
-  const org = account.data?.orgs[0];
-
-  if (!org) {
-    return redirect('/error?error=account_not_found');
-  }
-
+  const org = account.data?.orgs[0]!;
   const trimmedEmail = data.user.email?.trim().toLowerCase() ?? '';
 
   return (
