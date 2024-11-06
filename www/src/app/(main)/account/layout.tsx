@@ -78,7 +78,9 @@ export default async function Page(props: PropsWithChildren) {
           asChild={true}
           variant="outline"
           className="text-muted-foreground font-semibold text-xs">
-          <Link href="/logout">Log out</Link>
+          <Link href="/logout" prefetch={false}>
+            Log out
+          </Link>
         </Button>
         <Button asChild={true} variant="outline">
           <Link href="/docs">

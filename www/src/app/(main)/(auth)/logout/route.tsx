@@ -3,6 +3,8 @@ import {cookies} from 'next/headers';
 
 import {createClient} from '@/lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const client = await createClient();
   const store = await cookies();
