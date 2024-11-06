@@ -13,6 +13,9 @@
       "mod.ts",
       "src/**/*.ts",
       "actions/**/*.ts"
+    ],
+    "exclude": [
+      "src/cli/**/*.ts"
     ]
   }, 
   "tasks": {
