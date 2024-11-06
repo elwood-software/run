@@ -9,6 +9,7 @@ export default async function Page() {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <Link
+        prefetch={false}
         href="/logout"
         className="fixed top-3 right-6 text-xs flex items-center space-x-2 border rounded px-3 py-1.5 cursor-pointer">
         <ExitIcon className="size-3" />

@@ -5,9 +5,6 @@ import { default as mdx } from "@next/mdx";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    prefetch: false, // Disables prefetching entirely
-  },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
     remotePatterns: [

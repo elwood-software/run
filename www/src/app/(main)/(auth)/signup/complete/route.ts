@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.log(err);
     return NextResponse.redirect(
-      new URL(`/signup?error=${(err as Error).message}`, req.nextUrl.href),
+      new URL(`/error?message=${(err as Error).message}`, req.nextUrl.href),
     );
   }
 }
