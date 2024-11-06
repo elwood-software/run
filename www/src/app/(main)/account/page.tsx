@@ -4,6 +4,8 @@ import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
 import {redirect} from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const client = await createClient();
   const {data} = await client.auth.getUser();
@@ -28,6 +30,7 @@ export default async function Page() {
         max_file_upload_size: number;
         max_run_upload_size: number;
         max_upload_size_per_day: number;
+        max_lifetime_runs: number;
       };
       usage: Record<string, number>;
     }>;
@@ -114,6 +117,19 @@ export default async function Page() {
                 <div className="ml-4 flex-shrink-0">
                   {org.usage['max_queued_per_day'] ?? 0} of{' '}
                   {org.entitlements.max_queued_per_day}
+                </div>
+              </li>
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <div className="flex w-0 flex-1 items-center">
+                  <div className="flex min-w-0 flex-1 gap-2">
+                    <span className="truncate font-medium">
+                      Lifetime Executions
+                    </span>
+                  </div>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  {org.usage['max_lifetime_runs'] ?? 0} of{' '}
+                  {org.entitlements.max_lifetime_runs}
                 </div>
               </li>
             </ul>

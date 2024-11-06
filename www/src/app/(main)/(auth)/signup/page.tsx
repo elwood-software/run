@@ -3,6 +3,8 @@ import {redirect} from 'next/navigation';
 import {createClient} from '@/lib/supabase/server';
 import {SignUpForm} from './form';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Sign Up',
 };

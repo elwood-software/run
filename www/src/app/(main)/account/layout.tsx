@@ -9,6 +9,8 @@ import {Button} from '@/components/ui/button';
 import {BookOpen, MailQuestion} from 'lucide-react';
 import {PropsWithChildren} from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page(props: PropsWithChildren) {
   const client = await createClient();
   const {data} = await client.auth.getUser();

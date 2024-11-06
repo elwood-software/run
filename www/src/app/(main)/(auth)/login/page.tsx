@@ -4,6 +4,8 @@ import {createClient} from '@/lib/supabase/server';
 
 import {LoginForm} from './form';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Login',
 };

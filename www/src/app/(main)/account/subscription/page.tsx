@@ -8,6 +8,8 @@ import {Button} from '@/components/ui/button';
 
 import {ContinueButton} from './button';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Subscription | powered by Elwood Run',
 };
