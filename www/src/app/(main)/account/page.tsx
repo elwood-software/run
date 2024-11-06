@@ -32,8 +32,12 @@ export default async function Page() {
       usage: Record<string, number>;
     }>;
   }>('/account');
-  const org = account.data?.orgs[0]!;
+  const org = account.data?.orgs[0];
   const trimmedEmail = data.user.email?.trim().toLowerCase() ?? '';
+
+  if (!org) {
+    return <></>;
+  }
 
   return (
     <div className="border-t mx-8 pb-8 mt-6">

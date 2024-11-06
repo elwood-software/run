@@ -1,13 +1,8 @@
-import {RocketIcon, ExitIcon} from '@radix-ui/react-icons';
 import {redirect} from 'next/navigation';
 import {cookies} from 'next/headers';
-import Link from 'next/link';
-
-import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {createClient} from '@/lib/supabase/server';
-import {FFrLogo} from '@/components/ffr-logo';
-import {ErrorMessage} from '@/components/error';
 import {NextRequest, NextResponse} from 'next/server';
+
+import {createClient} from '@/lib/supabase/server';
 
 export async function GET(req: NextRequest) {
   const client = await createClient();

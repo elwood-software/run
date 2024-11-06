@@ -7,13 +7,7 @@ export const metadata = {
   title: 'Sign Up',
 };
 
-type Props = {
-  searchParams: Promise<{
-    error?: string | undefined;
-  }>;
-};
-
-export default async function Page(props: Props) {
+export default async function Page() {
   const client = await createClient();
   const {data} = await client.auth.getSession();
 

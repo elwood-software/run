@@ -1,9 +1,7 @@
 import Link from 'next/link';
-
 import {Rocket} from 'lucide-react';
 
 import {Button} from '@/components/ui/button';
-import {FFrLogo} from '@/components/ffr-logo';
 
 export default function Home() {
   return (
