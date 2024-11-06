@@ -1,11 +1,11 @@
-import {NextRequest, NextResponse} from 'next/server';
+import {NextResponse} from 'next/server';
 import {cookies} from 'next/headers';
 
 import {createClient} from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const client = await createClient();
   const store = await cookies();
 
