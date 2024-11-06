@@ -53,7 +53,7 @@ if [ -z "$ffr_version" ]; then
 fi
 
 ffr_uri="https://elwood.run/ffremote/release/${target}@${ffr_version}.zip"
-ffr_install="${FFR_INSTALL:-$HOME/.elwood/run}"
+ffr_install="${FFR_INSTALL:-$HOME/.elwood}"
 bin_dir="$ffr_install/bin"
 exe="$bin_dir/ffremote"
 

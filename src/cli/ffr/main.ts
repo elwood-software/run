@@ -16,6 +16,7 @@ import status from "./status.ts";
 import watch from "./watch.ts";
 import auth from "./auth.ts";
 import list from "./list.ts";
+import upgrade from "./upgrade.ts";
 
 export async function main(compiledVersion: string, args: FFrArgs) {
   if (args.version || args.raw[0] === "-v") {
@@ -32,25 +33,27 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       `ffremote (${compiledVersion}) - FFremote: The Remote FFmpeg Runner`,
       "",
       "Usage:",
-      " ffr <...ffmpeg-args>",
-      " ffr --size=<size> --include=<file>... -- <...ffmpeg-args>",
-      " ffr get <id>",
-      " ffr watch <id>",
-      " ffr status <id>",
-      " ffr list",
-      " ffr auth",
-      " ffr bug <message>",
-      " ffr chat",
+      " ffremote <...ffmpeg-args>",
+      " ffremote --size=<size> --include=<file>... -- <...ffmpeg-args>",
+      " ffremote get <id>",
+      " ffremote watch <id>",
+      " ffremote status <id>",
+      " ffremote list",
+      " ffremote auth",
+      " ffremote bug <message>",
+      " ffremote chat",
+      " ffremote docs",
+      " ffremote upgrade",
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
-      "Join us on discord: https://discord.gg/mkhKk5db",
+      "Join us on discord: https://discord.gg/4w3Ae9zs",
       "Send us questions: hello@elwood.company",
     ].map((ln) => console.log(ln));
     Deno.exit(0);
   }
 
   try {
-    const context = await createContext(args);
+    const context = await createContext(args, compiledVersion);
 
     switch (args._[0]) {
       case "get":
@@ -76,10 +79,14 @@ export async function main(compiledVersion: string, args: FFrArgs) {
 
       case "discord":
       case "chat":
-        return openUrl("https://discord.gg/mkhKk5db");
+        return openUrl("https://discord.gg/4w3Ae9zs");
 
       case "docs":
         return openUrl("https://elwood.run/docs/ffremote/start");
+
+      case "upgrade":
+      case "up":
+        return await upgrade(context);
 
       case "execute":
       default:
@@ -92,6 +99,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
 
 export async function createContext(
   args: FFrArgs | CliArgs,
+  version: string,
 ): Promise<FFrCliContext> {
   const cwd_ = args.cwd ?? Deno.env.get("ELWOOD_CWD") ?? Deno.cwd();
   const cwd__ = isAbsolute(cwd_) ? cwd_ : join(Deno.cwd(), cwd_);
@@ -110,6 +118,7 @@ export async function createContext(
   const cwd = dotenvValues.ELWOOD_CWD ?? cwd__;
 
   return {
+    version,
     args: {
       ...args,
       cwd,

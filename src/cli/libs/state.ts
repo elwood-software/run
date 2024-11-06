@@ -15,13 +15,19 @@ class State {
   configDir: string;
   credentialsFile: string;
   ffrFile: string;
+  elwoodDir: string;
+  binDir: string;
 
   constructor() {
     const homeDir = Deno.build.os == "windows"
       ? Deno.env.get("USERPROFILE")!
       : Deno.env.get("HOME")!;
-    this.configDir = join(homeDir, ".elwood", "run");
-    this.credentialsFile = join(this.configDir, "credentials.json");
+    this.elwoodDir = join(homeDir, ".elwood");
+
+    this.binDir = join(this.elwoodDir, "bin");
+    this.configDir = join(this.elwoodDir, "run");
+
+    this.credentialsFile = join(this.elwoodDir, "credentials.json");
     this.ffrFile = join(this.configDir, "ffr.json");
   }
 

@@ -167,6 +167,7 @@ export type FFrArgs = Omit<
 >;
 
 export type FFrCliContext = {
+  version: string;
   args: FFrArgs;
   remoteUrl: string;
   cwd: string;
