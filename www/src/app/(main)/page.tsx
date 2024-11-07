@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import {Rocket} from 'lucide-react';
 
 import {RunLogo} from '@/components/run-logo';
 import {Button} from '@/components/ui/button';
