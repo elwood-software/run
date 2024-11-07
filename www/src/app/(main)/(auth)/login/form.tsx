@@ -46,9 +46,10 @@ export function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="m@example.com"
+                placeholder="chip_whitley@example.com"
                 required
                 defaultValue={state.email}
+                className="placeholder:text-muted-foreground/20"
               />
             </div>
             <div className="grid gap-2">
@@ -57,8 +58,10 @@ export function LoginForm() {
                 id="password"
                 type="password"
                 name="password"
+                placeholder="super-secret"
                 required
                 defaultValue={state.password}
+                className="placeholder:text-muted-foreground/20"
               />
             </div>
             <SubmitButton className="w-full">Login</SubmitButton>

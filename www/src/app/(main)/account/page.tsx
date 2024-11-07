@@ -132,6 +132,13 @@ export default async function Page() {
                   {org.entitlements.max_lifetime_runs}
                 </div>
               </li>
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <a
+                  className="text-muted-foreground hover:text-foreground"
+                  href="mailto:support@elwood.company">
+                  Request an increase
+                </a>
+              </li>
             </ul>
           </dd>
         </div>

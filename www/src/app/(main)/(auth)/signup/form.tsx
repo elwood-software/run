@@ -51,6 +51,7 @@ export function SignUpForm() {
                     name="first_name"
                     required
                     defaultValue={state.first_name}
+                    className="placeholder:text-muted-foreground/20"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -61,6 +62,7 @@ export function SignUpForm() {
                     name="last_name"
                     defaultValue={state.last_name}
                     required
+                    className="placeholder:text-muted-foreground/20"
                   />
                 </div>
               </div>
@@ -69,10 +71,11 @@ export function SignUpForm() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="chip@example.com"
+                  placeholder="chip_whitley@example.com"
                   name="email"
                   defaultValue={state.email}
                   required
+                  className="placeholder:text-muted-foreground/20"
                 />
               </div>
               <div className="grid gap-2">
@@ -81,7 +84,9 @@ export function SignUpForm() {
                   id="password"
                   type="password"
                   name="password"
+                  placeholder="not-chip-whitley"
                   defaultValue={state.password}
+                  className="placeholder:text-muted-foreground/20"
                 />
               </div>
               <SubmitButton type="submit" className="w-full">

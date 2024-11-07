@@ -9,6 +9,7 @@ import {Button} from '@/components/ui/button';
 import {FFrLogo} from '@/components/ffr-logo';
 
 import {AccountButton} from './account';
+import {RunLogo} from '@/components/run-logo';
 
 export default function Page() {
   const [isCopied, setIsCopied] = useState('');
@@ -23,11 +24,19 @@ export default function Page() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="fixed top-3 right-3">
-        <AccountButton />
-      </div>
+      <header>
+        <Link
+          href="/"
+          className="opacity-40 scale-95 transition-all hover:opacity-100 hover:scale-110 block">
+          <RunLogo className="size-24" />
+        </Link>
 
-      <div className="container flex flex-col md:grid md:grid-cols-[2fr_3fr] md:gap-24 items-center justify-center">
+        <div className="fixed top-3 right-3">
+          <AccountButton />
+        </div>
+      </header>
+
+      <div className="container flex flex-col md:grid md:grid-cols-[2fr_3fr] md:gap-24 items-center justify-center grow">
         <div className="flex flex-col justify-center md:items-start items-center py-12 px-6 md:p-0">
           <div className="mb-8 text-center md:text-left">
             <h1 className="inline">

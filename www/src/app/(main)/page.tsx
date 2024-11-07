@@ -1,24 +1,25 @@
 import Link from 'next/link';
 import {Rocket} from 'lucide-react';
 
+import {RunLogo} from '@/components/run-logo';
 import {Button} from '@/components/ui/button';
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <div className="flex items-center justify-center flex-col px-6">
-        <div className="bg-secondary p-4 rounded-2xl mb-6 border flex items-center justify-center flex-col">
-          <Rocket className="size-12 md:size-16 fill-background stroke-none" />
-          <h1 className="font-mono text-background text-sm mt-1 font-bold">
+        <h1 className="font-mono relative">
+          <RunLogo className="size-52" />
+          <span className="absolute w-full bottom-0 pb-[20%] text-center opacity-75 text-xs text-black">
             elwood.run
-          </h1>
-        </div>
+          </span>
+        </h1>
       </div>
       <div className="px-6">
         <Link
           href="/ffremote"
           className="mt-16 flex flex-col md:flex-row items-center rounded p-4 space-x-6 bg-primary/5 transition-all hover:scale-105">
-          <span className="text-primary font-mono">/FFremote</span>
+          <span className="text-primary font-mono">/ffremote</span>
           <span className="text-primary/50">
             Run FFmpeg on dedicated GPU powered instances
           </span>
