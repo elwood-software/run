@@ -1,6 +1,6 @@
 {
   "name": "@elwood/run",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "exports": {
     ".":"./mod.ts",
     "./types": "./src/types.ts",

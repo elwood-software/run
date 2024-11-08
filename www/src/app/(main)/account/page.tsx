@@ -44,6 +44,13 @@ export default async function Page() {
     return <></>;
   }
 
+  function num(num: number | undefined | null): string {
+    if (typeof num !== 'number') {
+      return '0';
+    }
+    return isFinite(num) ? String(num) : '~';
+  }
+
   return (
     <div className="border-t mx-8 pb-8 mt-6">
       <dl className="divide-y divide-border">
@@ -108,7 +115,7 @@ export default async function Page() {
                 </div>
                 <div className="ml-4 flex-shrink-0">
                   {org.usage['max_runs_per_day'] ?? 0} of{' '}
-                  {org.entitlements.max_runs_per_day}
+                  {num(org.entitlements.max_runs_per_day)}
                 </div>
               </li>
               <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
@@ -121,7 +128,7 @@ export default async function Page() {
                 </div>
                 <div className="ml-4 flex-shrink-0">
                   {org.usage['run_mins_per_day'] ?? 0} of{' '}
-                  {org.entitlements.run_mins_per_day}
+                  {num(org.entitlements.run_mins_per_day)}
                 </div>
               </li>
               <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
@@ -134,7 +141,7 @@ export default async function Page() {
                 </div>
                 <div className="ml-4 flex-shrink-0">
                   {org.usage['max_queued_per_day'] ?? 0} of{' '}
-                  {org.entitlements.max_queued_per_day}
+                  {num(org.entitlements.max_queued_per_day)}
                 </div>
               </li>
               <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
@@ -147,7 +154,7 @@ export default async function Page() {
                 </div>
                 <div className="ml-4 flex-shrink-0">
                   {org.usage['max_lifetime_runs'] ?? 0} of{' '}
-                  {org.entitlements.max_lifetime_runs}
+                  {num(org.entitlements.max_lifetime_runs)}
                 </div>
               </li>
               <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">

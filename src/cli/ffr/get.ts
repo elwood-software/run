@@ -1,7 +1,9 @@
 import * as zip from "jsr:@zip-js/zip-js";
+import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 
 import { assert, dirname, join } from "../../deps.ts";
 import type { FFrCliContext } from "../../types.ts";
+import { printError } from "../libs/error.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, storage } = ctx;
@@ -13,39 +15,58 @@ export default async function main(ctx: FFrCliContext) {
     console.error("Please provide a run id");
     Deno.exit(1);
   }
+  const spin = new Spinner({
+    message: "Downloading outputs...",
+  });
 
-  const { downloadUrl } = await ctx.api<{ downloadUrl: string }>(
-    `/run/${id}/output`,
-  );
+  try {
+    const { downloadUrl } = await ctx.api<{ downloadUrl: string }>(
+      `/run/${id}/output`,
+    );
 
-  assert(downloadUrl, "Unable to get download url");
+    assert(downloadUrl, "Unable to get download url");
 
-  const stream = await fetch(downloadUrl);
+    spin.start();
+    const stream = await fetch(downloadUrl);
 
-  assert(stream.ok, "Unable to download from output url");
+    assert(
+      stream.ok,
+      `Unable to start download from output url. Received ${stream.status} (${stream.statusText}) from the storage server`,
+    );
 
-  const reader = new zip.ZipReader(
-    stream.body!,
-  );
+    spin.message = "Download complete! Unpacking...";
 
-  const entries = [];
+    const reader = new zip.ZipReader(
+      stream.body!,
+    );
 
-  for (const entry of await reader.getEntries()) {
-    if (entry.directory) {
-      continue;
+    const entries = [];
+
+    for await (const entry of await reader.getEntries()) {
+      if (entry.directory) {
+        continue;
+      }
+
+      const dest = join(cwd, entry.filename);
+      await Deno.mkdir(dirname(dest), { recursive: true });
+      const out = await Deno.open(dest, {
+        read: true,
+        write: true,
+        create: true,
+      });
+      await entry.getData!(out.writable);
+      entries.push(entry.filename);
+
+      spin.message = `writing ${entry.filename}...`;
     }
 
-    const dest = join(cwd, entry.filename);
-    await Deno.mkdir(dirname(dest), { recursive: true });
-    const out = await Deno.open(dest, {
-      read: true,
-      write: true,
-      create: true,
-    });
-    await entry.getData!(out.writable);
-    entries.push(entry.filename);
-  }
+    spin.stop();
 
-  console.log("Outputs:");
-  entries.forEach((name) => console.log(` ./${name}`));
+    console.log("Execution Outputs:");
+    entries.forEach((name) => console.log(` ./${name}`));
+  } catch (err) {
+    spin.stop();
+    printError(err);
+    Deno.exit(1);
+  }
 }
