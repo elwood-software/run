@@ -10,8 +10,8 @@ export const metadata = {
 curl -fsSL https://elwood.run/ffremote/install.sh | sh
 ```
 
-The install script will not add ffr to your PATH so you'll need to do that
-yourself. Here's an example of how you might add ffr to your PATH:
+The [install script](https://github.com/elwood-software/run/blob/main/install-ffr.sh) will not add `ffremote` to your `$PATH` so you'll need to do that
+yourself. Here's an example of how you might add `ffremote` to your `$PATH`:
 
 ```bash
  # for bash
@@ -21,43 +21,57 @@ yourself. Here's an example of how you might add ffr to your PATH:
  echo 'export PATH=$HOME/.elwood/bin:$PATH' >> ~/.zprofile
 ```
 
-## 2. Start a Job
+## 2. Start an Execution
 
 ```bash
 ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ```
 
-Before the job is submitted, you'll be prompted to open a browser to
-authenticate on <a href="https://elwood.run">elwood.run</a>. You'll also need to setup a payment
-method. Note: You will not be charged until the job is complete.
+Before the execution is submitted, you'll be prompted to open a browser to
+authenticate on <a href="https://elwood.run">elwood.run</a>. You'll also need to setup a subscription & payment
+method before your execution begins. Note: You will not be charged until the execution is complete.
 
-Once you've authenticated, <strong>ffremote</strong> will upload any of the '-i'
-input files and submit your job. You'll receive a tracking ID that you can use
-to check the status of your job.
+Once you've authenticated, `ffremote` will upload any of the '-i'
+input files. You can use `--include` to upload additional files. You'll receive a tracking ID that you can use
+to check the status of your execution.
 
 ```bash
-Job Queued! Tracking ID: 6b5337db-3038-425f-acd8-26a16c564ff9
+Execution Queued! Tracking ID: 6b5337db-3038-425f-acd8-26a16c564ff9
 Watch the process: ffremote watch 6b5337db-3038-425f-acd8-26a16c564ff9
 Download the result: ffremote get 6b5337db-3038-425f-acd8-26a16c564ff9
 ```
 
-Jobs are queued as a remote server is created. Once the server is created,
-your job .
+Executiuons are queued while a remote worker is built. Once the worker is created,
+your execution will begin.
+
+Full [execute](/docs/ffremote/reference/cli/#execute) documentation.
 
 ## 3. Check Job Status
+
+At any point in the process, you can check the status of your execution. You can leave off the `<tracking-id>` to view the status of the last execution queued.
 
 ```bash
 ffremote status 6b5337db-3038-425f-acd8-26a16c564ff9
 ```
 
+Full [status](/docs/ffremote/reference/cli/#status) documentation.
+
 ## 4. Watch the Logs
+
+While the execution is in process, you can use the `watch` command to view any outputs from the remote `ffmpeg` process. Once the execution is complete, the full logs will be output.
 
 ```bash
 ffremote watch 6b5337db-3038-425f-acd8-26a16c564ff9
 ```
 
+Full [watch](/docs/ffremote/reference/cli/#watch) documentation.
+
 ## 5. Download the Results
+
+Once the execution has finished successfully, you can use the `get` command to download the results of the execution. Any output files will be included in the output.
 
 ```bash
 ffremote get 6b5337db-3038-425f-acd8-26a16c564ff9
 ```
+
+Full [get](/docs/ffremote/reference/cli/#get) documentation.

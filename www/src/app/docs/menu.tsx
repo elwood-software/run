@@ -102,8 +102,8 @@ const data = {
           isActive: true,
         },
         {
-          title: 'Start a Job',
-          url: '/docs/ffremote/start#2-start-a-job',
+          title: 'Start an Execution',
+          url: '/docs/ffremote/start#2-start-a-execution',
         },
         {
           title: 'Check the Status',

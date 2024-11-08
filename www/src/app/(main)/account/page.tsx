@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import {redirect} from 'next/navigation';
+import {Info} from 'lucide-react';
 
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
-import {redirect} from 'next/navigation';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,7 +69,7 @@ export default async function Page() {
             {org.has_stripe_subscription ? (
               'Pay As You Go'
             ) : (
-              <Link className="text-primary" href="/plan">
+              <Link className="text-primary hover:underline" href="/plan">
                 Select a Subscription
               </Link>
             )}
@@ -77,6 +79,22 @@ export default async function Page() {
         <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt className="text-sm/6 font-bold">Usage Limits</dt>
           <dd className="mt-1 text-sm/6 sm:col-span-2 sm:mt-0">
+            {!org?.has_stripe_subscription && (
+              <div className="mb-3">
+                <Alert variant="default" className="bg-blue-600">
+                  <Info className="size-7" />
+                  <AlertTitle className="flex items-center font-bold ml-3">
+                    Please select a subscription
+                  </AlertTitle>
+                  <AlertDescription className="ml-3">
+                    Before you can begin executing jobs, please setup a
+                    subscription. Don't worry, you only pay for resources you
+                    use.
+                  </AlertDescription>
+                </Alert>
+              </div>
+            )}
+
             <ul
               role="list"
               className="divide-y divide-background bg-secondary rounded-md border">

@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import {type Metadata} from 'next';
 import {redirect} from 'next/navigation';
+import {Info} from 'lucide-react';
 
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
 import {Button} from '@/components/ui/button';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 
 import {ContinueButton} from './button';
 
@@ -46,7 +48,7 @@ export default async function Page() {
 
   return (
     <div className="mt-12">
-      <header className="mb-12 flex items-center flex-col">
+      <header className="mb-6 flex items-center flex-col">
         <h1 className="text-6xl font-bold pb-2 text-center">Subscription</h1>
         <p className="font-thin text-xl text-muted-foreground">
           Nothing complicated... we charge based on usage.{' '}
@@ -56,6 +58,20 @@ export default async function Page() {
             Learn more
           </Link>
         </p>
+        {!org?.has_stripe_subscription && (
+          <div className="mt-12 w-full px-6">
+            <Alert variant="default" className="bg-blue-600">
+              <Info className="size-7" />
+              <AlertTitle className="flex items-center font-bold ml-3">
+                Please select a subscription
+              </AlertTitle>
+              <AlertDescription className="ml-3">
+                Before you can begin executing jobs, please setup a
+                subscription. Don't worry, you only pay for resources you use.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
       </header>
       <div className="grid grid-cols-3 gap-x-3 mx-6 mb-6">
         <div className="p-6 bg-secondary rounded-t">
@@ -64,6 +80,14 @@ export default async function Page() {
             Only pay for the infrastructure you use. No upfront costs or
             termination fees.
           </p>
+          <div className="flex flex-col">
+            <span className="text-xs text-muted-foreground mb-1">
+              GPU workers starting at
+            </span>
+            <Link href="/docs/ffremote/pricing" className="hover:underline">
+              <pre className="text-lg">$0.0187 per minute</pre>
+            </Link>
+          </div>
         </div>
         <div className="p-6 bg-secondary rounded">
           <h2 className="font-bold text-xl mb-3 mt-3">Reserved</h2>

@@ -39,12 +39,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.rewrite(new URL('/error', req.nextUrl));
   }
 
-  const {requireStripeSetup} = await response.json();
-
-  if (requireStripeSetup) {
-    return redirect('/account/subscription');
-  }
-
   store.delete('cli-session');
 
   return NextResponse.redirect(new URL('/oauth/cli/done', req.nextUrl), 302);
