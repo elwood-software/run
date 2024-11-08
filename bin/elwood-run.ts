@@ -2,6 +2,20 @@ import { parseArgs } from "jsr:@std/cli/parse-args";
 
 import { main } from "../src/cli/run/main.ts";
 
+let VERSION = "0.0.0";
+
+try {
+  const versionFile = "./version.ts";
+  const v = await import(versionFile) as {
+    default: {
+      version: string;
+    };
+  };
+  VERSION = v.default.version;
+} catch (_) {
+  // do nothing and assume we're not in the compiled version
+}
+
 const {
   _,
   cwd,
@@ -22,7 +36,7 @@ const {
   },
 );
 
-await main({
+await main(VERSION, {
   _,
   raw: Deno.args,
   workflowFile: String(_[0]),
