@@ -5,6 +5,10 @@ import { assert, dirname, join } from "../../deps.ts";
 import type { FFrCliContext } from "../../types.ts";
 import { printError } from "../libs/error.ts";
 
+zip.configure({
+  useWebWorkers: false,
+});
+
 export default async function main(ctx: FFrCliContext) {
   const { args, storage } = ctx;
   const id = args._[1] ?? storage.lastId;

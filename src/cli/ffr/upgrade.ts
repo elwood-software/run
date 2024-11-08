@@ -5,6 +5,10 @@ import { join } from "../../deps.ts";
 import { state } from "../libs/state.ts";
 import type { FFrCliContext } from "../../types.ts";
 
+zip.configure({
+  useWebWorkers: false,
+});
+
 export default async function main(ctx: FFrCliContext) {
   const binFile = join(state.binDir, "ffremote");
 
