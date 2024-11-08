@@ -88,7 +88,7 @@ export default async function Page() {
                   </AlertTitle>
                   <AlertDescription className="ml-3">
                     Before you can begin executing jobs, please setup a
-                    subscription. Don't worry, you only pay for resources you
+                    subscription. Do not worry, you only pay for resources you
                     use.
                   </AlertDescription>
                 </Alert>
