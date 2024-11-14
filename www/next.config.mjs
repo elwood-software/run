@@ -1,3 +1,4 @@
+import remarkGithubAlerts from "remark-github-alerts";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -64,7 +65,7 @@ const nextConfig = {
 
 export default mdx({
   options: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkGithubAlerts],
     rehypePlugins: [rehypePrettyCode, rehypeSlug],
   },
 })(nextConfig);

@@ -76,11 +76,12 @@ export default async function Page() {
       <div className="grid grid-cols-3 gap-x-3 mx-6 mb-6">
         <div className="p-6 bg-secondary rounded-t">
           <h2 className="font-bold text-xl mb-3 mt-3">Pay As You Go</h2>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-muted-foreground mb-2">
             Only pay for the infrastructure you use. No upfront costs or
             termination fees.
           </p>
-          <div className="flex flex-col">
+          <p className="font-bold">Includes 60 minutes free!</p>
+          <div className="flex flex-col mt-6">
             <span className="text-xs text-muted-foreground mb-1">
               GPU workers starting at
             </span>

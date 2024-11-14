@@ -1,3 +1,7 @@
+@import 'remark-github-alerts/styles/github-colors-light.css';
+@import 'remark-github-alerts/styles/github-colors-dark-class.css';
+@import 'remark-github-alerts/styles/github-base.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -92,5 +96,15 @@ body {
   html,
   body {
     @apply bg-background text-foreground w-screen min-h-screen;
+  }
+}
+
+.markdown-alert {
+  .markdown-alert-title {
+    @apply font-bold mb-3;
+  }
+
+  p {
+    @apply m-0 text-sm;
   }
 }

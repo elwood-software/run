@@ -98,6 +98,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.0
+      remark-github-alerts:
+        specifier: ^0.1.0
+        version: 0.1.0(@types/mdast@4.0.4)(unified@11.0.5)
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.5.4
@@ -2541,6 +2544,12 @@ packages:
 
   remark-gfm@4.0.0:
     resolution: {integrity: sha512-U92vJgBPkbw4Zfu/IiW2oTZLSL3Zpv+uI7My2eq8JxKgqraFdU8YUGicEJCEgSbeaG+QDFqIcwwfMTOEelPxuA==}
+
+  remark-github-alerts@0.1.0:
+    resolution: {integrity: sha512-wryoAUybyynNDIekuMgkqxoqjD86IUubd/NuFXMrYjbypYZoc0+YhHd+CVu5QZ5wLERzU6zDlDsDKzovEvrOsg==}
+    peerDependencies:
+      '@types/mdast': ^4.0.0
+      unified: ^11.0.0
 
   remark-mdx@3.1.0:
     resolution: {integrity: sha512-Ngl/H3YXyBV9RcRNdlYsZujAmhsxwzxpDzpDEhFBVAGthS4GDgnctpDjgFl/ULx5UEDzqtW1cyBSNKqYYrqLBA==}
@@ -6021,6 +6030,12 @@ snapshots:
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
+
+  remark-github-alerts@0.1.0(@types/mdast@4.0.4)(unified@11.0.5):
+    dependencies:
+      '@types/mdast': 4.0.4
+      unified: 11.0.5
+      unist-util-visit: 5.0.0
 
   remark-mdx@3.1.0:
     dependencies:

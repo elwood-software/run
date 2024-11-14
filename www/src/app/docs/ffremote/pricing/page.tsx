@@ -26,7 +26,7 @@ export default async function Page() {
         gpu_memory: number;
         storage: number;
         storage_count: number;
-        region_price_per_hour: Record<string, number>;
+        region_price_per_minute: Record<string, number>;
       }[];
     };
 
@@ -99,9 +99,9 @@ export default async function Page() {
                         </c.td>
                         <c.td>
                           $
-                          {(
-                            item.region_price_per_hour[default_region_id] / 60
-                          ).toFixed(4)}
+                          {item.region_price_per_minute[
+                            default_region_id
+                          ].toFixed(4)}
                         </c.td>
                       </tr>
                     ))}
