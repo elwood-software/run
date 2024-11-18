@@ -1,6 +1,6 @@
 'use client';
 
-import {useActionState} from 'react';
+import {MouseEvent, useActionState, useState} from 'react';
 
 import Link from 'next/link';
 
@@ -14,17 +14,39 @@ import {
 } from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-
 import {FFrLogo} from '@/components/ffr-logo';
 import {SubmitButton} from '@/components/submit-button';
 import {Alert} from '@/components/ui/alert';
+import {Button} from '@/components/ui/button';
+import {GoogleLogo} from '@/components/svg';
+
+import {createClient, type OauthProvider} from '@/lib/supabase/client';
 
 import {login, type LoginActionState} from './actions';
 
 export function LoginForm() {
+  const [client] = useState(createClient());
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [state, formAction] = useActionState<LoginActionState>(login, {
     success: null,
   });
+
+  async function onSocialLogin(e: MouseEvent, provider: OauthProvider) {
+    e.preventDefault();
+    setSocialLoading(provider);
+
+    try {
+      const _ = await client.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${location.origin}/login/complete`,
+        },
+      });
+    } catch (_) {
+    } finally {
+      setSocialLoading(null);
+    }
+  }
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
@@ -40,6 +62,22 @@ export function LoginForm() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 my-3">
+            <Button
+              type="button"
+              variant="secondary"
+              loading={socialLoading === 'google'}
+              onClick={e => onSocialLogin(e, 'google')}
+              className="flex">
+              <GoogleLogo className="size-4 mr-2" />
+              Login with Google
+            </Button>
+
+            <div className="flex items-center">
+              <hr className="flex-grow" />
+              <div className="px-3 text-xs font-bold text-border">OR</div>
+              <hr className="flex-grow" />
+            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input

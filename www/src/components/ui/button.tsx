@@ -64,7 +64,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       return (
         <Comp
-          className={cn('relative', buttonVariants({variant, size, className}))}
+          className={cn(
+            'relative inline-block',
+            buttonVariants({variant, size, className}),
+          )}
           ref={ref}
           {...props}>
           <Root {...rest}>
@@ -82,17 +85,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <Comp
-        className={cn('relative', buttonVariants({variant, size, className}))}
-        ref={ref}
-        {...props}>
-        <span>
-          {loading && (
-            <span className="absolute inset-0 flex justify-center items-center">
-              <Loader2 className="size-[1em] animate-spin" />
-            </span>
-          )}
-          <span className={loading ? 'opacity-0' : ''}>{children}</span>
+      <Comp ref={ref} {...props} className="relative inline-block w-full">
+        {loading && (
+          <span
+            className={cn(
+              'inline-flex',
+              buttonVariants({variant, size, className}),
+              'absolute inset-0 flex justify-center items-center',
+            )}>
+            <Loader2 className="size-[1em] animate-spin" />
+          </span>
+        )}
+        <span
+          className={cn(
+            'inline-flex',
+            buttonVariants({variant, size, className}),
+            loading ? 'opacity-0' : '',
+          )}>
+          {children}
         </span>
       </Comp>
     );

@@ -20,6 +20,7 @@ export default async function Page(props: PropsWithChildren) {
   }
 
   const account = await api.get<{
+    display_name: string;
     orgs: Array<{
       id: string;
       has_stripe_subscription: boolean;
@@ -45,7 +46,6 @@ export default async function Page(props: PropsWithChildren) {
     return redirect('/signup/complete?src=account_not_found');
   }
 
-  const {first_name, last_name} = data.user.user_metadata ?? {};
   const trimmedEmail = data.user.email?.trim().toLowerCase() ?? '';
   const hash = crypto.createHash('sha256').update(trimmedEmail).digest('hex');
 
@@ -67,7 +67,7 @@ export default async function Page(props: PropsWithChildren) {
         </header>
         <div className="px-8 pt-12 flex items-center justify-center">
           <strong className="font-bold text-3xl mt-6 text-center">
-            {`Hello, ${first_name} ${last_name}`}!
+            {`Hello, ${account.data?.display_name}`}!
           </strong>
         </div>
         <div className="w-full">{props.children}</div>

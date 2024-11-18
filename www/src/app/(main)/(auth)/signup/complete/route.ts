@@ -5,8 +5,24 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const client = await createClient();
-    const { data: user } = await client.auth.getUser();
+    let { data: user } = await client.auth.getUser();
     const cliSession = req.cookies.get("cli-session");
+    const { searchParams } = new URL(req.url);
+    const code = searchParams.get("code");
+
+    if (code) {
+      const { data, error } = await client.auth.exchangeCodeForSession(
+        code,
+      );
+
+      if (error) {
+        return NextResponse.redirect(
+          new URL("/error?code=oauth_error", req.nextUrl.href),
+        );
+      }
+
+      user = data;
+    }
 
     if (!user.user?.id) {
       throw new Error("no_user");
@@ -23,11 +39,11 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       console.log(error);
-      throw new Error("bad_error");
+      throw new Error("no_account_error");
     }
 
     if (!data) {
-      throw new Error("bad_data");
+      throw new Error("no_account_data");
     }
 
     if (!data.has_stripe_subscription) {

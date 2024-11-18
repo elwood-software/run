@@ -1,6 +1,6 @@
 'use client';
 
-import {useActionState} from 'react';
+import {useActionState, useState, type MouseEvent} from 'react';
 import Link from 'next/link';
 
 import {
@@ -15,6 +15,10 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {FFrLogo} from '@/components/ffr-logo';
 import {SubmitButton} from '@/components/submit-button';
+import {Button} from '@/components/ui/button';
+import {GoogleLogo} from '@/components/svg';
+
+import {createClient, type OauthProvider} from '@/lib/supabase/client';
 
 import {signup, type SignupActionState} from './actions';
 
@@ -23,9 +27,28 @@ export const metadata = {
 };
 
 export function SignUpForm() {
+  const [client] = useState(createClient());
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [state, formAction] = useActionState<SignupActionState>(signup, {
     success: null,
   });
+
+  async function onSocialLogin(e: MouseEvent, provider: OauthProvider) {
+    e.preventDefault();
+    setSocialLoading(provider);
+
+    try {
+      const _ = await client.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${location.origin}/signup/complete`,
+        },
+      });
+    } catch (_) {
+    } finally {
+      setSocialLoading(null);
+    }
+  }
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
@@ -42,6 +65,24 @@ export function SignUpForm() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
+              <div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  loading={socialLoading === 'google'}
+                  onClick={e => onSocialLogin(e, 'google')}
+                  className="flex mb-6 w-full">
+                  <GoogleLogo className="size-4 mr-2" />
+                  Sign Up with Google
+                </Button>
+
+                <div className="flex items-center">
+                  <hr className="flex-grow" />
+                  <div className="px-3 text-xs font-bold text-border">OR</div>
+                  <hr className="flex-grow" />
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="first-name">First name</Label>

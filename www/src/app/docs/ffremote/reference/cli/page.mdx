@@ -31,7 +31,7 @@ ffremote [options] -- <ffmpeg-args>...
 ffremote <ffmpeg-args>...
 
 # Examples
-ffremote execute -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote execute -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ffremote --size=lg -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ```

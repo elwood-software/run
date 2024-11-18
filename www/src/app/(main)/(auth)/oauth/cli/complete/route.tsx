@@ -35,7 +35,9 @@ export async function GET(req: NextRequest) {
   });
 
   if (!response.ok) {
-    return NextResponse.rewrite(new URL('/error', req.nextUrl));
+    return NextResponse.redirect(
+      new URL('/error?code=auth_login', req.nextUrl),
+    );
   }
 
   store.delete('cli-session');

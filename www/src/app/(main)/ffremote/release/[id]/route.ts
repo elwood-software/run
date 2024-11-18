@@ -6,7 +6,7 @@ export type Context = {
   }>;
 };
 
-export async function GET(req: NextRequest, ctx: Context) {
+export async function GET(_req: NextRequest, ctx: Context) {
   const [target, version] = (await ctx.params).id.replace(".zip", "").split(
     "@",
   );
