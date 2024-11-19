@@ -6,7 +6,7 @@ import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 
 import type { FFrCliContext } from "../../types.ts";
 import { toAbsolute } from "../../libs/utils.ts";
-import { assert, confirm } from "../../deps.ts";
+import { assert, basename, confirm } from "../../deps.ts";
 import { state } from "../libs/state.ts";
 import { printError } from "../libs/error.ts";
 
@@ -82,6 +82,27 @@ export default async function main(ctx: FFrCliContext) {
   // ask the user
   for (const inputPath of input) {
     const p = toAbsolute(inputPath, cwd);
+
+    if (inputPath.startsWith("http:") || inputPath.startsWith("https:")) {
+      const fileUrl = new URL(inputPath);
+      const fileName = basename(fileUrl.pathname);
+
+      // replace the remote file in the ffmpeg parts
+      ffmpegArgs = ffmpegArgs.map((part) => {
+        if (part === inputPath) {
+          return fileName;
+        }
+
+        return part;
+      });
+
+      foundFiles.push({
+        name: inputPath,
+        size: 0,
+      });
+      continue;
+    }
+
     try {
       const f = Deno.lstatSync(p);
       if (!f.isFile) {
@@ -112,7 +133,7 @@ export default async function main(ctx: FFrCliContext) {
   }
 
   try {
-    spin.message = "Sending build manifest for compilation...";
+    spin.message = "Sending execution manifest...";
 
     // we need to get sts federated token
     // that is tied to this user's storage bucket
@@ -182,10 +203,14 @@ export default async function main(ctx: FFrCliContext) {
 
     console.log("");
     console.log(`Execution Queued!! Tracking ID: ${response.tracking_id}`);
-    console.log("");
     console.log(`Download Output: ffremote get ${response.tracking_id}`);
     console.log(`View Logs: ffremote watch ${response.tracking_id}`);
     console.log("");
+
+    // save the last id
+    await state.saveFFrStorage({
+      lastId: response.tracking_id,
+    });
   } catch (err) {
     spin.stop();
     printError(err);
