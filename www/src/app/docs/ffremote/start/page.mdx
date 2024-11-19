@@ -24,16 +24,18 @@ yourself. Here's an example of how you might add `ffremote` to your `$PATH`:
 ## 2. Start an Execution
 
 ```bash
-ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote -ss 00:00:12 -i "https://elwood.run/bunny.mov" -t 00:00:48 -vf "fade=t=in:st=0:d=5,fade=t=out:st=43:d=5" -af "afade=t=in:st=0:d=5,afade=t=out:st=43:d=5" output.mp4
 ```
+
+The command will extract 48 seconds, starting at 12 second, from "bunny.mov" while adding five second audio and video fade in and out.
 
 Before the execution is submitted, you'll be prompted to open a browser to
 authenticate on <a href="https://elwood.run">elwood.run</a>. You'll also need to setup a subscription & payment
 method before your execution begins. Note: You will not be charged until the execution is complete.
 
-Once you've authenticated, `ffremote` will upload any of the '-i'
-input files. You can use `--include` to upload additional files. You'll receive a tracking ID that you can use
-to check the status of your execution.
+`ffremote` will parse the ffmpeg args provided and upload any local files defined in `-i` flags. `-i` can also be a remote URL, as in the example above. If you have sidecar files that are used in your command, but are not input files, use the `--include` option to make those files available to the execution.
+
+You'll receive a tracking ID that you can use to check the status of your execution.
 
 ```bash
 Execution Queued! Tracking ID: 6b5337db-3038-425f-acd8-26a16c564ff9
