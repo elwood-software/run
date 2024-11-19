@@ -5,6 +5,7 @@ import {Analytics} from '@vercel/analytics/react';
 
 import {Provider} from './provider';
 
+import '@code-hike/mdx/styles';
 import './globals.css';
 
 const geistSans = localFont({

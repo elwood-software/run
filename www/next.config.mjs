@@ -1,62 +1,62 @@
-import remarkGithubAlerts from "remark-github-alerts";
-import rehypePrettyCode from "rehype-pretty-code";
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import { default as mdx } from "@next/mdx";
+import remarkGithubAlerts from 'remark-github-alerts';
+import {remarkCodeHike} from '@code-hike/mdx';
+import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import {default as mdx} from '@next/mdx';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "www.gravatar.com",
-        port: "",
-        pathname: "/avatar/**",
+        protocol: 'https',
+        hostname: 'www.gravatar.com',
+        port: '',
+        pathname: '/avatar/**',
       },
     ],
   },
   redirects: async () => {
     return [
       {
-        source: "/plan",
-        destination: "/account/subscription",
+        source: '/plan',
+        destination: '/account/subscription',
         permanent: true,
       },
       {
-        source: "/plan/:slug",
-        destination: "/account/subscription/:slug",
+        source: '/plan/:slug',
+        destination: '/account/subscription/:slug',
         permanent: true,
       },
       {
-        source: "/ffr",
-        destination: "/ffremote",
+        source: '/ffr',
+        destination: '/ffremote',
         permanent: true,
       },
       {
-        source: "/ffr/:slug",
-        destination: "/ffremote/:slug",
+        source: '/ffr/:slug',
+        destination: '/ffremote/:slug',
         permanent: true,
       },
       {
-        source: "/ffr/docs/:slug",
-        destination: "/docs/ffremote/:slug",
+        source: '/ffr/docs/:slug',
+        destination: '/docs/ffremote/:slug',
         permanent: true,
       },
       {
-        source: "/ffr/docs",
-        destination: "/docs/ffremote",
+        source: '/ffr/docs',
+        destination: '/docs/ffremote',
         permanent: true,
       },
       {
-        source: "/ffremote/docs/:slug",
-        destination: "/docs/ffremote/:slug",
+        source: '/ffremote/docs/:slug',
+        destination: '/docs/ffremote/:slug',
         permanent: true,
       },
       {
-        source: "/ffremote/docs",
-        destination: "/docs/ffremote",
+        source: '/ffremote/docs',
+        destination: '/docs/ffremote',
         permanent: true,
       },
     ];
@@ -65,7 +65,17 @@ const nextConfig = {
 
 export default mdx({
   options: {
-    remarkPlugins: [remarkGfm, remarkGithubAlerts],
-    rehypePlugins: [rehypePrettyCode, rehypeSlug],
+    remarkPlugins: [
+      remarkGfm,
+      remarkGithubAlerts,
+      [
+        remarkCodeHike,
+        {
+          lineNumbers: false,
+          showCopyButton: true,
+        },
+      ],
+    ],
+    rehypePlugins: [rehypeSlug],
   },
 })(nextConfig);
