@@ -76,6 +76,14 @@ export default function Page() {
             </Button>
 
             <Button variant="outline" asChild>
+              <a
+                href="https://www.loom.com/share/587af11e64344094b0b20ba3d10f830a"
+                target="_blank">
+                Watch a demo
+              </a>
+            </Button>
+
+            <Button variant="outline" asChild>
               <a href="https://github.com/elwood-software/run" target="_blank">
                 <GitHubLogoIcon className="size-4" />
               </a>
