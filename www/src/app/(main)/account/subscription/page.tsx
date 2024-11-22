@@ -7,7 +7,6 @@ import {ChevronRight} from 'lucide-react';
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
 import {Button} from '@/components/ui/button';
-import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 
 import {ContinueButton} from './button';
 
