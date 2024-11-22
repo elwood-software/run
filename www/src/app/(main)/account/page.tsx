@@ -90,17 +90,13 @@ export default async function Page() {
           <dt className="text-sm/6 font-bold">Usage Limits</dt>
           <dd className="mt-1 text-sm/6 sm:col-span-2 sm:mt-0">
             {!org?.has_stripe_subscription && (
-              <Alert variant="default">
+              <Alert variant="default" className="mb-6">
                 <Info className="size-7" />
                 <AlertTitle className="flex items-center font-bold ml-3">
-                  Please select a subscription
+                  Select a subscription
                 </AlertTitle>
                 <AlertDescription className="ml-3">
-                  <p>
-                    Before you can begin executing jobs, please setup a
-                    subscription. Do not worry, you only pay for resources you
-                    use.
-                  </p>
+                  <p>Select a subscription to increase your usage limits.</p>
                   <Button asChild className="mt-3" variant="secondary">
                     <Link href="/account/subscription">
                       Select a Subscription
@@ -110,62 +106,62 @@ export default async function Page() {
               </Alert>
             )}
 
-            {org?.has_stripe_subscription && (
-              <ul
-                role="list"
-                className="divide-y divide-background bg-secondary rounded-md border">
-                <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <div className="flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        Executions Per Day
-                      </span>
-                    </div>
+            <ul
+              role="list"
+              className="divide-y divide-background bg-secondary rounded-md border">
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <div className="flex w-0 flex-1 items-center">
+                  <div className="flex min-w-0 flex-1 gap-2">
+                    <span className="truncate font-medium">
+                      Executions Per Day
+                    </span>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
-                    {org.usage['max_runs_per_day'] ?? 0} of{' '}
-                    {num(org.entitlements.max_runs_per_day)}
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  {org.usage['max_runs_per_day'] ?? 0} of{' '}
+                  {num(org.entitlements.max_runs_per_day)}
+                </div>
+              </li>
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <div className="flex w-0 flex-1 items-center">
+                  <div className="flex min-w-0 flex-1 gap-2">
+                    <span className="truncate font-medium">
+                      Execution Minutes Per Day
+                    </span>
                   </div>
-                </li>
-                <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <div className="flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        Execution Minutes Per Day
-                      </span>
-                    </div>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  {org.usage['run_mins_per_day'] ?? 0} of{' '}
+                  {num(org.entitlements.run_mins_per_day)}
+                </div>
+              </li>
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <div className="flex w-0 flex-1 items-center">
+                  <div className="flex min-w-0 flex-1 gap-2">
+                    <span className="truncate font-medium">
+                      Queued Executions
+                    </span>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
-                    {org.usage['run_mins_per_day'] ?? 0} of{' '}
-                    {num(org.entitlements.run_mins_per_day)}
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  {org.usage['max_queued_per_day'] ?? 0} of{' '}
+                  {num(org.entitlements.max_queued_per_day)}
+                </div>
+              </li>
+              <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
+                <div className="flex w-0 flex-1 items-center">
+                  <div className="flex min-w-0 flex-1 gap-2">
+                    <span className="truncate font-medium">
+                      Lifetime Executions
+                    </span>
                   </div>
-                </li>
-                <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <div className="flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        Queued Executions
-                      </span>
-                    </div>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    {org.usage['max_queued_per_day'] ?? 0} of{' '}
-                    {num(org.entitlements.max_queued_per_day)}
-                  </div>
-                </li>
-                <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
-                  <div className="flex w-0 flex-1 items-center">
-                    <div className="flex min-w-0 flex-1 gap-2">
-                      <span className="truncate font-medium">
-                        Lifetime Executions
-                      </span>
-                    </div>
-                  </div>
-                  <div className="ml-4 flex-shrink-0">
-                    {org.usage['max_lifetime_runs'] ?? 0} of{' '}
-                    {num(org.entitlements.max_lifetime_runs)}
-                  </div>
-                </li>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  {org.usage['max_lifetime_runs'] ?? 0} of{' '}
+                  {num(org.entitlements.max_lifetime_runs)}
+                </div>
+              </li>
+              {org?.has_stripe_subscription && (
                 <li className="flex items-center justify-between py-2 pl-4 pr-5 text-sm/6">
                   <a
                     className="text-muted-foreground hover:text-foreground"
@@ -173,8 +169,8 @@ export default async function Page() {
                     Request an increase
                   </a>
                 </li>
-              </ul>
-            )}
+              )}
+            </ul>
           </dd>
         </div>
       </dl>

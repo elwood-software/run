@@ -46,10 +46,6 @@ export async function GET(req: NextRequest) {
       throw new Error("no_account_data");
     }
 
-    if (!data.has_stripe_subscription) {
-      return NextResponse.redirect(new URL("/plan", req.nextUrl.href));
-    }
-
     if (cliSession) {
       return NextResponse.redirect(
         new URL("/oauth/cli/complete", req.nextUrl.href),

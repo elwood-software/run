@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import {type Metadata} from 'next';
 import {redirect} from 'next/navigation';
-import {Info} from 'lucide-react';
+import {cookies} from 'next/headers';
+import {ChevronRight} from 'lucide-react';
 
 import {api} from '@/lib/api';
 import {createClient} from '@/lib/supabase/server';
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const client = await createClient();
   const {data} = await client.auth.getUser();
+  const cliSession = (await cookies()).get('cli-session');
 
   if (!data.user?.id) {
     return redirect('/login?next_url=/setup-stripe');
@@ -58,20 +60,6 @@ export default async function Page() {
             Learn more
           </Link>
         </p>
-        {!org?.has_stripe_subscription && (
-          <div className="mt-12 w-full px-6">
-            <Alert variant="default" className="bg-blue-600">
-              <Info className="size-7" />
-              <AlertTitle className="flex items-center font-bold ml-3">
-                Please select a subscription
-              </AlertTitle>
-              <AlertDescription className="ml-3">
-                Before you can begin executing jobs, please setup a
-                subscription. Do not worry, you only pay for resources you use.
-              </AlertDescription>
-            </Alert>
-          </div>
-        )}
       </header>
       <div className="grid grid-cols-3 gap-x-3 mx-6 mb-6">
         <div className="p-6 bg-secondary rounded-t">
@@ -126,6 +114,19 @@ export default async function Page() {
           </Button>
         </div>
       </div>
+
+      {cliSession && (
+        <footer className="text-center pb-6">
+          <Button variant="secondary" asChild>
+            <Link href="/oauth/cli/complete">
+              <span className="flex items-center">
+                Skip for now
+                <ChevronRight className="size-4 ml-2" />
+              </span>
+            </Link>
+          </Button>
+        </footer>
+      )}
     </div>
   );
 }
