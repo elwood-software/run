@@ -77,7 +77,9 @@ export default async function Page() {
             {org.has_stripe_subscription ? (
               'Pay As You Go'
             ) : (
-              <Link className="text-primary hover:underline" href="/plan">
+              <Link
+                className="text-primary hover:underline"
+                href="/account/subscription">
                 Select a Subscription
               </Link>
             )}

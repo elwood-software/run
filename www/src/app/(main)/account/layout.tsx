@@ -51,7 +51,7 @@ export default async function Page(props: PropsWithChildren) {
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="bg-secondary/20 max-w-4xl w-full rounded border relative mt-12">
+      <div className="bg-secondary/20 max-w-4xl w-full rounded border relative mt-24">
         <header className="absolute -left-0 -top-14 flex items-center justify-center w-full">
           <Link
             href="/account"
