@@ -41,7 +41,7 @@ export default function CompletePage(props: Props) {
 
   if (data?.complete === true) {
     return (
-      <div className="flex flex-col items-center px-8 m-6 py-12 mt-6 rounded bg-secondary">
+      <div className="flex flex-col items-center px-8 m-6 py-12 mt-6 rounded">
         <h1 className="font-bold text-5xl mb-3 text-primary flex items-center">
           <RocketIcon className="size-10 mr-3" />
           <span>Subscription Complete</span>
@@ -57,9 +57,18 @@ export default function CompletePage(props: Props) {
         )}
 
         {!data?.redirect_url && (
-          <Button asChild size="lg" className="mt-6">
-            <Link href="/docs/ffremote/start">Getting Started</Link>
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button asChild size="lg" className="mt-6 font-bold">
+              <Link href="/account">Your Account</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="mt-6 font-bold">
+              <Link href="/docs/ffremote/start">Getting Started</Link>
+            </Button>
+          </div>
         )}
       </div>
     );

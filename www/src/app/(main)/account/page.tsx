@@ -96,7 +96,10 @@ export default async function Page() {
                   Select a subscription
                 </AlertTitle>
                 <AlertDescription className="ml-3">
-                  <p>Select a subscription to increase your usage limits.</p>
+                  <p>
+                    You currently have not selected a subscription. To increase
+                    your usage limits, please select a subscription.
+                  </p>
                   <Button asChild className="mt-3" variant="secondary">
                     <Link href="/account/subscription">
                       Select a Subscription
