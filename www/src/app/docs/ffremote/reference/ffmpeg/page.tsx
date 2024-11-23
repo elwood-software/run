@@ -1,5 +1,3 @@
-import {Fragment, PropsWithChildren} from 'react';
-
 import Content from './content.mdx';
 
 export const metadata = {
