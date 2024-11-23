@@ -127,6 +127,10 @@ const data = {
           title: 'CLI',
           url: '/docs/ffremote/reference/cli',
         },
+        {
+          title: 'FFmpeg',
+          url: '/docs/ffremote/reference/ffmpeg',
+        },
       ],
     },
     {
