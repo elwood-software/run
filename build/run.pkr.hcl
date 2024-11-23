@@ -106,7 +106,12 @@ build {
   provisioner "file" {
     direction = "download"
     source = "/tmp/version.txt"
-    destination = "./version-${var.arch}.txt"
+    destination = "./docs/build-data/version-${var.arch}.txt"
   }
 
+  provisioner "file" {
+    direction = "download"
+    source = "/tmp/LICENSE.txt"
+    destination = "./docs/build-data/license-${var.arch}.txt"
+  }
 }
