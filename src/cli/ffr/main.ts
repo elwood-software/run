@@ -46,7 +46,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       " ffremote upgrade",
       "",
       "Read the docs at https://elwood.run/ffremote/docs",
-      "Join us on discord: https://discord.gg/4w3Ae9zs",
+      "Join us on discord: https://elwood.run/ffremote/discord",
       "Send us questions: hello@elwood.company",
     ].map((ln) => console.log(ln));
     Deno.exit(0);
@@ -79,7 +79,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
 
       case "discord":
       case "chat":
-        return openUrl("https://discord.gg/4w3Ae9zs");
+        return openUrl("https://elwood.run/ffremote/discord");
 
       case "docs":
         return openUrl("https://elwood.run/docs/ffremote/start");

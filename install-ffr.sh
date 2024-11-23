@@ -79,4 +79,4 @@ else
 	echo "Run '$exe --help' to get started"
 fi
 echo
-echo "Stuck? Join our Discord https://discord.gg/qnDD5Wc3"
+echo "Stuck? Join our Discord https://elwood.run/ffremote/discord"
