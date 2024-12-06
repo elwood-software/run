@@ -11,6 +11,9 @@ export { join } from "jsr:@std/path@^0.225.2/join";
 export { toFileUrl } from "jsr:@std/path@^0.225.2/to-file-url";
 export { isAbsolute } from "jsr:@std/path@^0.225.2/is-absolute";
 export { extname } from "jsr:@std/path@^0.225.2/extname";
+export { relative } from "jsr:@std/path@^0.225.2/relative";
+
+export { expandGlob, type WalkEntry } from "jsr:@std/fs/expand-glob";
 
 // logs
 export * as logger from "jsr:@std/log@0.224.3";

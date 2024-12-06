@@ -17,6 +17,7 @@ import watch from "./watch.ts";
 import auth from "./auth.ts";
 import list from "./list.ts";
 import upgrade from "./upgrade.ts";
+import prompt from "./prompt.ts";
 
 export async function main(compiledVersion: string, args: FFrArgs) {
   if (args.version || args.raw[0] === "-v") {
@@ -38,6 +39,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       " ffremote get <id>",
       " ffremote watch <id>",
       " ffremote status <id>",
+      " ffremote ask [prompt]",
       " ffremote list",
       " ffremote auth",
       " ffremote bug <message>",
@@ -87,6 +89,10 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       case "upgrade":
       case "up":
         return await upgrade(context);
+
+      case "prompt":
+      case "ask":
+        return await prompt(context);
 
       case "execute":
       default:

@@ -20,6 +20,12 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
+        source: "/bunny.mov",
+        destination:
+          "https://fly.storage.tigris.dev/elwood/big_buck_bunny_1080p_h264.mov",
+        permanent: true,
+      },
+      {
         source: "/plan",
         destination: "/account/subscription",
         permanent: true,
