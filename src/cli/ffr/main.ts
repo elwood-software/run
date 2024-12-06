@@ -39,7 +39,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       " ffremote get <id>",
       " ffremote watch <id>",
       " ffremote status <id>",
-      " ffremote ask [prompt]",
+      " ffremote create [prompt]",
       " ffremote list",
       " ffremote auth",
       " ffremote bug <message>",
@@ -90,6 +90,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       case "up":
         return await upgrade(context);
 
+      case "create":
       case "prompt":
       case "ask":
       case "ai":

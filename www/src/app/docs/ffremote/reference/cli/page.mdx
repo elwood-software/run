@@ -13,6 +13,7 @@ Visit the [Getting Started Guide](/docs/ffremote/start#install) to learn how to 
 ## Commands
 
 - [ffremote execute](#execute) - Execute an FFmpeg command on the remote server
+- [ffremote create](#create) - Ask our AI robot to generate an FFmpeg command for you
 - [ffremote list](#list) - List all executions
 - [ffremote watch](#watch) - Watch the execution of a command
 - [ffremote get](#get) - Download the output of a command
@@ -49,6 +50,18 @@ Files to upload to the remote server that aren't used as input (`-i`). You can s
 ##### `--exclude=<exclude>`
 
 Files to exclude from the final output archive. Input files are automatically excluded from the output. You can specify multiple files by repeating the option. Glob paths are also supported.
+
+### create
+
+Ask our AI robot to generate an FFmpeg command for you
+
+```bash
+# Usage
+ffremote create <prompt>
+
+# Examples
+ffremote create "clip of input.mov to 60 seconds and add a 3 second in and out fade"
+```
 
 ### list
 

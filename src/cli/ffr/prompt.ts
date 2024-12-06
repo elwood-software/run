@@ -1,4 +1,5 @@
 import * as tbl from "jsr:@sauber/table";
+import { Spinner } from "jsr:@std/cli@1.0.6/unstable-spinner";
 
 import type { FFrCliContext } from "../../types.ts";
 import {
@@ -53,6 +54,11 @@ export default async function main(ctx: FFrCliContext) {
     ];
   }, [] as string[]);
 
+  const spin = new Spinner({
+    message: "Please hold... The robot is robotting...",
+  });
+  spin.start();
+
   const data = await api<
     { success: boolean; args: string[]; explanations: Record<string, string> }
   >("/run/ffremote/ask", {
@@ -62,6 +68,8 @@ export default async function main(ctx: FFrCliContext) {
       context: contextTree,
     }),
   });
+
+  spin.stop();
 
   if (!data.success) {
     console.error("Error generating response!");
@@ -82,6 +90,7 @@ export default async function main(ctx: FFrCliContext) {
   console.log("");
 
   const t = new tbl.Table();
+  t.title = "Here is what this command is going to do";
   t.theme = tbl.Table.roundTheme;
   t.headers = ["Argument", "Explanation"];
   t.rows = Object.entries(data.explanations).map(([key, value]) => [
@@ -90,6 +99,38 @@ export default async function main(ctx: FFrCliContext) {
   ]);
 
   console.log(t.toString());
+  console.log("");
+
+  const normalizedArgs: string[] = [];
+
+  for (const arg of data.args) {
+    let arg_: string[] = [];
+
+    if (arg.startsWith("-")) {
+      const [flag, ...other] = arg.split(" ");
+
+      if (flag) {
+        arg_ = [
+          flag,
+          other.join(" "),
+        ];
+      }
+    }
+
+    for (const part of arg_) {
+      let _str = part;
+
+      if (_str.startsWith('"')) {
+        _str = _str.slice(1);
+      }
+
+      if (_str.endsWith('"')) {
+        _str = _str.slice(0, -1);
+      }
+
+      normalizedArgs.push(_str);
+    }
+  }
 
   if (
     !(await confirm({
@@ -100,5 +141,7 @@ export default async function main(ctx: FFrCliContext) {
     Deno.exit(0);
   }
 
-  await execute(ctx, data.args, undefined, []);
+  console.log("Starting execution!");
+
+  await execute(ctx, normalizedArgs, undefined, []);
 }
