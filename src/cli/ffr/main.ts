@@ -92,6 +92,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
 
       case "prompt":
       case "ask":
+      case "ai":
         return await prompt(context);
 
       case "execute":

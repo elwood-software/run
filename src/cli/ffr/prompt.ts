@@ -2,6 +2,7 @@ import * as tbl from "jsr:@sauber/table";
 
 import type { FFrCliContext } from "../../types.ts";
 import {
+  confirm,
   dirname,
   expandGlob,
   isAbsolute,
@@ -10,6 +11,8 @@ import {
   relative,
   type WalkEntry,
 } from "../../deps.ts";
+
+import { execute } from "./execute.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args, api, cwd } = ctx;
@@ -66,10 +69,16 @@ export default async function main(ctx: FFrCliContext) {
   }
 
   console.log("");
-  console.log("%cSuccess", "font-weight:bold; color: green");
-  console.log("Here is the `ffmpeg` command we generated: ");
+  console.log(
+    "%cSuccess!%c Here is what our robot came up with:",
+    "font-weight:bold; color: green",
+    "color:initial",
+  );
   console.log("");
-  console.log(` ffmpeg ${data.args.join(" ")}`);
+  console.log(
+    `%cffmpeg ${data.args.join(" ")}`,
+    "font-weight:bold;",
+  );
   console.log("");
 
   const t = new tbl.Table();
@@ -82,7 +91,14 @@ export default async function main(ctx: FFrCliContext) {
 
   console.log(t.toString());
 
-  if (!confirm("Would you like to run this command?")) {
+  if (
+    !(await confirm({
+      message: "Would you like to run this command?",
+      default: true,
+    }))
+  ) {
     Deno.exit(0);
   }
+
+  await execute(ctx, data.args, undefined, []);
 }

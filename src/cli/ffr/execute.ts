@@ -11,9 +11,9 @@ import { state } from "../libs/state.ts";
 import { printError } from "../libs/error.ts";
 
 export default async function main(ctx: FFrCliContext) {
-  const { args, remoteUrl, cwd } = ctx;
+  const { args } = ctx;
   const { size, include = [] } = parseArgs(args.raw, {
-    string: ["size"],
+    string: ["size", "include"],
     collect: ["include"],
   });
   let ffmpegArgs = args.raw;
@@ -38,6 +38,16 @@ export default async function main(ctx: FFrCliContext) {
     }).args;
   }
 
+  await execute(ctx, ffmpegArgs, size, include);
+}
+
+export async function execute(
+  ctx: FFrCliContext,
+  ffmpegArgs: string[],
+  size: string | undefined,
+  include: string[],
+) {
+  const { remoteUrl, cwd } = ctx;
   let token = await state.getToken();
 
   // if there's no token lets try to get one

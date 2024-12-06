@@ -37,7 +37,12 @@ export default async function main(ctx: FFrCliContext) {
     // ignore errors
   }
 
-  if (!confirm("You are not currently logged in, would you like login now?")) {
+  if (
+    !(await confirm({
+      message: "You are not currently logged in, would you like login now?",
+      default: true,
+    }))
+  ) {
     Deno.exit(0);
   }
 
