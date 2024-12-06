@@ -1,3 +1,5 @@
+import * as tbl from "jsr:@sauber/table";
+
 import type { FFrCliContext } from "../../types.ts";
 import {
   dirname,
@@ -48,7 +50,9 @@ export default async function main(ctx: FFrCliContext) {
     ];
   }, [] as string[]);
 
-  const data = await api("/run/ffremote/ask", {
+  const data = await api<
+    { success: boolean; args: string[]; explanations: Record<string, string> }
+  >("/run/ffremote/ask", {
     method: "POST",
     body: JSON.stringify({
       prompt: promptStr,
@@ -56,5 +60,29 @@ export default async function main(ctx: FFrCliContext) {
     }),
   });
 
-  console.log(promptStr, data);
+  if (!data.success) {
+    console.error("Error generating response!");
+    Deno.exit(1);
+  }
+
+  console.log("");
+  console.log("%cSuccess", "font-weight:bold; color: green");
+  console.log("Here is the `ffmpeg` command we generated: ");
+  console.log("");
+  console.log(` ffmpeg ${data.args.join(" ")}`);
+  console.log("");
+
+  const t = new tbl.Table();
+  t.theme = tbl.Table.roundTheme;
+  t.headers = ["Argument", "Explanation"];
+  t.rows = Object.entries(data.explanations).map(([key, value]) => [
+    key,
+    value,
+  ]);
+
+  console.log(t.toString());
+
+  if (!confirm("Would you like to run this command?")) {
+    Deno.exit(0);
+  }
 }

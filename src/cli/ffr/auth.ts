@@ -1,5 +1,6 @@
 import * as tbl from "jsr:@sauber/table";
 
+import { confirm } from "../../deps.ts";
 import type { FFrCliContext } from "../../types.ts";
 import { state } from "../libs/state.ts";
 
@@ -34,6 +35,10 @@ export default async function main(ctx: FFrCliContext) {
     }
   } catch (_) {
     // ignore errors
+  }
+
+  if (!confirm("You are not currently logged in, would you like login now?")) {
+    Deno.exit(0);
   }
 
   try {
