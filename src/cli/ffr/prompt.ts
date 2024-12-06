@@ -30,7 +30,7 @@ export default async function main(ctx: FFrCliContext) {
   let promptStr = _.slice(1).join(" ");
 
   if (promptStr.length === 0) {
-    promptStr = prompt("What should we ask our AI bot?") ?? "";
+    promptStr = prompt("What should we ask our AI robot?") ?? "";
   }
 
   if (promptStr.length === 0) {
