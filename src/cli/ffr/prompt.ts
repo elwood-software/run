@@ -100,5 +100,10 @@ export default async function main(ctx: FFrCliContext) {
     Deno.exit(0);
   }
 
-  await execute(ctx, data.args, undefined, []);
+  await execute(ctx, data.args, {
+    size: undefined,
+    include: [],
+    matrix: [],
+    parallel: undefined,
+  });
 }
