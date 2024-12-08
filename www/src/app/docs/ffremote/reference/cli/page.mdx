@@ -35,6 +35,7 @@ ffremote <ffmpeg-args>...
 ffremote execute -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ffremote --size=lg -- -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ffremote -i "test.mov" -t 30 -c:v libx264 -c:a aac -strict experimental "test.mp4"
+ffremote --matrix="s:0" --matrix"s:30" -- -i "test.mov" -t $s -c:v libx264 -c:a aac -strict experimental "test.mp4"
 ```
 
 #### Options
@@ -50,6 +51,10 @@ Files to upload to the remote server that aren't used as input (`-i`). You can s
 ##### `--exclude=<exclude>`
 
 Files to exclude from the final output archive. Input files are automatically excluded from the output. You can specify multiple files by repeating the option. Glob paths are also supported.
+
+##### `--matrix=<matrix>`
+
+##### `--parallel=<parallel>`
 
 ### create
 
