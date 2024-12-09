@@ -60,7 +60,12 @@ source "amazon-ebs" "linux" {
   profile         = var.profile
   access_key      = var.access_key
   secret_key      = var.secret_key
-
+  launch_block_device_mappings {
+    device_name = "/dev/xvda"
+    volume_size = 40
+    volume_type = "gp3"
+    delete_on_termination = true
+  }
 }
 
 build {
@@ -93,7 +98,7 @@ build {
       "sudo mkdir -p /elwood/run/bin/",
       "sudo mv /elwood/run-compiler/runtime /elwood/run/bin/runtime",
       "sudo /elwood/run-compiler/build/bootstrap.sh",
-      "sudo /elwood/run-compiler/build/install-ffmpeg-${var.arch}.sh",
+      "sudo /elwood/run-compiler/build/install-ffmpeg-${var.arch}.sh --stdout",
       "sudo rm -r /elwood/run-compiler",      
       "echo \"export ELWOOD_RUNNER_ROOT=/elwood/run\" >> /home/ec2-user/.bashrc",
       "echo \"export ELWOOD_RUNNER_WORKSPACE_DIR=/elwood/run/runner/workspace\" >> /home/ec2-user/.bashrc",
@@ -109,9 +114,9 @@ build {
     destination = "./docs/build-data/version-${var.arch}.txt"
   }
 
-  provisioner "file" {
-    direction = "download"
-    source = "/tmp/LICENSE.txt"
-    destination = "./docs/build-data/license-${var.arch}.txt"
-  }
+  # provisioner "file" {
+  #   direction = "download"
+  #   source = "/tmp/LICENSE.txt"
+  #   destination = "./docs/build-data/license-${var.arch}.txt"
+  # }
 }
