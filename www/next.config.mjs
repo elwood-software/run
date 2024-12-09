@@ -1,5 +1,5 @@
 import remarkGithubAlerts from "remark-github-alerts";
-import { remarkCodeHike } from "@code-hike/mdx";
+import { recmaCodeHike, remarkCodeHike } from "codehike/mdx";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { default as mdx } from "@next/mdx";
@@ -74,6 +74,16 @@ const nextConfig = {
   },
 };
 
+/** @type {import('codehike/mdx').CodeHikeConfig} */
+const opts = {
+  components: { code: "Code" },
+  syntaxHighlighting: {
+    theme: "github-dark",
+  },
+  lineNumbers: false,
+  showCopyButton: true,
+};
+
 export default mdx({
   options: {
     remarkPlugins: [
@@ -81,12 +91,10 @@ export default mdx({
       remarkGithubAlerts,
       [
         remarkCodeHike,
-        {
-          lineNumbers: false,
-          showCopyButton: true,
-        },
+        opts,
       ],
     ],
+    recmaCodeHike: [[recmaCodeHike, opts]],
     rehypePlugins: [rehypeSlug],
   },
 })(nextConfig);

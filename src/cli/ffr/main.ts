@@ -35,7 +35,7 @@ export async function main(compiledVersion: string, args: FFrArgs) {
       "",
       "Usage:",
       " ffremote <...ffmpeg-args>",
-      " ffremote --size=<size> --include=<file>... -- <...ffmpeg-args>",
+      " ffremote --size=<size> --matrix=<matrix>... --parallel=<parallel> --include=<file>... -- <...ffmpeg-args>",
       " ffremote get <id>",
       " ffremote watch <id>",
       " ffremote status <id>",

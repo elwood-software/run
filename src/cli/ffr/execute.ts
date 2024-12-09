@@ -12,9 +12,9 @@ import { printError } from "../libs/error.ts";
 
 export default async function main(ctx: FFrCliContext) {
   const { args } = ctx;
-  const { size, include = [] } = parseArgs(args.raw, {
-    string: ["size", "include"],
-    collect: ["include"],
+  const { size, parallel, matrix = [], include = [] } = parseArgs(args.raw, {
+    string: ["size", "include", "matrix", "parallel"],
+    collect: ["include", "matrix"],
   });
   let ffmpegArgs = args.raw;
 
@@ -38,16 +38,23 @@ export default async function main(ctx: FFrCliContext) {
     }).args;
   }
 
-  await execute(ctx, ffmpegArgs, size, include);
+  await execute(ctx, ffmpegArgs, { size, include, matrix, parallel });
 }
+
+export type ExecuteOptions = {
+  size: string | undefined;
+  include: string[];
+  matrix: string[];
+  parallel: string | undefined;
+};
 
 export async function execute(
   ctx: FFrCliContext,
   ffmpegArgs: string[],
-  size: string | undefined,
-  include: string[],
+  options: ExecuteOptions,
 ) {
   const { remoteUrl, cwd } = ctx;
+  const { size, include } = options;
   let token = await state.getToken();
 
   // if there's no token lets try to get one
@@ -163,6 +170,8 @@ export async function execute(
         size,
         args: ffmpegArgs,
         input: foundFiles,
+        matrix: options.matrix,
+        parallel: options.parallel,
       }),
     });
 
