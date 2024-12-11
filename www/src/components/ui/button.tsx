@@ -58,8 +58,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     if (asChild) {
-      const {children: children_, ...rest} = (children as React.ReactElement)
-        .props;
+      const {children: children_, ...rest} = (
+        children as React.ReactElement<React.PropsWithChildren>
+      ).props;
       const Root = (children as React.ReactElement).type;
 
       return (

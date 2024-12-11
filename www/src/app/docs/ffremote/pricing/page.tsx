@@ -1,4 +1,4 @@
-import {Fragment, PropsWithChildren} from 'react';
+import {Fragment, type JSX, type PropsWithChildren} from 'react';
 
 import {useMDXComponents} from '../../../../mdx-components';
 import Content from './content.mdx';

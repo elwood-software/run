@@ -300,10 +300,12 @@ install_ffmpeg() {
             $NVIDIA_FFMPEG_OPTS &&
         make -j $CPUS &&
         make install
+    cp LICENSE.md /tmp/LICENSE.md
     popd
     check_installation "$USR_LOCAL_PREFIX/bin/ffmpeg" "ffmpeg"
     check_installation "$USR_LOCAL_PREFIX/bin/ffprobe" "ffprobe"
     ldconfig
+    $USR_LOCAL_PREFIX/bin/ffmpeg -version >/tmp/version.txt
 }
 
 # Execute Functions
