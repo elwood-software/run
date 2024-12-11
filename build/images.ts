@@ -22,7 +22,7 @@ const images: Image[] = [
   {
     source_ami: "ami-0453ec754f44f9a4a",
     arch: "nvidia",
-    instance_type: "p2.xlarge",
+    instance_type: "p3.2xlarge",
     region: "us-east-1",
   },
 ];
