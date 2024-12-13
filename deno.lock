@@ -10,33 +10,35 @@
     "jsr:@std/assert@1.0.0": "1.0.0",
     "jsr:@std/bytes@^1.0.0-rc.3": "1.0.0",
     "jsr:@std/bytes@^1.0.1-rc.3": "1.0.2",
-    "jsr:@std/cli@*": "1.0.6",
+    "jsr:@std/cli@*": "1.0.8",
     "jsr:@std/cli@0.224.7": "0.224.7",
     "jsr:@std/cli@1.0.6": "1.0.6",
+    "jsr:@std/cli@1.0.8": "1.0.8",
     "jsr:@std/dotenv@*": "0.224.0",
     "jsr:@std/dotenv@0.224.1": "0.224.1",
     "jsr:@std/encoding@*": "0.224.1",
     "jsr:@std/fmt@*": "0.225.4",
     "jsr:@std/fmt@0.225.4": "0.225.4",
-    "jsr:@std/fmt@^1.0.2": "1.0.2",
+    "jsr:@std/fmt@^1.0.2": "1.0.3",
     "jsr:@std/fmt@~0.225.4": "0.225.4",
-    "jsr:@std/fs@*": "0.229.2",
-    "jsr:@std/fs@^1.0.0-rc.1": "1.0.0-rc.4",
+    "jsr:@std/fs@*": "1.0.6",
+    "jsr:@std/fs@^1.0.0-rc.1": "1.0.6",
     "jsr:@std/fs@~0.229.2": "0.229.2",
-    "jsr:@std/internal@1": "1.0.3",
+    "jsr:@std/internal@1": "1.0.5",
     "jsr:@std/internal@^1.0.1": "1.0.3",
     "jsr:@std/io@*": "0.224.3",
     "jsr:@std/io@~0.224.1": "0.224.3",
-    "jsr:@std/io@~0.224.2": "0.224.3",
+    "jsr:@std/io@~0.224.2": "0.224.9",
     "jsr:@std/log@*": "0.224.2",
     "jsr:@std/log@0.224.3": "0.224.3",
     "jsr:@std/path@*": "0.225.2",
     "jsr:@std/path@1.0.0-rc.1": "1.0.0-rc.1",
+    "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/path@~0.225.2": "0.225.2",
     "jsr:@std/semver@*": "1.0.3",
     "jsr:@std/yaml@*": "0.224.1",
     "jsr:@std/yaml@0.224.3": "0.224.3",
-    "jsr:@zip-js/zip-js@*": "2.7.52",
+    "jsr:@zip-js/zip-js@*": "2.7.54",
     "npm:@aws-sdk/client-s3@3.662.0": "3.662.0_@aws-sdk+client-sts@3.662.0__@aws-sdk+client-sso-oidc@3.662.0___@aws-sdk+client-sts@3.662.0_@aws-sdk+client-sso-oidc@3.662.0__@aws-sdk+client-sts@3.662.0___@aws-sdk+client-sso-oidc@3.662.0____@aws-sdk+client-sts@3.662.0__@aws-sdk+client-sts@3.662.0___@aws-sdk+client-sso-oidc@3.662.0____@aws-sdk+client-sts@3.662.0_____@aws-sdk+client-sso-oidc@3.662.0___@aws-sdk+client-sso-oidc@3.662.0",
     "npm:@aws-sdk/lib-storage@3.662.0": "3.662.0_@aws-sdk+client-s3@3.662.0__@aws-sdk+client-sts@3.662.0___@aws-sdk+client-sso-oidc@3.662.0____@aws-sdk+client-sts@3.662.0__@aws-sdk+client-sso-oidc@3.662.0___@aws-sdk+client-sts@3.662.0____@aws-sdk+client-sso-oidc@3.662.0_____@aws-sdk+client-sts@3.662.0___@aws-sdk+client-sts@3.662.0____@aws-sdk+client-sso-oidc@3.662.0_____@aws-sdk+client-sts@3.662.0______@aws-sdk+client-sso-oidc@3.662.0____@aws-sdk+client-sso-oidc@3.662.0",
     "npm:@supabase/supabase-js@2.43.5": "2.43.5",
@@ -86,6 +88,9 @@
     "@std/cli@1.0.6": {
       "integrity": "d22d8b38c66c666d7ad1f2a66c5b122da1704f985d3c47f01129f05abb6c5d3d"
     },
+    "@std/cli@1.0.8": {
+      "integrity": "3762d8dc9a373715c08d871c38d45e637b25266f013a1d0bbe560bca409de94e"
+    },
     "@std/dotenv@0.224.0": {
       "integrity": "d9234cdf551507dcda60abb6c474289843741d8c07ee8ce540c60f5c1b220a1d"
     },
@@ -101,6 +106,9 @@
     "@std/fmt@1.0.2": {
       "integrity": "87e9dfcdd3ca7c066e0c3c657c1f987c82888eb8103a3a3baa62684ffeb0f7a7"
     },
+    "@std/fmt@1.0.3": {
+      "integrity": "97765c16aa32245ff4e2204ecf7d8562496a3cb8592340a80e7e554e0bb9149f"
+    },
     "@std/fs@0.228.0": {
       "integrity": "2b28680cc9dbb21ea31b85767c42524a34f8228bee19d17a9a93351af1798eab"
     },
@@ -113,11 +121,20 @@
     "@std/fs@1.0.0-rc.4": {
       "integrity": "7f97a43fcb807dff8580569be938274b42217a1cf2b56c7f6b0436985ab79adc"
     },
+    "@std/fs@1.0.6": {
+      "integrity": "42b56e1e41b75583a21d5a37f6a6a27de9f510bcd36c0c85791d685ca0b85fa2",
+      "dependencies": [
+        "jsr:@std/path@^1.0.8"
+      ]
+    },
     "@std/internal@1.0.0": {
       "integrity": "ac6a6dfebf838582c4b4f61a6907374e27e05bedb6ce276e0f1608fe84e7cd9a"
     },
     "@std/internal@1.0.3": {
       "integrity": "208e9b94a3d5649bd880e9ca38b885ab7651ab5b5303a56ed25de4755fb7b11e"
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     },
     "@std/io@0.224.0": {
       "integrity": "0aff885d21d829c050b8a08b1d71b54aed5841aecf227f8d77e99ec529a11e8e"
@@ -133,6 +150,9 @@
       "dependencies": [
         "jsr:@std/bytes@^1.0.1-rc.3"
       ]
+    },
+    "@std/io@0.224.9": {
+      "integrity": "4414664b6926f665102e73c969cfda06d2c4c59bd5d0c603fd4f1b1c840d6ee3"
     },
     "@std/log@0.224.2": {
       "integrity": "354fa2a93678e34e2c4b0238ac30a71a75ef645bde59742dc57ae4fce2cce46e",
@@ -159,6 +179,9 @@
     "@std/path@1.0.0-rc.1": {
       "integrity": "b8c00ae2f19106a6bb7cbf1ab9be52aa70de1605daeb2dbdc4f87a7cbaf10ff6"
     },
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
+    },
     "@std/semver@1.0.3": {
       "integrity": "7c139c6076a080eeaa4252c78b95ca5302818d7eafab0470d34cafd9930c13c8"
     },
@@ -170,6 +193,9 @@
     },
     "@zip-js/zip-js@2.7.52": {
       "integrity": "c8d9fd23b1965fdf58071e886b3b8dbd32a68f780ccb60cb256cfc41b4423e32"
+    },
+    "@zip-js/zip-js@2.7.54": {
+      "integrity": "a28b93b56a6cb2ed0f613355b2e9120ea9f6e9703dd6ae1bbc0088cfa3fef692"
     }
   },
   "npm": {

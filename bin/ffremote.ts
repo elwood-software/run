@@ -1,4 +1,4 @@
-import { parseArgs } from "jsr:@std/cli/parse-args";
+import { parseArgs } from "jsr:@std/cli@1.0.8/parse-args";
 import { main } from "../src/cli/ffr/main.ts";
 import type { CliArgs } from "../src/types.ts";
 

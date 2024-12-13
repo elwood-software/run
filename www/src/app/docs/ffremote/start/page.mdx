@@ -79,3 +79,9 @@ ffremote get 6b5337db-3038-425f-acd8-26a16c564ff9
 ```
 
 Full [get](/docs/ffremote/reference/cli/#get) documentation.
+
+## Bonus: Latency-Tolerant High-Quality Transcoding
+
+```bash
+ffremote -- -y -vsync 0 -hwaccel_output_format cuda -i "https://elwood.run/bunny.mov" -c:a copy -c:v h264_nvenc -preset p6 -tune hq -b:v 5M -bufsize 5M -maxrate 10M -qmin 0 -g 250 -bf 3 -b_ref_mode middle -temporal-aq 1 -rc-lookahead 20 -i_qfactor 0.75 -b_qfactor 1.1 output.mp4
+```
