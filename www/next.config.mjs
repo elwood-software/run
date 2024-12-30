@@ -78,7 +78,7 @@ const nextConfig = {
 const opts = {
   components: { code: "Code" },
   syntaxHighlighting: {
-    theme: "github-dark",
+    theme: "github-dark-dimmed",
   },
   lineNumbers: false,
   showCopyButton: true,
