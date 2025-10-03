@@ -8,18 +8,21 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const apiUrl = process.env.API_URL ?? 'https://api.elwood.run';
-  const response = await fetch(`${apiUrl}/platform/limits`, {
-    next: {revalidate: 60},
-  });
-  const {plans, entitlements} = (await response.json()) as {
-    plans: Array<{
-      preset: string;
-      label: string;
-      [key: string]: string | number;
-    }>;
-    entitlements: Record<string, string>;
-  };
+  // const apiUrl = process.env.API_URL ?? 'https://api.elwood.run';
+  // const response = await fetch(`${apiUrl}/platform/limits`, {
+  //   next: {revalidate: 60},
+  // });
+  // const {plans, entitlements} = (await response.json()) as {
+  //   plans: Array<{
+  //     preset: string;
+  //     label: string;
+  //     [key: string]: string | number;
+  //   }>;
+  //   entitlements: Record<string, string>;
+  // };
+
+  const plans = [] as Record<string, string | number>[];
+  const entitlements = {} as Record<string, string>;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const c = useMDXComponents({}) as {

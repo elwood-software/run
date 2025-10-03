@@ -3,7 +3,7 @@ export type Params = {
 };
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: Params,
 ) {
   const { slug: slug_ } = await params;
@@ -40,7 +40,4 @@ export async function GET(
   }
 
   return new Response("Not found", { status: 404 });
-}
-
-async function fetchFromGithub() {
 }
