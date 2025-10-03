@@ -34,7 +34,7 @@ export async function GET(
 
     return new Response(resp.body!, {
       headers: {
-        "Content-Type": "application/javascript",
+        "Content-Type": "application/x-typescript",
       },
     });
   }
