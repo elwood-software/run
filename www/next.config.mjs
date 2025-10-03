@@ -20,8 +20,8 @@ const nextConfig = {
   rewrites: async () => {
     return [
       {
-        source: "/",
-        destination: "/",
+        source: "/:slug",
+        destination: "/x/:slug",
         has: [
           {
             type: "header",
