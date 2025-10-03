@@ -56,7 +56,7 @@ export default function Page() {
           </h2>
 
           <div className="md:hidden mb-6">
-            <div className="bg-card rounded-lg p-3 border border-border font-mono flex flex-col shadow-lg text-xs">
+            <div className="bg-card rounded-lg p-3 border font-mono flex flex-col shadow-lg text-xs">
               <span className="text-muted-foreground"># install ffremote</span>
               curl -fsSL https://elwood.run/ffr/install.sh | sh
             </div>
@@ -91,7 +91,7 @@ export default function Page() {
           </div>
         </div>
         <div className="hidden md:block">
-          <div className="bg-card rounded-lg p-6 border border-border font-mono flex flex-col shadow-lg">
+          <div className="bg-card rounded-lg p-6 border font-mono flex flex-col shadow-lg">
             <span className="text-muted-foreground"># install ffremote</span>
 
             <span className="mb-3 flex flex-row items-center justify-between space-x-6">

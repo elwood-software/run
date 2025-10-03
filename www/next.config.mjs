@@ -17,6 +17,21 @@ const nextConfig = {
       },
     ],
   },
+  rewrites: async () => {
+    return [
+      {
+        source: "/",
+        destination: "/",
+        has: [
+          {
+            type: "header",
+            key: "host",
+            value: "x.elwood.run",
+          },
+        ],
+      },
+    ];
+  },
   redirects: async () => {
     return [
       {

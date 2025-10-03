@@ -73,9 +73,9 @@ export function LoginForm() {
             </Button>
 
             <div className="flex items-center">
-              <hr className="flex-grow" />
+              <hr className="grow" />
               <div className="px-3 text-xs font-bold text-border">OR</div>
-              <hr className="flex-grow" />
+              <hr className="grow" />
             </div>
 
             <div className="grid gap-2">

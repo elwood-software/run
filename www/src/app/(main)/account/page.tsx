@@ -120,7 +120,7 @@ export default async function Page() {
                     </span>
                   </div>
                 </div>
-                <div className="ml-4 flex-shrink-0">
+                <div className="ml-4 shrink-0">
                   {org.usage['max_runs_per_day'] ?? 0} of{' '}
                   {num(org.entitlements.max_runs_per_day)}
                 </div>
@@ -133,7 +133,7 @@ export default async function Page() {
                     </span>
                   </div>
                 </div>
-                <div className="ml-4 flex-shrink-0">
+                <div className="ml-4 shrink-0">
                   {org.usage['run_mins_per_day'] ?? 0} of{' '}
                   {num(org.entitlements.run_mins_per_day)}
                 </div>
@@ -146,7 +146,7 @@ export default async function Page() {
                     </span>
                   </div>
                 </div>
-                <div className="ml-4 flex-shrink-0">
+                <div className="ml-4 shrink-0">
                   {org.usage['max_queued_per_day'] ?? 0} of{' '}
                   {num(org.entitlements.max_queued_per_day)}
                 </div>
@@ -159,7 +159,7 @@ export default async function Page() {
                     </span>
                   </div>
                 </div>
-                <div className="ml-4 flex-shrink-0">
+                <div className="ml-4 shrink-0">
                   {org.usage['max_lifetime_runs'] ?? 0} of{' '}
                   {num(org.entitlements.max_lifetime_runs)}
                 </div>
